@@ -1,0 +1,60 @@
+﻿@model Proyect.Models.Habitacione
+
+<h1>Detalles de la Habitación</h1>
+
+<div>
+    <h4>Habitacione</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Precio)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Precio)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdTipoHabitacionNavigation.Nombre)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdTipoHabitacionNavigation.Nombre)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <h4>Muebles en esta Habitación</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre del Mueble</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var mueble in Model.HabitacionMuebles)
+            {
+                <tr>
+                    <td>@mueble.IdMuebleNavigation.Nombre</td>
+                    <td>@mueble.Cantidad</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.IdHabitacion">Editar</a> |
+    <a asp-action="Index">Volver a la Lista</a>
+</div>

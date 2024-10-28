@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Proyect.Models;
+
+public partial class TipoHabitacione
+{
+    public int IdTipoHabitacion { get; set; }
+
+    public string Nombre { get; set; }
+
+    public string Descripcion { get; set; }
+
+    public int Capacidad { get; set; }
+
+    public virtual ICollection<Habitacione> Habitaciones { get; set; } = new List<Habitacione>();
+}

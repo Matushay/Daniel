@@ -1,0 +1,69 @@
+﻿@model Proyect.Models.Paquete
+
+<h2>Crear Paquete</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Paquete</h4>
+        <hr />
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Precio, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Precio, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Precio, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Agregar el campo de selección de habitaciones -->
+        <div class="form-group">
+            <label class="control-label col-md-2" for="Habitaciones">Habitaciones</label>
+            <div class="col-md-10">
+                <select id="Habitaciones" name="HabitacionesIds" class="form-control" multiple>
+                    @foreach (var habitacion in ViewBag.Habitaciones)
+                    {
+                        <option value="@habitacion.Value">@habitacion.Text</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <!-- Agregar el campo de selección de servicios -->
+        <div class="form-group">
+            <label class="control-label col-md-2" for="Servicios">Servicios</label>
+            <div class="col-md-10">
+                <select id="Servicios" name="ServiciosIds" class="form-control" multiple>
+                    @foreach (var servicio in ViewBag.Servicios)
+                    {
+                        <option value="@servicio.Value">@servicio.Text</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Crear" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

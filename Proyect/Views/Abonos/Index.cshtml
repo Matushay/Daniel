@@ -1,0 +1,74 @@
+﻿@model IEnumerable<Proyect.Models.Abono>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Abonos</h1>
+
+<p>
+    <a asp-action="Create">Agregar Abono</a>
+</p>
+
+<table class="table" id="AbonoTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdReservaNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaAbono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdReservaNavigation.IdReserva)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaAbono)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subtotal)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Estado)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdAbono">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdAbono">Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdAbono">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#AbonoTable').DataTable({
+                language: {
+                    "sLengthMenu": "Mostrar _MENU_ entradas",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "sSearch": "Buscar:"
+                }
+            });
+        })
+    </script>
+}
+
