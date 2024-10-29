@@ -10,7 +10,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table" id="EstadosReservaTable">
     <thead>
         <tr>
             <th>
@@ -40,3 +40,18 @@
 }
     </tbody>
 </table>
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#EstadosReservaTable').DataTable({
+                language: {
+                    "sLengthMenu": "Mostrar _MENU_ entradas",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "sSearch": "Buscar:"
+                }
+            });
+        })
+    </script>
+}
+
