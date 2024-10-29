@@ -25,8 +25,19 @@
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label class="control-label">Seleccione los Servicios</label>
+                @foreach (var servicio in (List<Servicio>)ViewBag.Servicios)
+                {
+                    <div>
+                        <input type="checkbox" name="ServiciosSeleccionados" value="@servicio.IdServicio" class="servicioCheckbox" id="servicio_@servicio.IdServicio"
+                               data-precio="@servicio.Precio" />
+                        <label for="servicio_@servicio.IdServicio">@servicio.Nombre</label> (Precio: @servicio.Precio)
+                    </div>
+                }
+            </div>
+            <div class="form-group">
                 <label asp-for="Precio" class="control-label"></label>
-                <input asp-for="Precio" class="form-control" />
+                <input asp-for="Precio" class="form-control" id="total" readonly/>
                 <span asp-validation-for="Precio" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
@@ -47,4 +58,37 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            function calcularTotal() {
+                let subtotal = 0;
+
+                // Sumar precios de servicios seleccionados
+                $('.servicioCheckbox:checked').each(function () {
+                    // Extraer el precio del texto del label
+                    const texto = $(this).next('label').text();
+                    const precio = parseFloat(texto.match(/\$(\d+(\.\d+)?)/)[1]) || 0;
+                    subtotal += precio;
+                });
+
+                // Sumar precios de habitaciones seleccionadas
+                $('.habitacionCheckbox:checked').each(function () {
+                    // Extraer el precio del texto del label
+                    const texto = $(this).next('label').text();
+                    const precio = parseFloat(texto.match(/\$(\d+(\.\d+)?)/)[1]) || 0;
+                    subtotal += precio;
+                });
+
+                // Actualizar el campo de precio total
+                $('#total').val(subtotal.toFixed(2)); // Formato con dos decimales
+            }
+
+            // Eventos para checkboxes
+            $('.servicioCheckbox, .habitacionCheckbox').change(calcularTotal);
+
+            // Calcular subtotal y total al cargar la página
+            calcularTotal();
+        });
+    </script>
+
 }
