@@ -33,7 +33,12 @@ namespace Proyect.Controllers
             }
 
             var paquete = await _context.Paquetes
+                .Include(p => p.PaquetesServicios)
+                    .ThenInclude(ps => ps.IdServicioNavigation) 
+                .Include(p => p.PaquetesHabitaciones)
+                    .ThenInclude(ph => ph.IdHabitacionNavigation) 
                 .FirstOrDefaultAsync(m => m.IdPaquete == id);
+
             if (paquete == null)
             {
                 return NotFound();
@@ -41,6 +46,7 @@ namespace Proyect.Controllers
 
             return View(paquete);
         }
+
 
         // GET: Paquetes/Create
         public IActionResult Create()
@@ -68,104 +74,106 @@ namespace Proyect.Controllers
                 {
                     foreach (var habitacionId in HabitacionesIds)
                     {
-                        var paqueteHabitacion = new PaquetesHabitacione
+                        var habitaciones = await _context.Habitaciones.FindAsync(habitacionId);
+                        if (habitaciones != null)
                         {
-                            IdPaquete = paquete.IdPaquete,
-                            IdHabitacion = habitacionId
-                        };
-                        _context.PaquetesHabitaciones.Add(paqueteHabitacion);
+                            var paqueteHabitacion = new PaquetesHabitacione
+                            {
+                                IdPaquete = paquete.IdPaquete,
+                                IdHabitacion = habitacionId,
+                                Precio = habitaciones.Precio
+                            };
+                            _context.PaquetesHabitaciones.Add(paqueteHabitacion);
+                        }
+                    
                     }
                     await _context.SaveChangesAsync();
                 }
 
-                // Asociar los servicios seleccionados al paquete
+                // Asociar los servicios seleccionados al paquete con sus precios
                 if (ServiciosIds != null)
                 {
                     foreach (var servicioId in ServiciosIds)
                     {
-                        var paqueteServicio = new PaquetesServicio
+                        // Obtener el servicio para acceder a su precio
+                        var servicio = await _context.Servicios.FindAsync(servicioId);
+                        if (servicio != null)
                         {
-                            IdPaquete = paquete.IdPaquete,
-                            IdServicio = servicioId
-                        };
-                        _context.PaquetesServicios.Add(paqueteServicio);
+                            var paqueteServicio = new PaquetesServicio
+                            {
+                                IdPaquete = paquete.IdPaquete,
+                                IdServicio = servicioId,
+                                Precio = servicio.Precio // Agregar el precio del servicio
+                            };
+                            _context.PaquetesServicios.Add(paqueteServicio);
+                        }
                     }
                     await _context.SaveChangesAsync();
                 }
+
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["Servicios"] = new SelectList(_context.Servicios, "IdServicio", "Nombre");
             ViewData["Habitaciones"] = new SelectList(_context.Habitaciones, "IdHabitacion", "Nombre");
             return View(paquete);
-          
         }
 
-        // GET: Paquetes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
+        // GET: Paquetes/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            // Obtener el paquete y sus relaciones
             var paquete = await _context.Paquetes
                 .Include(p => p.PaquetesServicios)
-                .ThenInclude(ps => ps.IdServicioNavigation)
+                .Include(p => p.PaquetesHabitaciones)
                 .FirstOrDefaultAsync(p => p.IdPaquete == id);
 
             if (paquete == null)
             {
                 return NotFound();
             }
-            // Crea una lista de SelectList para los Servicios
 
-            ViewData["IdServicio"] = new SelectList(_context.Servicios, "IdServicio", "Nombre", paquete.IdPaquete);
-
-            var servicios = await _context.Servicios
+            // Obtener los servicios, incluyendo el estado de selección y precio
+            var servicios = _context.Servicios
+                .AsEnumerable()
                 .Select(s => new
                 {
                     s.IdServicio,
                     s.Nombre,
-                    s.Precio
-                }).ToListAsync();
+                    s.Precio,
+                    Seleccionado = paquete.PaquetesServicios.Any(ps => ps.IdServicio == s.IdServicio)
+                })
+                .ToList();
 
-            var habitaciones = await _context.Habitaciones.Select(h => new
-            {
-                h.IdHabitacion,
-                h.Nombre,
-                h.Precio
-            }).ToListAsync();
+            // Obtener las habitaciones, incluyendo el estado de selección y precio
+            var habitaciones = _context.Habitaciones
+                .AsEnumerable()
+                .Select(h => new
+                {
+                    h.IdHabitacion,
+                    h.Nombre,
+                    h.Precio,
+                    Seleccionado = paquete.PaquetesHabitaciones.Any(ph => ph.IdHabitacion == h.IdHabitacion)
+                })
+                .ToList();
 
-            var serviciosSeleccionados = paquete.PaquetesServicios.Select(ps => ps.IdServicio).ToArray();
+            // Pasar los datos a la vista mediante ViewData
+            ViewData["Servicios"] = servicios;
+            ViewData["Habitaciones"] = habitaciones;
+            ViewData["PrecioTotal"] = paquete.Precio; // Precio inicial del paquete
 
-            ViewData["Servicios"] = servicios.Select(s => new Servicio
-            {
-                IdServicio = s.IdServicio,
-                Nombre = s.Nombre,
-                Precio = s.Precio
-            }).ToList();
-
-
-            var habitacionesSeleccionadas = paquete.PaquetesHabitaciones.Select(ph => ph.IdHabitacion).ToArray(); // lógica para obtener habitaciones seleccionadas
-            ViewData["Habitaciones"] = habitaciones.Select(h => new Habitacione
-            {
-                IdHabitacion = h.IdHabitacion,
-                Nombre = h.Nombre,
-                Precio = h.Precio
-            }).ToList();
-
-            ViewBag.ServiciosSeleccionados = serviciosSeleccionados;
             return View(paquete);
         }
-    
+
+
 
         // POST: Paquetes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdPaquete,Nombre,Descripcion,Precio,Estado")] Paquete paquete, int?[] ServiciosSeleccionados, int?[] HabitacionesSeleccionadas)
+        public async Task<IActionResult> Edit(int id, [Bind("IdPaquete,Nombre,Descripcion,Precio,Estado")] Paquete paquete, int[] HabitacionesSeleccionadas, int[] ServiciosSeleccionados, decimal PrecioTotal)
         {
             if (id != paquete.IdPaquete)
             {
@@ -176,61 +184,39 @@ namespace Proyect.Controllers
             {
                 try
                 {
-                    // Actualizar el paquete
+                    // Actualizar el precio del paquete
+                    paquete.Precio = PrecioTotal;
+
+                    // Actualizar el paquete en la base de datos
                     _context.Update(paquete);
                     await _context.SaveChangesAsync();
 
-                    // Obtener los servicios anteriores
-                    var serviciosAnteriores = _context.PaquetesServicios.Where(ps => ps.IdPaquete == id).ToList();
+                    // Actualizar las habitaciones seleccionadas
+                    var habitacionesExistentes = _context.PaquetesHabitaciones.Where(ph => ph.IdPaquete == id).ToList();
+                    _context.PaquetesHabitaciones.RemoveRange(habitacionesExistentes);
 
-                    // Actualizar servicios existentes o agregar nuevos
-                    foreach (var servicioId in ServiciosSeleccionados)
-                    {
-                        // Si el servicio ya existe, se actualiza
-                        var servicioExistente = serviciosAnteriores.FirstOrDefault(ps => ps.IdServicio == servicioId);
-                        if (servicioExistente == null)
-                        {
-                            // Si el servicio no existe, se agrega
-                            var nuevoServicio = new PaquetesServicio
-                            {
-                                IdPaquete = paquete.IdPaquete,
-                                IdServicio = servicioId
-                            };
-                            _context.PaquetesServicios.Add(nuevoServicio);
-                        }
-                        // Si ya existe, no es necesario hacer nada
-                    }
-
-                    // Eliminar servicios que ya no están seleccionados
-                    var serviciosAEliminar = serviciosAnteriores.Where(ps => !ServiciosSeleccionados.Contains(ps.IdServicio)).ToList();
-                    _context.PaquetesServicios.RemoveRange(serviciosAEliminar);
-
-                    // Obtener las habitaciones anteriores
-                    var habitacionesAnteriores = _context.PaquetesHabitaciones.Where(ph => ph.IdPaquete == id).ToList();
-
-                    // Actualizar habitaciones existentes o agregar nuevas
                     foreach (var habitacionId in HabitacionesSeleccionadas)
                     {
-                        // Si la habitación ya existe, se actualiza
-                        var habitacionExistente = habitacionesAnteriores.FirstOrDefault(ph => ph.IdHabitacion == habitacionId);
-                        if (habitacionExistente == null)
+                        _context.PaquetesHabitaciones.Add(new PaquetesHabitacione
                         {
-                            // Si la habitación no existe, se agrega
-                            var nuevaHabitacion = new PaquetesHabitacione
-                            {
-                                IdPaquete = paquete.IdPaquete,
-                                IdHabitacion = habitacionId
-                            };
-                            _context.PaquetesHabitaciones.Add(nuevaHabitacion);
-                        }
-                        // Si ya existe, no es necesario hacer nada
+                            IdPaquete = id,
+                            IdHabitacion = habitacionId
+                        });
                     }
 
-                    // Eliminar habitaciones que ya no están seleccionadas
-                    var habitacionesAEliminar = habitacionesAnteriores.Where(ph => !HabitacionesSeleccionadas.Contains(ph.IdHabitacion)).ToList();
-                    _context.PaquetesHabitaciones.RemoveRange(habitacionesAEliminar);
+                    // Actualizar los servicios seleccionados
+                    var serviciosExistentes = _context.PaquetesServicios.Where(ps => ps.IdPaquete == id).ToList();
+                    _context.PaquetesServicios.RemoveRange(serviciosExistentes);
 
-                    // Guardar los cambios
+                    foreach (var servicioId in ServiciosSeleccionados)
+                    {
+                        _context.PaquetesServicios.Add(new PaquetesServicio
+                        {
+                            IdPaquete = id,
+                            IdServicio = servicioId
+                        });
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -247,8 +233,32 @@ namespace Proyect.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // Recargar servicios y habitaciones si el modelo no es válido
+            ViewData["Servicios"] = _context.Servicios
+                .Select(s => new
+                {
+                    s.IdServicio,
+                    s.Nombre,
+                    s.Precio,
+                    Seleccionado = ServiciosSeleccionados.Contains(s.IdServicio)
+                })
+                .ToList();
+
+            ViewData["Habitaciones"] = _context.Habitaciones
+                .Select(h => new
+                {
+                    h.IdHabitacion,
+                    h.Nombre,
+                    h.Precio,
+                    Seleccionado = HabitacionesSeleccionadas.Contains(h.IdHabitacion)
+                })
+                .ToList();
+
+            ViewData["PrecioTotal"] = PrecioTotal;
+
             return View(paquete);
         }
+
 
 
         // GET: Paquetes/Delete/5
@@ -260,7 +270,10 @@ namespace Proyect.Controllers
             }
 
             var paquete = await _context.Paquetes
+                .Include(p => p.PaquetesServicios)
+                .Include(p => p.PaquetesHabitaciones)
                 .FirstOrDefaultAsync(m => m.IdPaquete == id);
+
             if (paquete == null)
             {
                 return NotFound();
@@ -269,20 +282,43 @@ namespace Proyect.Controllers
             return View(paquete);
         }
 
+
         // POST: Paquetes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var paquete = await _context.Paquetes.FindAsync(id);
-            if (paquete != null)
+            var paquete = await _context.Paquetes
+                .Include(p => p.PaquetesServicios)
+                .Include(p => p.PaquetesHabitaciones)
+                .FirstOrDefaultAsync(p => p.IdPaquete == id);
+
+            if (paquete == null)
             {
-                _context.Paquetes.Remove(paquete);
+                return NotFound();
             }
 
+            // Eliminar las relaciones de la tabla intermedia PaquetesServicios
+            if (paquete.PaquetesServicios.Any())
+            {
+                _context.PaquetesServicios.RemoveRange(paquete.PaquetesServicios);
+            }
+
+            // Eliminar las relaciones de la tabla intermedia PaquetesHabitaciones
+            if (paquete.PaquetesHabitaciones.Any())
+            {
+                _context.PaquetesHabitaciones.RemoveRange(paquete.PaquetesHabitaciones);
+            }
+
+            // Eliminar el paquete
+            _context.Paquetes.Remove(paquete);
+
+            // Guardar los cambios en la base de datos
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool PaqueteExists(int id)
         {

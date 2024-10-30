@@ -26,18 +26,40 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Seleccione los Servicios</label>
-                @foreach (var servicio in (List<Servicio>)ViewBag.Servicios)
+                @foreach (var servicio in ViewData["Servicios"] as IEnumerable<dynamic>)
                 {
                     <div>
-                        <input type="checkbox" name="ServiciosSeleccionados" value="@servicio.IdServicio" class="servicioCheckbox" id="servicio_@servicio.IdServicio"
-                               data-precio="@servicio.Precio" />
-                        <label for="servicio_@servicio.IdServicio">@servicio.Nombre</label> (Precio: @servicio.Precio)
+                        <input type="checkbox"
+                               name="ServiciosSeleccionados"
+                               value="@servicio.IdServicio"
+                               class="servicioCheckbox"
+                               data-precio="@servicio.Precio"
+                               id="servicio_@servicio.IdServicio"
+                        @(servicio.Seleccionado ? "checked" : "") />
+                        <label for="servicio_@servicio.IdServicio">@servicio.Nombre (Precio: $@servicio.Precio)</label>
+                    </div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Seleccione las Habitaciones</label>
+                @foreach (var habitacion in ViewData["Habitaciones"] as IEnumerable<dynamic>)
+                {
+                    <div>
+                        <input type="checkbox"
+                               name="HabitacionesSeleccionadas"
+                               value="@habitacion.IdHabitacion"
+                               class="habitacionCheckbox"
+                               data-precio="@habitacion.Precio"
+                               id="habitacion_@habitacion.IdHabitacion"
+                        @(habitacion.Seleccionado ? "checked" : "") />
+                        <label for="habitacion_@habitacion.IdHabitacion">@habitacion.Nombre (Precio: $@habitacion.Precio)</label>
                     </div>
                 }
             </div>
             <div class="form-group">
                 <label asp-for="Precio" class="control-label"></label>
-                <input asp-for="Precio" class="form-control" id="total" readonly/>
+                <input asp-for="Precio" id="total" name="PrecioTotal" value="@ViewData["PrecioTotal"]" class="form-control" readonly />
                 <span asp-validation-for="Precio" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
@@ -58,37 +80,32 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
     <script>
-        $(document).ready(function () {
-            function calcularTotal() {
-                let subtotal = 0;
+        // Función para actualizar el precio total
+        function actualizarPrecioTotal() {
+            let total = 0;
 
-                // Sumar precios de servicios seleccionados
-                $('.servicioCheckbox:checked').each(function () {
-                    // Extraer el precio del texto del label
-                    const texto = $(this).next('label').text();
-                    const precio = parseFloat(texto.match(/\$(\d+(\.\d+)?)/)[1]) || 0;
-                    subtotal += precio;
-                });
+            // Sumar precios de servicios seleccionados
+            document.querySelectorAll('.servicioCheckbox:checked').forEach(item => {
+                total += parseFloat(item.getAttribute('data-precio')) || 0;
+            });
 
-                // Sumar precios de habitaciones seleccionadas
-                $('.habitacionCheckbox:checked').each(function () {
-                    // Extraer el precio del texto del label
-                    const texto = $(this).next('label').text();
-                    const precio = parseFloat(texto.match(/\$(\d+(\.\d+)?)/)[1]) || 0;
-                    subtotal += precio;
-                });
+            // Sumar precios de habitaciones seleccionadas
+            document.querySelectorAll('.habitacionCheckbox:checked').forEach(item => {
+                total += parseFloat(item.getAttribute('data-precio')) || 0;
+            });
 
-                // Actualizar el campo de precio total
-                $('#total').val(subtotal.toFixed(2)); // Formato con dos decimales
-            }
+            // Actualizar el campo de precio total
+            document.getElementById('total').value = total.toFixed(0);
+        }
 
-            // Eventos para checkboxes
-            $('.servicioCheckbox, .habitacionCheckbox').change(calcularTotal);
-
-            // Calcular subtotal y total al cargar la página
-            calcularTotal();
+        // Escuchar cambios en los checkboxes de servicios y habitaciones
+        document.querySelectorAll('.servicioCheckbox, .habitacionCheckbox').forEach(checkbox => {
+            checkbox.addEventListener('change', actualizarPrecioTotal);
         });
-    </script>
 
+        // Inicializar precio total al cargar la página
+        document.addEventListener('DOMContentLoaded', actualizarPrecioTotal);
+    </script>
 }
