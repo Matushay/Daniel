@@ -51,8 +51,8 @@ namespace Proyect.Controllers
         // GET: Paquetes/Create
         public IActionResult Create()
         {
-            ViewData["Servicios"] = _context.Servicios.Select(s => new { s.IdServicio, s.Nombre, s.Precio }).ToList();
-            ViewData["Habitaciones"] = _context.Habitaciones.Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
+            ViewData["Servicios"] = _context.Servicios.Where(s => s.Estado == false).Select(s => new { s.IdServicio, s.Nombre, s.Precio }).ToList();
+            ViewData["Habitaciones"] = _context.Habitaciones.Where(s => s.Estado == false).Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
             return View();
         }
 
@@ -114,8 +114,8 @@ namespace Proyect.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["Servicios"] = new SelectList(_context.Servicios, "IdServicio", "Nombre");
-            ViewData["Habitaciones"] = new SelectList(_context.Habitaciones, "IdHabitacion", "Nombre");
+            ViewData["Servicios"] = new SelectList(_context.Servicios.Where(s => s.Estado == false), "IdServicio", "Nombre");
+            ViewData["Habitaciones"] = new SelectList(_context.Habitaciones.Where(s => s.Estado == false), "IdHabitacion", "Nombre");
             return View(paquete);
         }
 
@@ -136,6 +136,7 @@ namespace Proyect.Controllers
 
             // Obtener los servicios, incluyendo el estado de selección y precio
             var servicios = _context.Servicios
+                .Where(s => s.Estado == false)
                 .AsEnumerable()
                 .Select(s => new
                 {
@@ -148,6 +149,7 @@ namespace Proyect.Controllers
 
             // Obtener las habitaciones, incluyendo el estado de selección y precio
             var habitaciones = _context.Habitaciones
+                .Where(s => s.Estado == false)
                 .AsEnumerable()
                 .Select(h => new
                 {
@@ -235,6 +237,7 @@ namespace Proyect.Controllers
 
             // Recargar servicios y habitaciones si el modelo no es válido
             ViewData["Servicios"] = _context.Servicios
+                .Where(s => s.Estado == false)
                 .Select(s => new
                 {
                     s.IdServicio,
@@ -245,6 +248,7 @@ namespace Proyect.Controllers
                 .ToList();
 
             ViewData["Habitaciones"] = _context.Habitaciones
+                .Where(s => s.Estado == false)
                 .Select(h => new
                 {
                     h.IdHabitacion,
