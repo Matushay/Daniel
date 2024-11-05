@@ -323,6 +323,17 @@ namespace Proyect.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult ActualizarEstado(int id, bool estado)
+        {
+            var paquete = _context.Paquetes.Find(id);
+            if (paquete != null)
+            {
+                paquete.Estado = estado;
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false, message = "Habitación no encontrada." });
+        }
 
         private bool PaqueteExists(int id)
         {

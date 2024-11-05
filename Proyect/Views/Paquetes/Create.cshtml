@@ -29,7 +29,7 @@
                 {
                     <div>
                         <input type="checkbox" name="ServiciosIds" value="@servicio.IdServicio" class="servicioCheckbox" data-precio="@servicio.Precio" id="servicio_@servicio.IdServicio" />
-                        <label for="servicio_@servicio.IdServicio">@servicio.Nombre - $@servicio.Precio</label>
+                        <label for="servicio_@servicio.IdServicio">@servicio.Nombre - $@(servicio.Precio != null ? ((decimal)servicio.Precio).ToString("N2") : "0")</label>
                     </div>
                 }
             </div>
@@ -40,10 +40,11 @@
                 {
                     <div>
                         <input type="checkbox" name="HabitacionesIds" value="@habitacion.IdHabitacion" class="habitacionCheckbox" data-precio="@habitacion.Precio" id="habitacion_@habitacion.IdHabitacion" />
-                        <label for="habitacion_@habitacion.IdHabitacion">@habitacion.Nombre - $@habitacion.Precio</label>
+                        <label for="habitacion_@habitacion.IdHabitacion">@habitacion.Nombre - $@(habitacion.Precio != null ? ((decimal)habitacion.Precio).ToString("N2") : "0")</label>
                     </div>
                 }
             </div>
+
             <div class="form-group">
                 <label asp-for="Precio" class="control-label" ></label>
                 <input asp-for="Precio" class="form-control" id="total" readonly/>

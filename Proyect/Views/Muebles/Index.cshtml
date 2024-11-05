@@ -26,6 +26,9 @@
                 @Html.DisplayNameFor(model => model.FechaRegistro)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.IdTipoMuebleNavigation)
             </th>
             <th></th>
@@ -41,10 +44,16 @@
                 @Html.DisplayFor(modelItem => item.Descripcion)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Estado)
+                <label class="switch">
+                    <input type="checkbox" class="status-toggle" data-id="@item.IdMueble" @(item.Estado ? "checked" : "")>
+                    <span class="slider"></span>
+                </label>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FechaRegistro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cantidad)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IdTipoMuebleNavigation.Nombre)
@@ -70,5 +79,30 @@
                 }
             });
         })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.status-toggle').change(function () {
+                const estado = $(this).is(':checked') ? true : false;
+                const idHabitacion = $(this).data('id');
+
+                // Aquí puedes realizar una llamada AJAX para actualizar el estado en el servidor
+                $.ajax({
+                    url: '/Muebles/ActualizarEstado', // Cambia esto a la ruta de tu controlador
+                    type: 'POST',
+                    data: {
+                        id: idHabitacion,
+                        estado: estado
+                    },
+                    success: function (response) {
+                        console.log('Estado actualizado con éxito:', response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar el estado:', error);
+                    }
+                });
+            });
+        });
+
     </script>
 }

@@ -29,7 +29,3 @@ public partial class Abono
 
     public virtual Reserva IdReservaNavigation { get; set; }
 }
-
-internal class DisplayAttribute : Attribute
-{
-}
