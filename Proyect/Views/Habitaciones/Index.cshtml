@@ -8,7 +8,7 @@
 <h1>Habitaciones</h1>
 
 <p>
-    <a asp-action="Create">Agregar Habitacion</a>
+    <a asp-action="Create"><i class="bi bi-plus-square"></i></a>
 </p>
 @{
     var errorMessage = TempData["ErrorMessage"] as string;
@@ -19,10 +19,10 @@
         @errorMessage
     </div>
 }
-@if (TempData["ErrorMessage"] != null)
+@if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["ErrorMessage"]
+        @TempData["SuccessMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }

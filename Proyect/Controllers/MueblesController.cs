@@ -151,6 +151,14 @@ namespace Proyect.Controllers
                 _context.Muebles.Remove(mueble);
             }
 
+            var muebleRelacionado = await _context.HabitacionMuebles.AnyAsync(ps => ps.IdMueble == id);
+            if (muebleRelacionado)
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar el mueble porque está asociada a una o mas habitaciones.";
+                return RedirectToAction(nameof(Delete));
+            }
+
+            TempData["SuccessMessage"] = "El mueble se eliminó correctamente.";
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

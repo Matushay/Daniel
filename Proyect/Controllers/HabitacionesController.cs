@@ -348,7 +348,7 @@ namespace Proyect.Controllers
             if (paqueteRelacionado)
             {
                 TempData["ErrorMessage"] = "No se puede eliminar la habitación porque está asociada a uno o más paquetes.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Delete));
             }
 
             // Devolver la cantidad de cada mueble a la tabla Muebles
