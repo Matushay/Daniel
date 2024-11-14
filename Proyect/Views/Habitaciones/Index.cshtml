@@ -10,15 +10,6 @@
 <p>
     <a asp-action="Create"><i class="bi bi-plus-square"></i></a>
 </p>
-@{
-    var errorMessage = TempData["ErrorMessage"] as string;
-}
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <div class="alert alert-danger">
-        @errorMessage
-    </div>
-}
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -33,9 +24,6 @@
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Descripcion)
             </th>
             <th>
@@ -43,6 +31,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IdTipoHabitacionNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
             </th>
             <th>
                 Acciones
@@ -56,12 +47,6 @@
                 @Html.DisplayFor(modelItem => item.Nombre)
             </td>
             <td>
-                <label class="switch">
-                    <input type="checkbox" class="status-toggle" data-id="@item.IdHabitacion" @(item.Estado ? "checked" : "")>
-                    <span class="slider"></span>
-                </label>
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Descripcion)
             </td>
             <td>
@@ -71,30 +56,20 @@
                 @Html.DisplayFor(modelItem => item.IdTipoHabitacionNavigation.Nombre)
             </td>
             <td>
+                <label class="switch">
+                    <input type="checkbox" class="status-toggle" data-id="@item.IdHabitacion" @(item.Estado ? "checked" : "")>
+                    <span class="slider"></span>
+                </label>
+             </td>
+            <td>
                 <a asp-action="Edit" asp-route-id="@item.IdHabitacion"><i class="bi bi-pencil-square"></i></a> |
                 <a asp-action="Details" asp-route-id="@item.IdHabitacion"><i class="bi bi-list"></i></a> |
-                <a href="#" class="btn-delete" data-id="@item.IdHabitacion"><i class="bi bi-trash3"></i></a>   
+                <a asp-action="Delete" asp-route-id="@item.IdHabitacion"><i class="bi bi-trash3"></i></a>   
             </td>
         </tr>
 }
     </tbody>
 </table>
-<!-- Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Eliminar Habitación</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Aquí se cargará el contenido de la vista de eliminación -->
-            </div>
-        </div>
-    </div>
-</div>
 
 @section Scripts {
 
@@ -109,30 +84,6 @@
             });
         })
     </script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.btn-delete').on('click', function (event) {
-                event.preventDefault();
-
-                var idHabitacion = $(this).data('id');
-                $.ajax({
-                    url: '@Url.Action("Delete", "Habitaciones")',
-                    type: 'GET',
-                    data: { id: idHabitacion },
-                    success: function (data) {
-                        $('#deleteModal .modal-body').html(data);
-                        $('#deleteModal').modal('show');
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error al cargar la vista:", status, error);
-                        alert('Error al cargar la vista de eliminación.');
-                    }
-                });
-            });
-                
-        });
-    </script>
-
     <script>
         $(document).ready(function () {
             $('.status-toggle').change(function () {

@@ -79,7 +79,7 @@ namespace Proyect.Controllers
                     for (int i = 0; i < mueblesSeleccionados.Length; i++)
                     {
                         var muebleId = mueblesSeleccionados[i];
-                        var cantidad = cantidadMuebles != null && i < cantidadMuebles.Length ? cantidadMuebles[i] : 1; // Default cantidad
+                        var cantidad = cantidadMuebles != null && i < cantidadMuebles.Length ? cantidadMuebles[i] : 0; // Default cantidad
 
                         var habitacionMueble = new HabitacionMueble
                         {
@@ -326,7 +326,7 @@ namespace Proyect.Controllers
                 return NotFound();
             }
 
-            return PartialView("Delete", habitacione);
+            return View(habitacione);
         }
 
         // POST: Habitaciones/Delete/5
@@ -348,7 +348,7 @@ namespace Proyect.Controllers
             if (paqueteRelacionado)
             {
                 TempData["ErrorMessage"] = "No se puede eliminar la habitación porque está asociada a uno o más paquetes.";
-                return RedirectToAction(nameof(Delete));
+                return RedirectToAction(nameof(Index));
             }
 
             // Devolver la cantidad de cada mueble a la tabla Muebles

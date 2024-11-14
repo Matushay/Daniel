@@ -5,62 +5,146 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<h1 class="text-center mb-4">Crear Habitación</h1>
 
-<h4>Habitacione</h4>
+<h4 class="text-center mb-4">Detalles de la Habitación</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="row justify-content-center">
+    <div class="col-md-6">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
+            <!-- Nombre -->
+            <div class="form-group mb-3">
+                <label asp-for="Nombre" class="control-label">Nombre de la habitación</label>
+                <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre de la habitación" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="IdTipoHabitacion" class="control-label"></label>
-                <select asp-for="IdTipoHabitacion" class="form-control" asp-items="ViewBag.IdTipoHabitacion"></select>
+            <!-- Tipo de Habitación -->
+            <div class="form-group mb-3">
+                <label asp-for="IdTipoHabitacion" class="control-label">Tipo de habitación</label>
+                <select asp-for="IdTipoHabitacion" class="form-control" asp-items="ViewBag.IdTipoHabitacion">
+                    <option value="">Seleccione el tipo de habitación</option>
+                </select>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
+            <!-- Descripción -->
+            <div class="form-group mb-3">
+                <label asp-for="Descripcion" class="control-label">Descripción</label>
+                <textarea asp-for="Descripcion" class="form-control" placeholder="Descripción breve de la habitación" /></textarea>
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Precio" class="control-label"></label>
-                <input asp-for="Precio" class="form-control" />
+            <!-- Precio -->
+            <div class="form-group mb-3">
+                <label asp-for="Precio" class="control-label">Precio por noche</label>
+                <input asp-for="Precio" class="form-control" placeholder="Precio en COP" />
                 <span asp-validation-for="Precio" class="text-danger"></span>
             </div>
 
-            <div>
-                <label>Muebles:</label>
-                @foreach (var mueble in ViewBag.Muebles)
-                {
-                    <div>
-                        <label>@mueble.Text</label>
-                        <input type="number" name="cantidadMuebles" min="0" max="@mueble.Cantidad" value="1" />
-                        <input type="checkbox" name="mueblesSeleccionados" value="@mueble.Value" />
-                    </div>
-                }
+            <!-- Muebles -->
+            <div class="form-group mb-3">
+                <label for="select-mueble">Seleccionar Muebles</label>
+                <div id="muebles-lista" class="mb-2">
+                    @foreach (var mueble in ViewBag.Muebles)
+                    {
+                        // Filtramos los muebles con cantidad > 0
+                        if (mueble.Cantidad > 0)
+                        {
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="mueblesSeleccionados" value="@mueble.Value" id="mueble-@mueble.Value" />
+                            <label class="form-check-label" for="mueble-@mueble.Value">@mueble.Text</label>
+                            <input type="number" name="cantidadMuebles" class="form-control mt-2" min="0" max="@mueble.Cantidad" value="1" data-id="@mueble.Value" data-nombre="@mueble.Text" />
+                        </div>
+                        }
+                    }
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <!-- Botón de agregar mueble -->
+            <button id="btn-agregar-mueble" type="button" class="btn btn-success mb-3">Agregar Mueble</button>
+
+            <!-- Tabla de muebles seleccionados -->
+            <table id="muebles-seleccionados" class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <!-- Botón para enviar el formulario -->
+            <div class="form-group text-center">
+                <input type="submit" value="Crear Habitación" class="btn btn-primary btn-lg" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        document.getElementById("btn-agregar-mueble").addEventListener("click", function () {
+            const mueblesSeleccionados = document.querySelectorAll("input[name='mueblesSeleccionados']:checked");
+            const mueblesTableBody = document.querySelector("#muebles-seleccionados tbody");
+
+            mueblesSeleccionados.forEach(muebleCheckbox => {
+                const muebleId = muebleCheckbox.value;
+                const cantidadInput = document.querySelector(`input[name='cantidadMuebles'][data-id='${muebleId}']`);
+                const cantidad = parseInt(cantidadInput.value, 10);
+                const nombreMueble = cantidadInput.getAttribute("data-nombre");
+
+                // Evitar duplicados en la tabla
+                if (!document.querySelector(`#muebles-seleccionados tbody tr[data-id='${muebleId}']`)) {
+                    const row = document.createElement("tr");
+                    row.setAttribute("data-id", muebleId);
+                    row.innerHTML = `
+                                            <td>${nombreMueble}</td>
+                                            <td>${cantidad}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="eliminarMuebleSeleccionado('${muebleId}')">Eliminar</button>
+                                            </td>
+                                        `;
+                    mueblesTableBody.appendChild(row);
+                }
+
+                // Deseleccionar el checkbox
+                muebleCheckbox.checked = false;
+            });
+        });
+
+        function eliminarMuebleSeleccionado(muebleId) {
+            const row = document.querySelector(`#muebles-seleccionados tbody tr[data-id='${muebleId}']`);
+            if (row) {
+                row.remove();
+            }
+        }
+
+        // Al enviar el formulario, incluir los datos de muebles en campos ocultos
+        document.querySelector("form").addEventListener("submit", function () {
+            const mueblesTableBody = document.querySelector("#muebles-seleccionados tbody");
+            const mueblesInputs = [];
+
+            mueblesTableBody.querySelectorAll("tr").forEach(row => {
+                const muebleId = row.getAttribute("data-id");
+                const cantidad = row.cells[1].textContent;
+
+                mueblesInputs.push(`
+                                        <input type="hidden" name="mueblesSeleccionados" value="${muebleId}" />
+                                        <input type="hidden" name="cantidadMuebles" value="${cantidad}" />
+                                    `);
+            });
+
+            // Agregar los inputs ocultos al formulario
+            this.insertAdjacentHTML("beforeend", mueblesInputs.join(""));
+        });
+    </script>
 }

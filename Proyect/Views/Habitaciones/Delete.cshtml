@@ -5,6 +5,13 @@
 }
 
 <h3>¿Estas seguro de eliminar la habitación?</h3>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 <div>
     <dl class="row">
         <div class="col-sm-2 ms-2">

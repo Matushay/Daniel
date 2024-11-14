@@ -5,9 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Delete</h1>
-
-<h3>Are you sure you want to delete this?</h3>
+<h3>¿Estas seguro de eliminar el tipo de mueble?</h3>
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -16,7 +14,7 @@
     </div>
 }
 <div>
-    <h4>TipoMueble</h4>
+    <h4>Tipo de Mueble</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -35,7 +33,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="IdTipoMueble" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+        <a asp-action="Index">Volver</a>
     </form>
 </div>
