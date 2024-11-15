@@ -1,69 +1,214 @@
-﻿@model Proyect.Models.Paquete
+﻿@model Proyect.Models.Reserva
 
-<h2>Crear Paquete</h2>
+<h1>Create</h1>
+<h4>Reserva</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" id="createReservaForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <h4>Paquete</h4>
-        <hr />
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+            <!-- Selección de Cliente y Usuario -->
+            <div class="form-group">
+                <label asp-for="IdCliente" class="control-label"></label>
+                <select asp-for="IdCliente" class="form-control" asp-items="ViewBag.IdCliente"></select>
             </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <label asp-for="IdUsuario" class="control-label"></label>
+                <select asp-for="IdUsuario" class="form-control" asp-items="ViewBag.IdUsuario"></select>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Precio, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Precio, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Precio, "", new { @class = "text-danger" })
+            <!-- Selección de Fecha de Inicio y Fecha Fin -->
+            <div class="form-group">
+                <label asp-for="FechaInicio" class="control-label"></label>
+                <input asp-for="FechaInicio" class="form-control" type="date" id="fechaInicio" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="FechaInicio" class="text-danger"></span>
             </div>
-        </div>
+            <div class="form-group">
+                <label asp-for="FechaFin" class="control-label"></label>
+                <input asp-for="FechaFin" class="form-control" type="date" id="fechaFin" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="FechaFin" class="text-danger"></span>
+            </div>
 
-        <!-- Agregar el campo de selección de habitaciones -->
-        <div class="form-group">
-            <label class="control-label col-md-2" for="Habitaciones">Habitaciones</label>
-            <div class="col-md-10">
-                <select id="Habitaciones" name="HabitacionesIds" class="form-control" multiple>
-                    @foreach (var habitacion in ViewBag.Habitaciones)
-                    {
-                        <option value="@habitacion.Value">@habitacion.Text</option>
-                    }
+            <!-- Selección de Paquete y Precio -->
+            <div class="form-group">
+                <label asp-for="IdPaquete" class="control-label"></label>
+                <select asp-for="IdPaquete" class="form-control" id="IdPaquete" asp-items="ViewBag.IdPaquete">
+                    <option value="">-- Seleccionar Paquete --</option>
                 </select>
+                <span asp-validation-for="IdPaquete" class="text-danger"></span>
             </div>
-        </div>
 
-        <!-- Agregar el campo de selección de servicios -->
-        <div class="form-group">
-            <label class="control-label col-md-2" for="Servicios">Servicios</label>
-            <div class="col-md-10">
-                <select id="Servicios" name="ServiciosIds" class="form-control" multiple>
+            <!-- Precio Paquete -->
+            <div class="form-group">
+                <label for="PrecioPaquete">Precio Paquete</label>
+                <input type="text" id="PrecioPaquete" class="form-control" readonly />
+            </div>
+
+            <!-- Mostrar los servicios disponibles con checkboxes -->
+            <div class="form-group">
+                <label>Servicios</label>
+                <div id="servicios">
                     @foreach (var servicio in ViewBag.Servicios)
                     {
-                        <option value="@servicio.Value">@servicio.Text</option>
+                        <div>
+                            <input type="checkbox" name="ServiciosSeleccionados" value="@servicio.IdServicio" />
+                            @servicio.Nombre - @servicio.Precio.ToString("C2")
+                        </div>
                     }
-                </select>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Crear" class="btn btn-default" />
+
+            <!-- Método de Pago y Estado de Reserva -->
+            <div class="form-group">
+                <label asp-for="IdMetodoPago" class="control-label"></label>
+                <select asp-for="IdMetodoPago" class="form-control" asp-items="ViewBag.IdMetodoPago"></select>
+                <span asp-validation-for="IdMetodoPago" class="text-danger"></span>
             </div>
-        </div>
+            <div class="form-group">
+                <label asp-for="IdEstadoReserva" class="control-label"></label>
+                <select asp-for="IdEstadoReserva" class="form-control" asp-items="ViewBag.IdEstadoReserva"></select>
+                <span asp-validation-for="IdEstadoReserva" class="text-danger"></span>
+            </div>
+
+            <!-- Otros campos de la reserva -->
+            <div class="form-group">
+                <label asp-for="NoPersonas" class="control-label"></label>
+                <input asp-for="NoPersonas" class="form-control" />
+                <span asp-validation-for="NoPersonas" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Descuento" class="control-label"></label>
+                <input asp-for="Descuento" class="form-control" />
+                <span asp-validation-for="Descuento" class="text-danger"></span>
+            </div>
+
+            <!-- Subtotal -->
+            <div class="form-group">
+                <label>Subtotal</label>
+                <input type="text" id="subtotal" class="form-control" readonly />
+                <input type="hidden" name="Subtotal" id="hiddenSubtotal" />
+            </div>
+
+            <!-- IVA (19%) -->
+            <div class="form-group">
+                <label>IVA (19%)</label>
+                <input type="text" id="iva" class="form-control" readonly />
+                <input type="hidden" name="Iva" id="hiddenIva" />
+            </div>
+
+            <!-- Total -->
+            <div class="form-group">
+                <label>Total</label>
+                <input asp-for="Total" class="form-control" id="total" readonly />
+                <input type="hidden" name="Total" id="hiddenTotal" />
+                <span asp-validation-for="Total" class="text-danger"></span>
+            </div>
+
+            <!-- Botón de Crear -->
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial");
+
+    <script>
+        // Configuración de restricciones de fecha
+        function setupDateConstraints() {
+            var today = new Date().toISOString().split("T")[0];
+            document.getElementById("fechaInicio").setAttribute("min", today);
+            document.getElementById("fechaFin").setAttribute("min", today);
+        }
+
+        document.getElementById("fechaInicio").addEventListener("change", function () {
+            document.getElementById("fechaFin").setAttribute("min", this.value);
+        });
+
+        setupDateConstraints();
+
+        // Convertir ViewBag.Paquetes a JSON
+        var paquetes = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Paquetes));
+
+        // Convertir ViewBag.Servicios a JSON
+        var servicios = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Servicios));
+
+        // Actualizar precio del paquete y subtotal
+        document.getElementById("IdPaquete").addEventListener("change", function () {
+            var paqueteId = parseInt(this.value);
+            var precioPaqueteField = document.getElementById("PrecioPaquete");
+            var subtotalField = document.getElementById("subtotal");
+
+            var selectedPaquete = paquetes.find(p => p.IdPaquete === paqueteId);
+
+            if (selectedPaquete) {
+                // Mostrar el precio del paquete seleccionado en tiempo real
+                precioPaqueteField.value = selectedPaquete.Precio.toFixed(2);
+                subtotalField.value = selectedPaquete.Precio.toFixed(2);
+            } else {
+                precioPaqueteField.value = "";
+                subtotalField.value = "";
+            }
+
+            // Actualizar IVA y Total
+            updateTotals();
+        });
+
+        // Actualizar el subtotal, IVA y total al aplicar un descuento
+        document.getElementById("Descuento").addEventListener("input", function () {
+            updateTotals();
+        });
+
+        // Agregar la lógica para los servicios seleccionados
+        var servicioPrecios = {};
+
+        // Inicializar los precios de los servicios
+        servicios.forEach(function (servicio) {
+            servicioPrecios[servicio.IdServicio] = servicio.Precio;
+        });
+
+        // Función para actualizar el subtotal considerando los servicios
+        function updateTotals() {
+            var precioPaquete = parseFloat(document.getElementById("PrecioPaquete").value) || 0;
+            var descuento = parseFloat(document.getElementById("Descuento").value) || 0;
+            var totalServicios = 0;
+
+            // Sumar el precio de los servicios seleccionados
+            var serviciosSeleccionados = document.querySelectorAll('input[name="ServiciosSeleccionados"]:checked');
+            serviciosSeleccionados.forEach(function (checkbox) {
+                var idServicio = parseInt(checkbox.value);
+                if (servicioPrecios[idServicio]) {
+                    totalServicios += servicioPrecios[idServicio];
+                }
+            });
+
+            // Calcular el subtotal aplicando el descuento
+            var subtotalConDescuento = (precioPaquete + totalServicios) * (1 - descuento / 100);
+            var iva = subtotalConDescuento * 0.19;
+            var total = subtotalConDescuento + iva;
+
+            // Actualizar campos de subtotal, IVA y total visibles y ocultos
+            document.getElementById("subtotal").value = subtotalConDescuento.toFixed(2);
+            document.getElementById("iva").value = iva.toFixed(2);
+            document.getElementById("total").value = total.toFixed(2);
+
+            document.getElementById("hiddenSubtotal").value = subtotalConDescuento.toFixed(2);
+            document.getElementById("hiddenIva").value = iva.toFixed(2);
+            document.getElementById("hiddenTotal").value = total.toFixed(2);
+        }
+
+        // Escuchar el cambio en los checkboxes de los servicios
+        document.querySelectorAll('input[name="ServiciosSeleccionados"]').forEach(function (checkbox) {
+            checkbox.addEventListener('change', updateTotals);
+        });
+    </script>
 }

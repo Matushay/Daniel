@@ -11,47 +11,72 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Mostrar IdReserva como solo texto -->
             <div class="form-group">
-                <label asp-for="IdReserva" class="control-label"></label>
-                <select asp-for="IdReserva" class ="form-control" asp-items="ViewBag.IdReserva"></select>
+                <label asp-for="IdReserva" class="control-label">ID Reserva</label>
+                <input asp-for="IdReserva" class="form-control" readonly value="@ViewBag.IdReserva" />
             </div>
+
+            <input type="hidden" asp-for="IdReserva" value="@ViewBag.IdReserva" />
+
+            <!-- Mostrar Total de la Reserva en Valordeuda -->
             <div class="form-group">
-                <label asp-for="Valordeuda" class="control-label"></label>
-                <input asp-for="Valordeuda" class="form-control" />
+                <label asp-for="Valordeuda" class="control-label">Valor Deuda</label>
+                <input asp-for="Valordeuda" class="form-control" readonly value="@ViewBag.Total" id="valordeuda" />
                 <span asp-validation-for="Valordeuda" class="text-danger"></span>
             </div>
+
+            <!-- Nuevo campo para el valor pendiente -->
             <div class="form-group">
-                <label asp-for="Porcentaje" class="control-label"></label>
-                <input asp-for="Porcentaje" class="form-control" />
-                <span asp-validation-for="Porcentaje" class="text-danger"></span>
+                <label class="control-label">Pendiente</label>
+                <input class="form-control" readonly value="@ViewBag.Pendiente" />
             </div>
+
+            <!-- Campo Subtotal, que será el valor a pagar en este abono -->
             <div class="form-group">
-                <label asp-for="Subtotal" class="control-label"></label>
-                <input asp-for="Subtotal" class="form-control" />
-                <span asp-validation-for="Subtotal" class="text-danger"></span>
+                <label asp-for="Subtotal" class="control-label">Subtotal</label>
+                <input asp-for="Subtotal" class="form-control" id="subtotal" oninput="calculateTotal()" />
             </div>
+
+            <!-- Campo IVA, calculado automáticamente como 19% del Subtotal -->
             <div class="form-group">
-                <label asp-for="Iva" class="control-label"></label>
-                <input asp-for="Iva" class="form-control" />
-                <span asp-validation-for="Iva" class="text-danger"></span>
+                <label asp-for="Iva" class="control-label">IVA (19%)</label>
+                <input asp-for="Iva" class="form-control" id="iva" readonly />
             </div>
-            <div class="form-group">
-                <label asp-for="Total" class="control-label"></label>
-                <input asp-for="Total" class="form-control" />
-                <span asp-validation-for="Total" class="text-danger"></span>
+
+            <!-- Fila para mostrar Total y Porcentaje en la misma línea -->
+            <div class="form-group row">
+                <!-- Campo Total -->
+                <div class="col-md-6">
+                    <label asp-for="Total" class="control-label">Total</label>
+                    <input asp-for="Total" class="form-control" id="total" readonly />
+                </div>
+
+                <!-- Campo Porcentaje, calculado en tiempo real -->
+                <div class="col-md-6">
+                    <label asp-for="Porcentaje" class="control-label">Porcentaje</label>
+                    <input asp-for="Porcentaje" class="form-control" id="porcentaje" readonly />
+                </div>
             </div>
+
+            <!-- Campo para cargar el comprobante de pago (archivo de imagen) -->
             <div class="form-group">
-                <label asp-for="Comprobante" class="control-label"></label>
-                <input asp-for="Comprobante" class="form-control" />
+                <label asp-for="Comprobante" class="control-label">Comprobante (Imagen)</label>
+                <input type="file" asp-for="Comprobante" class="form-control" accept="image/*" />
                 <span asp-validation-for="Comprobante" class="text-danger"></span>
             </div>
+
+            <!-- Campo para cantidad de abono -->
             <div class="form-group">
-                <label asp-for="CantidadAbono" class="control-label"></label>
+                <label asp-for="CantidadAbono" class="control-label">Cantidad Abono</label>
                 <input asp-for="CantidadAbono" class="form-control" />
                 <span asp-validation-for="CantidadAbono" class="text-danger"></span>
             </div>
+
+            <!-- Botón de creación de abono -->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -64,5 +89,25 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        function calculateTotal() {
+            const subtotal = parseFloat(document.getElementById("subtotal").value) || 0;
+            const totalReserva = parseFloat(document.getElementById("valordeuda").value) || 0;
+
+            const iva = subtotal * 0.19;
+            const total = subtotal + iva;
+
+            // Calcular el porcentaje del abono con respecto al total (incluye IVA)
+            const porcentaje = totalReserva > 0 ? (total / totalReserva) * 100 : 0;
+
+            // Actualizar campos IVA, Total y Porcentaje
+            document.getElementById("iva").value = iva.toFixed(2);
+            document.getElementById("total").value = total.toFixed(2);
+            document.getElementById("porcentaje").value = porcentaje.toFixed(2) + "%";
+        }
+    </script>
 }

@@ -8,7 +8,8 @@
 <h1>Abonos</h1>
 
 <p>
-    <a asp-action="Create">Agregar Abono</a>
+    <a asp-controller="Abonos" asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-success">Crear Abono</a>
+
 </p>
 
 <table class="table" id="AbonoTable">
