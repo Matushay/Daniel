@@ -21,9 +21,12 @@ public partial class Abono
     public bool Estado { get; set; }
     public virtual Reserva IdReservaNavigation { get; set; }
 }
+<<<<<<< HEAD
 
 
 internal class DisplayAttribute : Attribute
 {
     public string Name { get; set; }
 }
+=======
+>>>>>>> Daniel

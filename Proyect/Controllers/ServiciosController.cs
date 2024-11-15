@@ -144,8 +144,28 @@ namespace Proyect.Controllers
                 _context.Servicios.Remove(servicio);
             }
 
+            var servicioRelacionado = await _context.PaquetesServicios.AnyAsync(ps => ps.IdServicio == id);
+            if (servicioRelacionado)
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar el servicio porque está asociada a uno o más paquetes.";
+                return RedirectToAction(nameof(Delete));
+            }
+
+            TempData["SuccessMessage"] = "El servicio se eliminó correctamente.";
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult ActualizarEstado(int id, bool estado)
+        {
+            var servicio = _context.Servicios.Find(id);
+            if (servicio != null)
+            {
+                servicio.Estado = estado;
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false, message = "Habitación no encontrada." });
         }
 
         private bool ServicioExists(int id)

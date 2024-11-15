@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Paquetes</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create"><i class="bi bi-plus-square"></i></a>
 </p>
 <table class="table" id="PaquetesTable">
     <thead>
@@ -25,7 +25,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Estado)
             </th>
-            <th></th>
+            <th>
+                Acciones
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -41,12 +43,15 @@
                 @Html.DisplayFor(modelItem => item.Precio)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Estado)
+            <label class="switch">
+                <input type="checkbox" class="status-toggle" data-id="@item.IdPaquete" @(item.Estado ? "checked" : "")>
+                <span class="slider"></span>
+            </label>
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdPaquete">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdPaquete">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdPaquete">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.IdPaquete"><i class="bi bi-pencil-square"></i></a> |
+                    <a asp-action="Details" asp-route-id="@item.IdPaquete"><i class="bi bi-list"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdPaquete"><i class="bi bi-trash3"></i></a>
             </td>
         </tr>
 }
@@ -64,5 +69,30 @@
                 }
             });
         })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.status-toggle').change(function () {
+                const estado = $(this).is(':checked') ? true : false;
+                const idHabitacion = $(this).data('id');
+
+                // Aquí puedes realizar una llamada AJAX para actualizar el estado en el servidor
+                $.ajax({
+                    url: '/Paquetes/ActualizarEstado', // Cambia esto a la ruta de tu controlador
+                    type: 'POST',
+                    data: {
+                        id: idHabitacion,
+                        estado: estado
+                    },
+                    success: function (response) {
+                        console.log('Estado actualizado con éxito:', response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar el estado:', error);
+                    }
+                });
+            });
+        });
+
     </script>
 }

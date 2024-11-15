@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Proyect.Models;
 
@@ -13,6 +14,7 @@ public partial class Servicio
 
     public string Descripcion { get; set; }
 
+    [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
     public decimal Precio { get; set; }
 
     public virtual ICollection<DetalleServicio> DetalleServicios { get; set; } = new List<DetalleServicio>();

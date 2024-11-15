@@ -1,6 +1,7 @@
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Proyect.Models;
+using Proyect.Validaciones;
 
 namespace Proyect
 {
@@ -15,7 +16,6 @@ namespace Proyect
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ProyectConnection")));
 
             builder.Services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
-
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -42,6 +42,7 @@ namespace Proyect
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
+
         }
     }
 }

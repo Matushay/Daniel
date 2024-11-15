@@ -144,6 +144,14 @@ namespace Proyect.Controllers
                 _context.TipoMuebles.Remove(tipoMueble);
             }
 
+            var tipomuebleRelacionado = await _context.Muebles.AnyAsync(ps => ps.IdTipoMueble == id);
+            if (tipomuebleRelacionado)
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar el tipo de mueble porque está asociada a uno o mas muebles.";
+                return RedirectToAction(nameof(Delete));
+            }
+
+            TempData["SuccessMessage"] = "El tipo de mueble se eliminó correctamente.";
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

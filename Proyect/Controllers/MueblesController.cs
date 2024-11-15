@@ -47,7 +47,7 @@ namespace Proyect.Controllers
         // GET: Muebles/Create
         public IActionResult Create()
         {
-            ViewData["IdTipoMueble"] = new SelectList(_context.TipoMuebles, "IdTipoMueble", "Nombre");
+            ViewData["IdTipoMueble"] = new SelectList(_context.TipoMuebles, "IdTipoMueble", "Nombre","Cantidad");
             return View();
         }
 
@@ -56,7 +56,7 @@ namespace Proyect.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdMueble,Nombre,IdTipoMueble,Descripcion,Estado,FechaRegistro")] Mueble mueble)
+        public async Task<IActionResult> Create([Bind("IdMueble,Nombre,IdTipoMueble,Descripcion,Cantidad,Estado,FechaRegistro")] Mueble mueble)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace Proyect.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdMueble,Nombre,IdTipoMueble,Descripcion,Estado,FechaRegistro")] Mueble mueble)
+        public async Task<IActionResult> Edit(int id, [Bind("IdMueble,Nombre,IdTipoMueble,Descripcion,Cantidad,Estado,FechaRegistro")] Mueble mueble)
         {
             if (id != mueble.IdMueble)
             {
@@ -151,8 +151,28 @@ namespace Proyect.Controllers
                 _context.Muebles.Remove(mueble);
             }
 
+            var muebleRelacionado = await _context.HabitacionMuebles.AnyAsync(ps => ps.IdMueble == id);
+            if (muebleRelacionado)
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar el mueble porque está asociada a una o mas habitaciones.";
+                return RedirectToAction(nameof(Delete));
+            }
+
+            TempData["SuccessMessage"] = "El mueble se eliminó correctamente.";
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult ActualizarEstado(int id, bool estado)
+        {
+            var mueble = _context.Muebles.Find(id);
+            if (mueble != null)
+            {
+                mueble.Estado = estado;
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false, message = "Habitación no encontrada." });
         }
 
         private bool MuebleExists(int id)

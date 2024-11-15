@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h1>Detalles</h1>
 
 <div>
     <h4>Paquete</h4>
@@ -38,6 +38,43 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdPaquete">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <h4>Servicios y Habitaciones incluidos</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre del Servicio</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var servicio in Model.PaquetesServicios)
+            {
+                <tr>
+                    <td>@servicio.IdServicioNavigation.Nombre</td>
+                    <td>@servicio.IdServicioNavigation.Precio</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre de la Habitacion</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var habitacion in Model.PaquetesHabitaciones)
+            {
+                <tr>
+                    <td>@habitacion.IdHabitacionNavigation.Nombre</td>
+                    <td>@habitacion.IdHabitacionNavigation.Precio</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdPaquete">Editar</a> |
+    <a asp-action="Index">Volver</a>
 </div>

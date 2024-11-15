@@ -144,6 +144,14 @@ namespace Proyect.Controllers
                 _context.TipoHabitaciones.Remove(tipoHabitacione);
             }
 
+            var tipohabitacionRelacionado = await _context.Habitaciones.AnyAsync(ps => ps.IdTipoHabitacion == id);
+            if (tipohabitacionRelacionado)
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar el tipo de habitacion porque está asociada a una o mas habitaciones.";
+                return RedirectToAction(nameof(Delete));
+            }
+
+            TempData["SuccessMessage"] = "El tipo de habitación se eliminó correctamente.";
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

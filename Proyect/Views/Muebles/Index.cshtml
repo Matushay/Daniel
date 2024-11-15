@@ -5,11 +5,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Muebles</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create"><i class="bi bi-plus-square"></i></a>
 </p>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 <table class="table" id="MueblesTable">
     <thead>
         <tr>
@@ -20,15 +27,20 @@
                 @Html.DisplayNameFor(model => model.Descripcion)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Estado)
+                @Html.DisplayNameFor(model => model.FechaRegistro)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaRegistro)
+                @Html.DisplayNameFor(model => model.Cantidad)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IdTipoMuebleNavigation)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>
+                Acciones
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -41,18 +53,24 @@
                 @Html.DisplayFor(modelItem => item.Descripcion)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Estado)
+                @Html.DisplayFor(modelItem => item.FechaRegistro)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FechaRegistro)
+                @Html.DisplayFor(modelItem => item.Cantidad)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IdTipoMuebleNavigation.Nombre)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdMueble">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdMueble">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdMueble">Delete</a>
+                <label class="switch">
+                    <input type="checkbox" class="status-toggle" data-id="@item.IdMueble" @(item.Estado ? "checked" : "")>
+                    <span class="slider"></span>
+                </label>
+            </td>
+            <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdMueble"><i class="bi bi-pencil-square"></i></a> |
+                    <a asp-action="Details" asp-route-id="@item.IdMueble"><i class="bi bi-list"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdMueble"><i class="bi bi-trash3"></i></a>
             </td>
         </tr>
 }
@@ -70,5 +88,30 @@
                 }
             });
         })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.status-toggle').change(function () {
+                const estado = $(this).is(':checked') ? true : false;
+                const idHabitacion = $(this).data('id');
+
+                // Aquí puedes realizar una llamada AJAX para actualizar el estado en el servidor
+                $.ajax({
+                    url: '/Muebles/ActualizarEstado', // Cambia esto a la ruta de tu controlador
+                    type: 'POST',
+                    data: {
+                        id: idHabitacion,
+                        estado: estado
+                    },
+                    success: function (response) {
+                        console.log('Estado actualizado con éxito:', response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar el estado:', error);
+                    }
+                });
+            });
+        });
+
     </script>
 }
