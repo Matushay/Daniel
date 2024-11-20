@@ -8,9 +8,8 @@ namespace Proyect.Validaciones
         public ValidacionReserva() 
         {
             RuleFor(x => x.FechaInicio)
-                .NotEmpty().WithMessage("La fecha de inicio es obligatoria.")
-                .Must(date => date >= DateOnly.FromDateTime(DateTime.Now)).WithMessage("La fecha de inicio no puede ser en el pasado.");
-
+                .NotEmpty().WithMessage("La fecha de inicio es obligatoria.");
+                
             RuleFor(x => x.FechaFin)
                 .NotEmpty().WithMessage("La fecha de fin es obligatoria.")
                 .GreaterThan(x => x.FechaInicio).WithMessage("La fecha de fin debe ser posterior a la fecha de inicio.");

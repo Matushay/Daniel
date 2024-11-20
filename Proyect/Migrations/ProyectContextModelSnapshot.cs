@@ -215,6 +215,9 @@ namespace Proyect.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
+                    b.Property<int>("IdFranjaHoraria")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdReserva")
                         .HasColumnType("int");
 
@@ -226,6 +229,8 @@ namespace Proyect.Migrations
 
                     b.HasKey("IdDetalleServicio")
                         .HasName("PK__DetalleS__0BFF94E69DEE454C");
+
+                    b.HasIndex("IdFranjaHoraria");
 
                     b.HasIndex("IdReserva");
 
@@ -257,6 +262,34 @@ namespace Proyect.Migrations
                         .HasName("PK__EstadoRe__3E654CA85050FB3E");
 
                     b.ToTable("EstadoReserva", (string)null);
+                });
+
+            modelBuilder.Entity("Proyect.Models.FranjaHoraria", b =>
+                {
+                    b.Property<int>("IdFranjaHoraria")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdFranjaHoraria"));
+
+                    b.Property<int>("Capacidad")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("HoraFin")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("HoraInicio")
+                        .HasColumnType("time");
+
+                    b.Property<int>("IdServicio")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdFranjaHoraria")
+                        .HasName("PK__FranjaHo__8F14E45FB9F9D1A4");
+
+                    b.HasIndex("IdServicio");
+
+                    b.ToTable("FranjasHorarias");
                 });
 
             modelBuilder.Entity("Proyect.Models.HabitacionMueble", b =>
@@ -520,11 +553,11 @@ namespace Proyect.Migrations
                     b.Property<decimal>("Descuento")
                         .HasColumnType("decimal(5, 2)");
 
-                    b.Property<DateOnly>("FechaFin")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("FechaFin")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("FechaInicio")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaReserva")
                         .ValueGeneratedOnAdd()
@@ -833,6 +866,12 @@ namespace Proyect.Migrations
 
             modelBuilder.Entity("Proyect.Models.DetalleServicio", b =>
                 {
+                    b.HasOne("Proyect.Models.FranjaHoraria", "IdFranjaHorariaNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdFranjaHoraria")
+                        .IsRequired()
+                        .HasConstraintName("FK__DetalleSe__IdFra__8B62F20C");
+
                     b.HasOne("Proyect.Models.Reserva", "IdReservaNavigation")
                         .WithMany("DetalleServicios")
                         .HasForeignKey("IdReserva")
@@ -845,7 +884,20 @@ namespace Proyect.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__DetalleSe__IdSer__7A672E12");
 
+                    b.Navigation("IdFranjaHorariaNavigation");
+
                     b.Navigation("IdReservaNavigation");
+
+                    b.Navigation("IdServicioNavigation");
+                });
+
+            modelBuilder.Entity("Proyect.Models.FranjaHoraria", b =>
+                {
+                    b.HasOne("Proyect.Models.Servicio", "IdServicioNavigation")
+                        .WithMany("FranjasHorarias")
+                        .HasForeignKey("IdServicio")
+                        .IsRequired()
+                        .HasConstraintName("FK__FranjaHoraria__IdServicio");
 
                     b.Navigation("IdServicioNavigation");
                 });
@@ -1062,6 +1114,8 @@ namespace Proyect.Migrations
             modelBuilder.Entity("Proyect.Models.Servicio", b =>
                 {
                     b.Navigation("DetalleServicios");
+
+                    b.Navigation("FranjasHorarias");
 
                     b.Navigation("PaquetesServicios");
                 });

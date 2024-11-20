@@ -57,9 +57,11 @@ public partial class ProyectContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Initial Catalog=Proyect;Integrated Security=True;TrustServerCertificate=True");
+    public virtual DbSet<FranjaHoraria> FranjasHorarias { get; set; }
+
+    //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+    //        => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Initial Catalog=Proyect;Integrated Security=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -172,6 +174,27 @@ public partial class ProyectContext : DbContext
                 .HasForeignKey(d => d.IdServicio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__DetalleSe__IdSer__7A672E12");
+
+            // Relación con FranjaHoraria
+            entity.HasOne(d => d.IdFranjaHorariaNavigation).WithMany()
+                .HasForeignKey(d => d.IdFranjaHoraria)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__DetalleSe__IdFra__8B62F20C");
+        });
+
+        modelBuilder.Entity<FranjaHoraria>(entity =>
+        {
+            entity.HasKey(e => e.IdFranjaHoraria).HasName("PK__FranjaHo__8F14E45FB9F9D1A4");
+
+            entity.Property(e => e.HoraInicio).IsRequired();
+            entity.Property(e => e.HoraFin).IsRequired();
+            entity.Property(e => e.Capacidad).IsRequired();
+
+            // Relación con Servicio
+            entity.HasOne(f => f.IdServicioNavigation).WithMany(s => s.FranjasHorarias)
+                .HasForeignKey(f => f.IdServicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__FranjaHoraria__IdServicio");
         });
 
         modelBuilder.Entity<EstadoReserva>(entity =>
@@ -393,13 +416,24 @@ public partial class ProyectContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+
             entity.Property(e => e.Estado).HasDefaultValue(true);
+
             entity.Property(e => e.Nombre)
                 .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
             entity.Property(e => e.Precio).HasColumnType("decimal(10, 2)");
+
+            // Relación con FranjaHoraria
+            entity.HasMany(s => s.FranjasHorarias)
+                .WithOne(f => f.IdServicioNavigation)
+                .HasForeignKey(f => f.IdServicio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__FranjaHoraria__IdServicio");
         });
+
 
         modelBuilder.Entity<TipoHabitacione>(entity =>
         {
