@@ -1,79 +1,64 @@
 ﻿@model Proyect.Models.Abono
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Abono";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h1 class="page-title">Detalles del Abono</h1>
 
-<div>
-    <h4>Abono</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaAbono)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaAbono)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Valordeuda)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Valordeuda)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Porcentaje)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Porcentaje)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Subtotal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Subtotal)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Iva)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Iva)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Total)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Total)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Comprobante)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Comprobante)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CantidadAbono)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CantidadAbono)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdReservaNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdReservaNavigation.IdReserva)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdAbono">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="details-container">
+    <div class="card">
+        <div class="card-header">
+            <h4>Información del Abono</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Fecha del Abono</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.FechaAbono)
+                </dd>
+                <dt class="col-sm-3">Valor Deuda</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Valordeuda)
+                </dd>
+                <dt class="col-sm-3">Porcentaje</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Porcentaje)
+                </dd>
+                <dt class="col-sm-3">Subtotal</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Subtotal)
+                </dd>
+                <dt class="col-sm-3">IVA</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Iva)
+                </dd>
+                <dt class="col-sm-3">Total</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Total)
+                </dd>
+                <dt class="col-sm-3">Comprobante</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Comprobante)
+                </dd>
+                <dt class="col-sm-3">Cantidad Abono</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.CantidadAbono)
+                </dd>
+                <dt class="col-sm-3">Estado</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Estado)
+                </dd>
+                <dt class="col-sm-3">Reserva ID</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.IdReservaNavigation.IdReserva)
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer text-end">
+            <a asp-action="Edit" asp-route-id="@Model?.IdAbono" class="btn btn-primary btn-sm">Editar</a>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+        </div>
+    </div>
 </div>

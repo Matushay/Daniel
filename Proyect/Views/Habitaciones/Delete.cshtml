@@ -1,63 +1,48 @@
 ﻿@model Proyect.Models.Habitacione
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Habitación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3>¿Estas seguro de eliminar la habitación?</h3>
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["ErrorMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<h1 class="page-title">Eliminar Habitación</h1>
+
+<div class="delete-container">
+    <div class="card">
+        <div class="card-header text-white bg-danger">
+            <h4>Confirmación de Eliminación</h4>
+        </div>
+        <div class="card-body">
+            <h3>¿Está seguro de que desea eliminar esta habitación?</h3>
+            <dl class="row">
+                <dt class="col-sm-3">Nombre de la Habitación</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Nombre)
+                </dd>
+                <dt class="col-sm-3">Estado</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Estado)
+                </dd>
+                <dt class="col-sm-3">Descripción</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+                <dt class="col-sm-3">Precio</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Precio)
+                </dd>
+                <dt class="col-sm-3">Tipo de Habitación</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.IdTipoHabitacionNavigation.Nombre)
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer text-end">
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="IdHabitacion" />
+                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+            </form>
+        </div>
     </div>
-}
-<div>
-    <dl class="row">
-        <div class="col-sm-2 ms-2">
-            <dt>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Nombre)
-            </dd>
-        </div>
-        <div class="col-sm-2 ms-2">
-            <dt>
-                @Html.DisplayNameFor(model => model.Estado)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Estado)
-            </dd>
-        </div>
-        <div class="col-sm-2 ms-1">
-            <dt>
-                @Html.DisplayNameFor(model => model.Descripcion)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Descripcion)
-            </dd>
-        </div>
-        <div class="col-sm-1 mx-4">
-            <dt>
-                @Html.DisplayNameFor(model => model.Precio)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Precio)
-            </dd>
-        </div>
-        <div class="col-sm-1 mx-1">
-            <dt>
-                @Html.DisplayNameFor(model => model.IdTipoHabitacionNavigation)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.IdTipoHabitacionNavigation.Nombre)
-            </dd>
-        </div>
-    </dl>
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="IdHabitacion" />
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver</a>
-    </form>
 </div>

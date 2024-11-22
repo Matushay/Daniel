@@ -1,91 +1,92 @@
 ﻿@model Proyect.Models.Abono
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear Abono";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<h1 class="page-title">Crear Nuevo Abono</h1>
 
-<h4>Abono</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="create-container">
+    <div class="card">
+        <div class="card-header text-white bg-primary">
+            <h4>Nuevo Abono</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <!-- Mostrar IdReserva como solo texto -->
-            <div class="form-group">
-                <label asp-for="IdReserva" class="control-label">ID Reserva</label>
-                <input asp-for="IdReserva" class="form-control" readonly value="@ViewBag.IdReserva" />
-            </div>
+                <!-- Mostrar ID Reserva como solo texto -->
+                <div class="form-group">
+                    <label asp-for="IdReserva" class="control-label">ID Reserva</label>
+                    <input asp-for="IdReserva" class="form-control" readonly value="@ViewBag.IdReserva" />
+                </div>
+                <input type="hidden" asp-for="IdReserva" value="@ViewBag.IdReserva" />
 
-            <input type="hidden" asp-for="IdReserva" value="@ViewBag.IdReserva" />
-
-            <!-- Mostrar Total de la Reserva en Valordeuda -->
-            <div class="form-group">
-                <label asp-for="Valordeuda" class="control-label">Valor Deuda</label>
-                <input asp-for="Valordeuda" class="form-control" readonly value="@ViewBag.Total" id="valordeuda" />
-                <span asp-validation-for="Valordeuda" class="text-danger"></span>
-            </div>
-
-            <!-- Nuevo campo para el valor pendiente -->
-            <div class="form-group">
-                <label class="control-label">Pendiente</label>
-                <input class="form-control" readonly value="@ViewBag.Pendiente" />
-            </div>
-
-            <!-- Campo Subtotal, que será el valor a pagar en este abono -->
-            <div class="form-group">
-                <label asp-for="Subtotal" class="control-label">Subtotal</label>
-                <input asp-for="Subtotal" class="form-control" id="subtotal" oninput="calculateTotal()" />
-            </div>
-
-            <!-- Campo IVA, calculado automáticamente como 19% del Subtotal -->
-            <div class="form-group">
-                <label asp-for="Iva" class="control-label">IVA (19%)</label>
-                <input asp-for="Iva" class="form-control" id="iva" readonly />
-            </div>
-
-            <!-- Fila para mostrar Total y Porcentaje en la misma línea -->
-            <div class="form-group row">
-                <!-- Campo Total -->
-                <div class="col-md-6">
-                    <label asp-for="Total" class="control-label">Total</label>
-                    <input asp-for="Total" class="form-control" id="total" readonly />
+                <!-- Mostrar Total de la Reserva en Valordeuda -->
+                <div class="form-group">
+                    <label asp-for="Valordeuda" class="control-label">Valor Deuda</label>
+                    <input asp-for="Valordeuda" class="form-control" readonly value="@ViewBag.Total" id="valordeuda" />
+                    <span asp-validation-for="Valordeuda" class="text-danger"></span>
                 </div>
 
-                <!-- Campo Porcentaje, calculado en tiempo real -->
-                <div class="col-md-6">
-                    <label asp-for="Porcentaje" class="control-label">Porcentaje</label>
-                    <input asp-for="Porcentaje" class="form-control" id="porcentaje" readonly />
+                <!-- Nuevo campo para el valor pendiente -->
+                <div class="form-group">
+                    <label class="control-label">Pendiente</label>
+                    <input class="form-control" readonly value="@ViewBag.Pendiente" />
                 </div>
-            </div>
 
-            <!-- Campo para cargar el comprobante de pago (archivo de imagen) -->
-            <div class="form-group">
-                <label asp-for="Comprobante" class="control-label">Comprobante (Imagen)</label>
-                <input type="file" asp-for="Comprobante" class="form-control" accept="image/*" />
-                <span asp-validation-for="Comprobante" class="text-danger"></span>
-            </div>
+                <!-- Campo Subtotal, que será el valor a pagar en este abono -->
+                <div class="form-group">
+                    <label asp-for="Subtotal" class="control-label">Subtotal</label>
+                    <input asp-for="Subtotal" class="form-control" id="subtotal" oninput="calculateTotal()" />
+                </div>
 
-            <!-- Campo para cantidad de abono -->
-            <div class="form-group">
-                <label asp-for="CantidadAbono" class="control-label">Cantidad Abono</label>
-                <input asp-for="CantidadAbono" class="form-control" />
-                <span asp-validation-for="CantidadAbono" class="text-danger"></span>
-            </div>
+                <!-- Campo IVA, calculado automáticamente como 19% del Subtotal -->
+                <div class="form-group">
+                    <label asp-for="Iva" class="control-label">IVA (19%)</label>
+                    <input asp-for="Iva" class="form-control" id="iva" readonly />
+                </div>
 
-            <!-- Botón de creación de abono -->
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+                <!-- Fila para mostrar Total y Porcentaje en la misma línea -->
+                <div class="form-group row">
+                    <!-- Campo Total -->
+                    <div class="col-md-6">
+                        <label asp-for="Total" class="control-label">Total</label>
+                        <input asp-for="Total" class="form-control" id="total" readonly />
+                    </div>
+
+                    <!-- Campo Porcentaje, calculado en tiempo real -->
+                    <div class="col-md-6">
+                        <label asp-for="Porcentaje" class="control-label">Porcentaje</label>
+                        <input asp-for="Porcentaje" class="form-control" id="porcentaje" readonly />
+                    </div>
+                </div>
+
+                <!-- Campo para cargar el comprobante de pago (archivo de imagen) -->
+                <div class="form-group">
+                    <label asp-for="Comprobante" class="control-label">Comprobante (Imagen)</label>
+                    <input type="file" asp-for="Comprobante" class="form-control" accept="image/*" />
+                    <span asp-validation-for="Comprobante" class="text-danger"></span>
+                </div>
+
+                <!-- Campo para cantidad de abono -->
+                <div class="form-group">
+                    <label asp-for="CantidadAbono" class="control-label">Cantidad Abono</label>
+                    <input asp-for="CantidadAbono" class="form-control" />
+                    <span asp-validation-for="CantidadAbono" class="text-danger"></span>
+                </div>
+
+                <!-- Botón de creación de abono -->
+                <div class="form-group text-center">
+                    <input type="submit" value="Crear Abono" class="btn btn-primary btn-lg" />
+                </div>
+            </form>
+        </div>
+        <div class="card-footer text-center">
+            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

@@ -1,60 +1,69 @@
 ﻿@model Proyect.Models.Mueble
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Mueble";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Editar</h1>
+<h1 class="page-title">Editar Mueble</h1>
 
-<h4>Mueble</h4>
+<h4 class="form-subtitle">Modifica los detalles del mueble</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Edit" class="form-container">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdMueble" />
+
             <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
+                <label asp-for="Nombre" class="form-label">Nombre del Mueble</label>
+                <input asp-for="Nombre" class="form-control" placeholder="Ingresa el nombre del mueble" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="IdTipoMueble" class="control-label"></label>
+                <label asp-for="IdTipoMueble" class="form-label">Tipo de Mueble</label>
                 <select asp-for="IdTipoMueble" class="form-control" asp-items="ViewBag.IdTipoMueble"></select>
                 <span asp-validation-for="IdTipoMueble" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Cantidad" class="control-label"></label>
-                <input asp-for="Cantidad" class="form-control" />
+                <label asp-for="Cantidad" class="form-label">Cantidad</label>
+                <input asp-for="Cantidad" class="form-control" placeholder="Ingresa la cantidad del mueble" />
                 <span asp-validation-for="Cantidad" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
+                <label asp-for="Descripcion" class="form-label">Descripción</label>
+                <input asp-for="Descripcion" class="form-control" placeholder="Ingresa una descripción para el mueble" />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
+
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
                 </label>
             </div>
+
             <div class="form-group">
-                <label asp-for="FechaRegistro" class="control-label"></label>
-                <input asp-for="FechaRegistro" class="form-control" />
+                <label asp-for="FechaRegistro" class="form-label">Fecha de Registro</label>
+                <input asp-for="FechaRegistro" class="form-control" type="date" />
                 <span asp-validation-for="FechaRegistro" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary btn-lg w-100" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Volver</a>
+<div class="mt-4 text-center">
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

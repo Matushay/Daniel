@@ -1,82 +1,68 @@
 ﻿@model Proyect.Models.Abono
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Abono";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Delete</h1>
+<h1 class="page-title">Eliminar Abono</h1>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Abono</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaAbono)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaAbono)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Valordeuda)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Valordeuda)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Porcentaje)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Porcentaje)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Subtotal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Subtotal)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Iva)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Iva)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Total)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Total)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Comprobante)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Comprobante)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CantidadAbono)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CantidadAbono)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdReservaNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdReservaNavigation.IdReserva)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="IdAbono" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+<div class="delete-container">
+    <div class="card">
+        <div class="card-header text-white bg-danger">
+            <h4>Confirmación de Eliminación</h4>
+        </div>
+        <div class="card-body">
+            <h3>¿Está seguro de que desea eliminar este abono?</h3>
+            <dl class="row">
+                <dt class="col-sm-3">Fecha del Abono</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.FechaAbono)
+                </dd>
+                <dt class="col-sm-3">Valor Deuda</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Valordeuda)
+                </dd>
+                <dt class="col-sm-3">Porcentaje</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Porcentaje)
+                </dd>
+                <dt class="col-sm-3">Subtotal</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Subtotal)
+                </dd>
+                <dt class="col-sm-3">IVA</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Iva)
+                </dd>
+                <dt class="col-sm-3">Total</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Total)
+                </dd>
+                <dt class="col-sm-3">Comprobante</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Comprobante)
+                </dd>
+                <dt class="col-sm-3">Cantidad Abono</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.CantidadAbono)
+                </dd>
+                <dt class="col-sm-3">Estado</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Estado)
+                </dd>
+                <dt class="col-sm-3">ID Reserva</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.IdReservaNavigation.IdReserva)
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer text-end">
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="IdAbono" />
+                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+            </form>
+        </div>
+    </div>
 </div>

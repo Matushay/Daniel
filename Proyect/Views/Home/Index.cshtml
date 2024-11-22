@@ -2,7 +2,56 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Contenedor principal con fondo claro -->
+<div class="container-fluid d-flex align-items-center justify-content-center min-vh-100 bg-light">
+    <div class="row w-100">
+        <!-- Panel de bienvenida a la izquierda -->
+        <div class="col-lg-6 d-flex justify-content-center align-items-center text-center p-4">
+            <div class="welcome-container p-5 rounded shadow-lg bg-white">
+                <h1 class="display-4 welcome-heading mb-4 text-primary font-weight-bold">Bienvenido al Panel de Administración de Medellín Salvaje</h1>
+                <p class="welcome-description mb-4 text-muted">
+                    Aprende más sobre la gestión de propiedades y servicios de glamping a través de nuestro panel de administración.
+                </p>
+
+                <!-- Botones -->
+                <div class="btn-group-vertical w-100">
+                    <a href="#" class="btn btn-lg btn-success mb-3">Regístrate</a>
+                    <a href="#" class="btn btn-lg btn-primary">Iniciar sesión</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carrusel de imágenes a la derecha -->
+        <div class="col-lg-6 d-none d-lg-flex justify-content-center align-items-center">
+            <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" style="width:100%; max-width: 500px;">
+                <div class="carousel-inner">
+                    <div class="carousel-item">
+                        <img src="~/img/medellin salva.jpg" class="d-block w-100 rounded" alt="Imagen 3">
+                    </div>
+                    <div class="carousel-item active">
+                        <img src="~/img/images (1).jpeg" class="d-block w-100 rounded" alt="Imagen 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="~/img/images.jpeg" class="d-block w-100 rounded" alt="Imagen 2">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Footer -->
+<footer class="footer bg-dark text-white py-3">
+    <div class="container text-center">
+        <p class="mb-0">© 2024 Medellín Salvaje. Todos los derechos reservados.</p>
+        <p><a href="mailto:contacto@medellinsalvaje.com" class="text-white">contacto@medellinsalvaje.com</a></p>
+    </div>
+</footer>

@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Validaciones\" />
+    <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
 </Project>
