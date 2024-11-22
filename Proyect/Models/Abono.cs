@@ -1,32 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Proyect.Models;
 
 public partial class Abono
 {
     public int IdAbono { get; set; }
+
     public int IdReserva { get; set; }
+
     public DateTime FechaAbono { get; set; }
+
+    [Range(0, double.MaxValue, ErrorMessage = "El valor de la deuda no puede ser negativo.")]
+    [Column(TypeName = "decimal(18,2)")]
     public decimal Valordeuda { get; set; }
+
+
+    public decimal Pendiente { get; set; }
+
+    public decimal ValorAbono { get; set; }
+
     public decimal Porcentaje { get; set; }
-    public decimal Subtotal { get; set; }
-    public decimal Iva { get; set; }
-    public decimal Total { get; set; }
 
-    // Cambiado a byte[] para almacenar la imagen directamente
-    public byte[] Comprobante { get; set; }
+    public byte[]? Comprobante { get; set; }
 
-    public int? CantidadAbono { get; set; }
-    public bool Estado { get; set; }
-    public virtual Reserva IdReservaNavigation { get; set; }
+    public int IdEstadoAbono { get; set; }
+
+    public virtual EstadosAbono IdEstadoAbonoNavigation { get; set; } = null!;
+    public virtual Reserva IdReservaNavigation { get; set; } = null!;
 }
-<<<<<<< HEAD
+
+
+
 
 
 internal class DisplayAttribute : Attribute
 {
     public string Name { get; set; }
 }
-=======
->>>>>>> Daniel
+

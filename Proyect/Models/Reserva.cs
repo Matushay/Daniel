@@ -42,15 +42,21 @@ namespace Proyect.Models
 
         public virtual ICollection<DetalleServicio> DetalleServicios { get; set; } = new List<DetalleServicio>();
 
+        [Display(Name = "Apellido del Cliente")]
         public virtual Cliente IdClienteNavigation { get; set; }
 
+        [Display(Name = "Estado de la Reserva")]
         public virtual EstadoReserva IdEstadoReservaNavigation { get; set; }
 
+        [Display(Name = "Método de Pago")]
         public virtual MetodoPago IdMetodoPagoNavigation { get; set; }
 
+        [Display(Name = "Nombre del Paquete")]
         public virtual Paquete IdPaqueteNavigation { get; set; }
 
+        [Display(Name = "Apellido del Usuario")]
         public virtual Usuario IdUsuarioNavigation { get; set; }
+
 
     }
 }

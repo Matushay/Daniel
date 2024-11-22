@@ -5,59 +5,78 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Abonos</h1>
+<h1>Index</h1>
 
 <p>
-    <a asp-controller="Abonos" asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-success">Crear Abono</a>
+    <a asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-primary">Crear Abono</a>
 
 </p>
-
 <table class="table" id="AbonoTable">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.IdReservaNavigation)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.FechaAbono)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Total)
+                @Html.DisplayNameFor(model => model.Valordeuda)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Estado)
+                @Html.DisplayNameFor(model => model.Pendiente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ValorAbono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Porcentaje)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comprobante)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdEstadoAbonoNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdReservaNavigation)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdReservaNavigation.IdReserva)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaAbono)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Subtotal)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Estado)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdAbono">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdAbono">Detalles</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdAbono">Eliminar</a>
-                </td>
-            </tr>
-        }
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaAbono)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Valordeuda)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pendiente)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValorAbono)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Porcentaje)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Comprobante)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdEstadoAbonoNavigation.IdEstadoAbono)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdReservaNavigation.IdReserva)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdAbono">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdAbono">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdAbono">Delete</a>
+            </td>
+        </tr>
+}
     </tbody>
 </table>
-
-
-
 @section Scripts {
 
     <script>
@@ -72,4 +91,3 @@
         })
     </script>
 }
-

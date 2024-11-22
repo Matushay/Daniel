@@ -27,6 +27,8 @@ public partial class ProyectContext : DbContext
 
     public virtual DbSet<EstadoReserva> EstadoReservas { get; set; }
 
+    public virtual DbSet<EstadosAbono> EstadosAbonos { get; set; }
+
     public virtual DbSet<HabitacionMueble> HabitacionMuebles { get; set; }
 
     public virtual DbSet<Habitacione> Habitaciones { get; set; }
@@ -65,24 +67,25 @@ public partial class ProyectContext : DbContext
     {
         modelBuilder.Entity<Abono>(entity =>
         {
-            entity.HasKey(e => e.IdAbono).HasName("PK__Abonos__A4693DA78D83026D");
+            entity.HasKey(e => e.IdAbono).HasName("PK__Abonos__A4693DA7FFF9E5A1");
 
-            entity.Property(e => e.Estado).HasDefaultValue(true);
             entity.Property(e => e.FechaAbono)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.Iva)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("IVA");
+            entity.Property(e => e.Pendiente).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Porcentaje).HasColumnType("decimal(5, 2)");
-            entity.Property(e => e.Subtotal).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.Total).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.ValorAbono).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Valordeuda).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.IdEstadoAbonoNavigation).WithMany(p => p.Abonos)
+                .HasForeignKey(d => d.IdEstadoAbono)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Abonos__IdEstado__778AC167");
 
             entity.HasOne(d => d.IdReservaNavigation).WithMany(p => p.Abonos)
                 .HasForeignKey(d => d.IdReserva)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Abonos__IdReserv__75A278F5");
+                .HasConstraintName("FK__Abonos__IdReserv__76969D2E");
         });
 
         modelBuilder.Entity<Cliente>(entity =>
@@ -186,6 +189,18 @@ public partial class ProyectContext : DbContext
             entity.Property(e => e.Estados)
                 .IsRequired()
                 .HasMaxLength(20)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<EstadosAbono>(entity =>
+        {
+            entity.HasKey(e => e.IdEstadoAbono).HasName("PK__EstadosA__6956405AAAC400AF");
+
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(50)
                 .IsUnicode(false);
         });
 

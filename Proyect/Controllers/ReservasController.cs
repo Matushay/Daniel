@@ -169,8 +169,10 @@ namespace Proyect.Controllers
 
             // Crear un nuevo abono y asignar la reserva
             var abono = new Abono { IdReserva = id, FechaAbono = DateTime.Now };
-            return View("CreateAbono", abono); // Asegúrate de tener una vista CreateAbono
+            return View("CreateAbono", abono); // Asegúrate de pasar el modelo de Abono con el IdReserva
         }
+
+
 
 
 

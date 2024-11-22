@@ -18,18 +18,20 @@ namespace Proyect.Controllers
             _context = context;
         }
 
-        // GET: Abonos
-        public async Task<IActionResult> Index(int? idReserva)
+        // GET: Abonos/Index
+        public async Task<IActionResult> Index(int idReserva)
         {
-            IQueryable<Abono> abonos = _context.Abonos.Include(a => a.IdReservaNavigation);
+            // Obtiene los abonos asociados a la reserva
+            var abonos = await _context.Abonos
+                .Include(a => a.IdReservaNavigation)
+                .Include(a => a.IdEstadoAbonoNavigation) // Opcional: incluye otros datos relacionados
+                .Where(a => a.IdReserva == idReserva) // Filtra por la reserva específica
+                .ToListAsync();
 
-            if (idReserva.HasValue)
-            {
-                abonos = abonos.Where(a => a.IdReserva == idReserva);
-                ViewBag.IdReserva = idReserva; // Pasamos idReserva a la vista
-            }
+            // Pasar el IdReserva a la vista para mantenerlo visible
+            ViewBag.IdReserva = idReserva;
 
-            return View(await abonos.ToListAsync());
+            return View(abonos);
         }
 
 
@@ -45,6 +47,7 @@ namespace Proyect.Controllers
             }
 
             var abono = await _context.Abonos
+                .Include(a => a.IdEstadoAbonoNavigation)
                 .Include(a => a.IdReservaNavigation)
                 .FirstOrDefaultAsync(m => m.IdAbono == id);
             if (abono == null)
@@ -54,89 +57,121 @@ namespace Proyect.Controllers
 
             return View(abono);
         }
-
-
-
         // GET: Abonos/Create
-        public async Task<IActionResult> Create(int? idReserva)
+        public IActionResult Create(int idReserva)
         {
-            if (idReserva == null)
-            {
-                return NotFound();
-            }
+            // Obtener la reserva asociada al idReserva
+            var reserva = _context.Reservas.FirstOrDefault(r => r.IdReserva == idReserva);
 
-            // Obtener la reserva asociada
-            var reserva = await _context.Reservas.FindAsync(idReserva);
             if (reserva == null)
             {
                 return NotFound();
             }
 
-            // Calcular el total abonado y el pendiente
+            // Calcular el total abonado hasta el momento
             var totalAbonado = _context.Abonos
-                                        .Where(a => a.IdReserva == idReserva)
-                                        .Sum(a => a.CantidadAbono) ?? 0; // Asegurar que sea 0 si no hay abonos
+                .Where(a => a.IdReserva == idReserva)
+                .Sum(a => (decimal?)a.ValorAbono) ?? 0; // Manejo de valores nulos
 
-            var pendiente = reserva.Total - totalAbonado;
+            // Calcular el saldo pendiente
+            var pendiente = Math.Max(0, Math.Floor((double)(reserva.Total - totalAbonado)));
 
-            // Pasar datos a ViewBag
-            ViewBag.IdReserva = idReserva;
-            ViewBag.Total = reserva.Total;
-            ViewBag.Pendiente = pendiente;
-            ViewBag.Porcentaje = 0; // Por defecto 0 para mostrar en la vista
+            // Crear el modelo Abono con valores iniciales
+            var abono = new Abono
+            {
+                IdReserva = idReserva,
+                Valordeuda = Math.Floor(reserva.Total), // Asegurando que el valor sea decimal
+                Pendiente = (decimal)pendiente // Convertimos pendiente a decimal
+            };
 
-            return View();
+            // Crear el listado de EstadosAbono para el select
+            ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "Nombre");
+
+            return View(abono);
         }
+
 
         // POST: Abonos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdAbono,IdReserva,FechaAbono,Valordeuda,Porcentaje,Subtotal,Iva,Total,Comprobante,CantidadAbono,Estado")] Abono abono, IFormFile comprobanteFile)
+        public async Task<IActionResult> Create([Bind("IdAbono,IdReserva,ValorAbono,Porcentaje,Valordeuda,Pendiente,Comprobante,IdEstadoAbono")] Abono abono, IFormFile comprobanteFile)
         {
             if (ModelState.IsValid)
             {
-                // Obtener la reserva para calcular el porcentaje y pendiente
-                var reserva = await _context.Reservas.FindAsync(abono.IdReserva);
-                if (reserva != null && reserva.Total > 0)
+                try
                 {
-                    // Calcular porcentaje basado en el total del abono
-                    abono.Porcentaje = (abono.Total / reserva.Total) * 100;
-                }
+                    // Asignar la fecha actual al campo FechaAbono
+                    abono.FechaAbono = DateTime.Now;
 
-                // Si se ha seleccionado un archivo para el comprobante
-                if (comprobanteFile != null && comprobanteFile.Length > 0)
-                {
-                    using (var memoryStream = new MemoryStream())
+                    // Obtener la reserva asociada
+                    var reserva = await _context.Reservas.FirstOrDefaultAsync(r => r.IdReserva == abono.IdReserva);
+
+                    if (reserva == null)
                     {
-                        // Copiar el archivo a un MemoryStream
-                        await comprobanteFile.CopyToAsync(memoryStream);
-
-                        // Convertir la imagen a un arreglo de bytes
-                        abono.Comprobante = memoryStream.ToArray();
+                        return NotFound();
                     }
+
+                    // Calcular el total abonado hasta el momento
+                    var totalAbonado = await _context.Abonos
+                        .Where(a => a.IdReserva == abono.IdReserva)
+                        .SumAsync(a => (decimal?)a.ValorAbono) ?? 0; // Manejo de valores nulos
+
+                    // Validar la deuda total antes de asignar
+                    if (reserva.Total <= 0)
+                    {
+                        ModelState.AddModelError("Valordeuda", "El valor total de la reserva no puede ser 0 o negativo.");
+                        ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "Nombre", abono.IdEstadoAbono);
+                        return View(abono);
+                    }
+
+                    // Asignar Valordeuda desde la reserva
+                    abono.Valordeuda = reserva.Total;
+
+                    // Calcular el saldo pendiente después del abono
+                    abono.Pendiente = Math.Max(0, abono.Valordeuda - (totalAbonado + abono.ValorAbono));
+
+                    // Calcular el porcentaje abonado
+                    abono.Porcentaje = abono.Valordeuda > 0
+                        ? Math.Round((abono.ValorAbono / abono.Valordeuda) * 100, 2)
+                        : 0;
+
+                    // Procesar el archivo comprobante
+                    if (comprobanteFile != null && comprobanteFile.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await comprobanteFile.CopyToAsync(memoryStream);
+                            abono.Comprobante = memoryStream.ToArray(); // Convertir a byte[]
+                        }
+                    }
+
+                    // Guardar el abono en la base de datos
+                    _context.Add(abono);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Index", new { idReserva = abono.IdReserva });
                 }
-
-                // Guardar el abono en la base de datos
-                _context.Add(abono);
-                await _context.SaveChangesAsync();
-
-                // Calcular nuevo total abonado y pendiente después de guardar el abono
-                var totalAbonado = _context.Abonos
-                                            .Where(a => a.IdReserva == abono.IdReserva)
-                                            .Sum(a => a.CantidadAbono) ?? 0;
-
-                var pendiente = reserva.Total - totalAbonado;
-
-                // Pasar los valores a la vista si se necesita volver a mostrar el formulario
-                ViewBag.Pendiente = pendiente;
-                ViewBag.TotalAbonado = totalAbonado;
-
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    // Registrar el error en los logs (o consola)
+                    Console.WriteLine($"Error al crear abono: {ex.Message}");
+                    ModelState.AddModelError("", "Se produjo un error al crear el abono. Intenta nuevamente.");
+                }
             }
 
-            ViewData["IdReserva"] = new SelectList(_context.Reservas, "IdReserva", "IdReserva", abono.IdReserva);
+            // Si hay errores en el modelo, cargar los datos para la vista
+            ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "Nombre", abono.IdEstadoAbono);
             return View(abono);
         }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -154,6 +189,7 @@ namespace Proyect.Controllers
             {
                 return NotFound();
             }
+            ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "IdEstadoAbono", abono.IdEstadoAbono);
             ViewData["IdReserva"] = new SelectList(_context.Reservas, "IdReserva", "IdReserva", abono.IdReserva);
             return View(abono);
         }
@@ -163,7 +199,7 @@ namespace Proyect.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdAbono,IdReserva,FechaAbono,Valordeuda,Porcentaje,Subtotal,Iva,Total,Comprobante,CantidadAbono,Estado")] Abono abono)
+        public async Task<IActionResult> Edit(int id, [Bind("IdAbono,IdReserva,FechaAbono,Valordeuda,Pendiente,ValorAbono,Porcentaje,Comprobante,IdEstadoAbono")] Abono abono)
         {
             if (id != abono.IdAbono)
             {
@@ -190,6 +226,7 @@ namespace Proyect.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "IdEstadoAbono", abono.IdEstadoAbono);
             ViewData["IdReserva"] = new SelectList(_context.Reservas, "IdReserva", "IdReserva", abono.IdReserva);
             return View(abono);
         }
@@ -203,6 +240,7 @@ namespace Proyect.Controllers
             }
 
             var abono = await _context.Abonos
+                .Include(a => a.IdEstadoAbonoNavigation)
                 .Include(a => a.IdReservaNavigation)
                 .FirstOrDefaultAsync(m => m.IdAbono == id);
             if (abono == null)

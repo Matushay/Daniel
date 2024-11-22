@@ -30,24 +30,19 @@
                 <span asp-validation-for="Valordeuda" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Pendiente" class="control-label"></label>
+                <input asp-for="Pendiente" class="form-control" />
+                <span asp-validation-for="Pendiente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ValorAbono" class="control-label"></label>
+                <input asp-for="ValorAbono" class="form-control" />
+                <span asp-validation-for="ValorAbono" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Porcentaje" class="control-label"></label>
                 <input asp-for="Porcentaje" class="form-control" />
                 <span asp-validation-for="Porcentaje" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Subtotal" class="control-label"></label>
-                <input asp-for="Subtotal" class="form-control" />
-                <span asp-validation-for="Subtotal" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Iva" class="control-label"></label>
-                <input asp-for="Iva" class="form-control" />
-                <span asp-validation-for="Iva" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Total" class="control-label"></label>
-                <input asp-for="Total" class="form-control" />
-                <span asp-validation-for="Total" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Comprobante" class="control-label"></label>
@@ -55,14 +50,9 @@
                 <span asp-validation-for="Comprobante" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CantidadAbono" class="control-label"></label>
-                <input asp-for="CantidadAbono" class="form-control" />
-                <span asp-validation-for="CantidadAbono" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
-                </label>
+                <label asp-for="IdEstadoAbono" class="control-label"></label>
+                <select asp-for="IdEstadoAbono" class="form-control" asp-items="ViewBag.IdEstadoAbono"></select>
+                <span asp-validation-for="IdEstadoAbono" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -76,5 +66,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
