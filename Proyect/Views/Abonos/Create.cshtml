@@ -1,18 +1,22 @@
 ﻿@model Proyect.Models.Abono
 
 @{
-    ViewData["Title"] = "Create Abono";
+
+    ViewData["Title"] = "Crear Abono";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create Abono</h1>
+<h1 class="page-title">Crear Nuevo Abono</h1>
 
-<h4>Abono</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<div class="create-container">
+    <div class="card">
+        <div class="card-header text-white bg-primary">
+            <h4>Nuevo Abono</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <!-- IdReserva (readonly) -->
             <div class="form-group">
@@ -80,10 +84,6 @@
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

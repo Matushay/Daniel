@@ -1,39 +1,45 @@
 ﻿@model Proyect.Models.Habitacione
 
-<h1>Detalles de la Habitación</h1>
+@{
+    ViewData["Title"] = "Detalles de la Habitación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-<div>
-    <h4>Habitacion</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Descripcion)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Precio)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Precio)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdTipoHabitacionNavigation.Nombre)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdTipoHabitacionNavigation.Nombre)
-        </dd>
-    </dl>
+<h1 class="page-title">Detalles de la Habitación</h1>
+
+<div class="details-container">
+    <div class="card">
+        <div class="card-header">
+            <h4>Información de la Habitación</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Nombre de la Habitación</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Nombre)
+                </dd>
+                <dt class="col-sm-3">Descripción</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+                <dt class="col-sm-3">Precio</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Precio)
+                </dd>
+                <dt class="col-sm-3">Tipo de Habitación</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.IdTipoHabitacionNavigation.Nombre)
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer text-end">
+            <a asp-action="Edit" asp-route-id="@Model.IdHabitacion" class="btn btn-primary btn-sm">Editar</a>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+        </div>
+    </div>
 </div>
 
-<div>
+<div class="mt-4">
     <h4>Muebles en esta Habitación</h4>
     <table class="table">
         <thead>
@@ -52,8 +58,4 @@
             }
         </tbody>
     </table>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.IdHabitacion">Editar</a> |
-    <a asp-action="Index">Volver</a>
 </div>

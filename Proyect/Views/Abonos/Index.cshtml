@@ -10,6 +10,8 @@
 <p>
     <a asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-primary">Crear Abono</a>
 
+<p class="text-end">
+    <a asp-controller="Abonos" asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-success"><i class="bi bi-plus-square"></i> Crear Abono</a>
 </p>
 <table class="table" id="AbonoTable">
     <thead>
@@ -78,7 +80,6 @@
     </tbody>
 </table>
 @section Scripts {
-
     <script>
         $(document).ready(function () {
             $('#AbonoTable').DataTable({

@@ -31,13 +31,3 @@ public partial class Abono
     public virtual EstadosAbono IdEstadoAbonoNavigation { get; set; } = null!;
     public virtual Reserva IdReservaNavigation { get; set; } = null!;
 }
-
-
-
-
-
-internal class DisplayAttribute : Attribute
-{
-    public string Name { get; set; }
-}
-

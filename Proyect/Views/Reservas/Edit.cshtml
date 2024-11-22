@@ -1,95 +1,111 @@
 ﻿@model Proyect.Models.Reserva
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Reserva";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1 class="page-title">Editar Reserva</h1>
 
-<h4>Reserva</h4>
+<h4 class="form-subtitle">Modifica los detalles de la reserva</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Edit" class="form-container">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdReserva" />
+
             <div class="form-group">
-                <label asp-for="FechaReserva" class="control-label"></label>
+                <label asp-for="FechaReserva" class="form-label">Fecha de Reserva</label>
                 <input asp-for="FechaReserva" class="form-control" />
                 <span asp-validation-for="FechaReserva" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="FechaInicio" class="control-label"></label>
+                <label asp-for="FechaInicio" class="form-label">Fecha de Inicio</label>
                 <input asp-for="FechaInicio" class="form-control" />
                 <span asp-validation-for="FechaInicio" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="FechaFin" class="control-label"></label>
+                <label asp-for="FechaFin" class="form-label">Fecha de Fin</label>
                 <input asp-for="FechaFin" class="form-control" />
                 <span asp-validation-for="FechaFin" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Subtotal" class="control-label"></label>
+                <label asp-for="Subtotal" class="form-label">Subtotal</label>
                 <input asp-for="Subtotal" class="form-control" />
                 <span asp-validation-for="Subtotal" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Iva" class="control-label"></label>
+                <label asp-for="Iva" class="form-label">IVA</label>
                 <input asp-for="Iva" class="form-control" />
                 <span asp-validation-for="Iva" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Total" class="control-label"></label>
+                <label asp-for="Total" class="form-label">Total</label>
                 <input asp-for="Total" class="form-control" />
                 <span asp-validation-for="Total" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Descuento" class="control-label"></label>
+                <label asp-for="Descuento" class="form-label">Descuento</label>
                 <input asp-for="Descuento" class="form-control" />
                 <span asp-validation-for="Descuento" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="NoPersonas" class="control-label"></label>
+                <label asp-for="NoPersonas" class="form-label">Número de Personas</label>
                 <input asp-for="NoPersonas" class="form-control" />
                 <span asp-validation-for="NoPersonas" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="IdCliente" class="control-label"></label>
+                <label asp-for="IdCliente" class="form-label">Cliente</label>
                 <select asp-for="IdCliente" class="form-control" asp-items="ViewBag.IdCliente"></select>
                 <span asp-validation-for="IdCliente" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="IdUsuario" class="control-label"></label>
+                <label asp-for="IdUsuario" class="form-label">Usuario</label>
                 <select asp-for="IdUsuario" class="form-control" asp-items="ViewBag.IdUsuario"></select>
                 <span asp-validation-for="IdUsuario" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="IdPaquete" class="control-label"></label>
+                <label asp-for="IdPaquete" class="form-label">Paquete</label>
                 <select asp-for="IdPaquete" class="form-control" asp-items="ViewBag.IdPaquete"></select>
                 <span asp-validation-for="IdPaquete" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="IdEstadoReserva" class="control-label"></label>
+                <label asp-for="IdEstadoReserva" class="form-label">Estado de Reserva</label>
                 <select asp-for="IdEstadoReserva" class="form-control" asp-items="ViewBag.IdEstadoReserva"></select>
                 <span asp-validation-for="IdEstadoReserva" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="IdMetodoPago" class="control-label"></label>
+                <label asp-for="IdMetodoPago" class="form-label">Método de Pago</label>
                 <select asp-for="IdMetodoPago" class="form-control" asp-items="ViewBag.IdMetodoPago"></select>
                 <span asp-validation-for="IdMetodoPago" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary btn-lg w-100" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="mt-4 text-center">
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

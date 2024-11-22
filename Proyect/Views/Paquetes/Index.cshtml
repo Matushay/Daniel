@@ -5,60 +5,46 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Paquetes</h1>
+<h1 class="page-title">Paquetes</h1>
 
-<p>
-    <a asp-action="Create"><i class="bi bi-plus-square"></i></a>
+<p class="text-end">
+    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear nuevo paquete</a>
 </p>
-<table class="table" id="PaquetesTable">
+
+<table class="table table-striped table-hover" id="PaquetesTable">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Precio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
-                Acciones
-            </th>
+            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
+            <th>@Html.DisplayNameFor(model => model.Precio)</th>
+            <th>@Html.DisplayNameFor(model => model.Estado)</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descripcion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Precio)
-            </td>
-            <td>
-            <label class="switch">
-                <input type="checkbox" class="status-toggle" data-id="@item.IdPaquete" @(item.Estado ? "checked" : "")>
-                <span class="slider"></span>
-            </label>
-            </td>
-            <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdPaquete"><i class="bi bi-pencil-square"></i></a> |
-                    <a asp-action="Details" asp-route-id="@item.IdPaquete"><i class="bi bi-list"></i></a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdPaquete"><i class="bi bi-trash3"></i></a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                <td>@Html.DisplayFor(modelItem => item.Precio)</td>
+                <td>
+                    <label class="switch">
+                        <input type="checkbox" class="status-toggle" data-id="@item.IdPaquete" @(item.Estado ? "checked" : "")>
+                        <span class="slider"></span>
+                    </label>
+                </td>
+                <td class="action-icons">
+                    <a asp-action="Edit" asp-route-id="@item.IdPaquete" class="btn btn-icon"><i class="bi bi-pencil-square"></i> Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdPaquete" class="btn btn-icon"><i class="bi bi-list"></i> Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdPaquete" class="btn btn-icon"><i class="bi bi-trash3"></i> Eliminar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-@section Scripts {
 
+@section Scripts {
     <script>
         $(document).ready(function () {
             $('#PaquetesTable').DataTable({
@@ -70,18 +56,19 @@
             });
         })
     </script>
+
     <script>
         $(document).ready(function () {
             $('.status-toggle').change(function () {
                 const estado = $(this).is(':checked') ? true : false;
-                const idHabitacion = $(this).data('id');
+                const idPaquete = $(this).data('id');
 
-                // Aquí puedes realizar una llamada AJAX para actualizar el estado en el servidor
+                // Realizar llamada AJAX para actualizar el estado
                 $.ajax({
-                    url: '/Paquetes/ActualizarEstado', // Cambia esto a la ruta de tu controlador
+                    url: '/Paquetes/ActualizarEstado', // Cambia la URL si es necesario
                     type: 'POST',
                     data: {
-                        id: idHabitacion,
+                        id: idPaquete,
                         estado: estado
                     },
                     success: function (response) {
@@ -93,6 +80,5 @@
                 });
             });
         });
-
     </script>
 }
