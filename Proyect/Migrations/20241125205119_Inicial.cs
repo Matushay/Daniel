@@ -46,6 +46,20 @@ namespace Proyect.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EstadosAbonos",
+                columns: table => new
+                {
+                    IdEstadoAbono = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__EstadosA__6956405AAAC400AF", x => x.IdEstadoAbono);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MetodoPago",
                 columns: table => new
                 {
@@ -400,19 +414,22 @@ namespace Proyect.Migrations
                     IdReserva = table.Column<int>(type: "int", nullable: false),
                     FechaAbono = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
                     Valordeuda = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Pendiente = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    ValorAbono = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Porcentaje = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    Subtotal = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    IVA = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Comprobante = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    CantidadAbono = table.Column<int>(type: "int", nullable: true),
-                    Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    IdEstadoAbono = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Abonos__A4693DA78D83026D", x => x.IdAbono);
+                    table.PrimaryKey("PK__Abonos__A4693DA7FFF9E5A1", x => x.IdAbono);
                     table.ForeignKey(
-                        name: "FK__Abonos__IdReserv__75A278F5",
+                        name: "FK__Abonos__IdEstado__778AC167",
+                        column: x => x.IdEstadoAbono,
+                        principalTable: "EstadosAbonos",
+                        principalColumn: "IdEstadoAbono");
+                    table.ForeignKey(
+                        name: "FK__Abonos__IdReserv__76969D2E",
                         column: x => x.IdReserva,
                         principalTable: "Reservas",
                         principalColumn: "IdReserva");
@@ -478,10 +495,10 @@ namespace Proyect.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdReserva = table.Column<int>(type: "int", nullable: false),
                     IdServicio = table.Column<int>(type: "int", nullable: false),
+                    IdFranjaHoraria = table.Column<int>(type: "int", nullable: false),
                     Cantidad = table.Column<int>(type: "int", nullable: false),
                     Precio = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    IdFranjaHoraria = table.Column<int>(type: "int", nullable: false)
+                    Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -489,8 +506,8 @@ namespace Proyect.Migrations
                     table.ForeignKey(
                         name: "FK__DetalleSe__IdFra__8B62F20C",
                         column: x => x.IdFranjaHoraria,
-                        principalTable: "FranjasHorarias",
-                        principalColumn: "IdFranjaHoraria");
+                        principalTable: "Servicios",
+                        principalColumn: "IdServicio");
                     table.ForeignKey(
                         name: "FK__DetalleSe__IdRes__797309D9",
                         column: x => x.IdReserva,
@@ -502,6 +519,11 @@ namespace Proyect.Migrations
                         principalTable: "Servicios",
                         principalColumn: "IdServicio");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Abonos_IdEstadoAbono",
+                table: "Abonos",
+                column: "IdEstadoAbono");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Abonos_IdReserva",
@@ -657,6 +679,9 @@ namespace Proyect.Migrations
                 name: "DetalleServicios");
 
             migrationBuilder.DropTable(
+                name: "FranjasHorarias");
+
+            migrationBuilder.DropTable(
                 name: "HabitacionMueble");
 
             migrationBuilder.DropTable(
@@ -669,7 +694,7 @@ namespace Proyect.Migrations
                 name: "RolesPermisos");
 
             migrationBuilder.DropTable(
-                name: "FranjasHorarias");
+                name: "EstadosAbonos");
 
             migrationBuilder.DropTable(
                 name: "Reservas");
@@ -681,10 +706,10 @@ namespace Proyect.Migrations
                 name: "Habitaciones");
 
             migrationBuilder.DropTable(
-                name: "Permisos");
+                name: "Servicios");
 
             migrationBuilder.DropTable(
-                name: "Servicios");
+                name: "Permisos");
 
             migrationBuilder.DropTable(
                 name: "Clientes");

@@ -17,7 +17,7 @@ namespace Proyect.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -257,7 +257,6 @@ namespace Proyect.Migrations
                     b.ToTable("EstadoReserva", (string)null);
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("Proyect.Models.EstadosAbono", b =>
                 {
                     b.Property<int>("IdEstadoAbono")
@@ -280,7 +279,8 @@ namespace Proyect.Migrations
                         .HasName("PK__EstadosA__6956405AAAC400AF");
 
                     b.ToTable("EstadosAbonos");
-=======
+                });
+
             modelBuilder.Entity("Proyect.Models.FranjaHoraria", b =>
                 {
                     b.Property<int>("IdFranjaHoraria")
@@ -307,7 +307,6 @@ namespace Proyect.Migrations
                     b.HasIndex("IdServicio");
 
                     b.ToTable("FranjasHorarias");
->>>>>>> remotes/origin/Daniel2
                 });
 
             modelBuilder.Entity("Proyect.Models.HabitacionMueble", b =>
@@ -892,7 +891,7 @@ namespace Proyect.Migrations
 
             modelBuilder.Entity("Proyect.Models.DetalleServicio", b =>
                 {
-                    b.HasOne("Proyect.Models.FranjaHoraria", "IdFranjaHorariaNavigation")
+                    b.HasOne("Proyect.Models.Servicio", "IdFranjaHorariaNavigation")
                         .WithMany()
                         .HasForeignKey("IdFranjaHoraria")
                         .IsRequired()

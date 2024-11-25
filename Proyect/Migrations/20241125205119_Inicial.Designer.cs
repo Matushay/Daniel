@@ -12,7 +12,7 @@ using Proyect.Models;
 namespace Proyect.Migrations
 {
     [DbContext(typeof(ProyectContext))]
-    [Migration("20241120020711_Inicial")]
+    [Migration("20241125205119_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Proyect.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -33,43 +33,36 @@ namespace Proyect.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAbono"));
 
-                    b.Property<int?>("CantidadAbono")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("Comprobante")
                         .HasColumnType("varbinary(max)");
-
-                    b.Property<bool>("Estado")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
 
                     b.Property<DateTime>("FechaAbono")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
+                    b.Property<int>("IdEstadoAbono")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdReserva")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Iva")
-                        .HasColumnType("decimal(10, 2)")
-                        .HasColumnName("IVA");
+                    b.Property<decimal>("Pendiente")
+                        .HasColumnType("decimal(10, 2)");
 
                     b.Property<decimal>("Porcentaje")
                         .HasColumnType("decimal(5, 2)");
 
-                    b.Property<decimal>("Subtotal")
-                        .HasColumnType("decimal(10, 2)");
-
-                    b.Property<decimal>("Total")
+                    b.Property<decimal>("ValorAbono")
                         .HasColumnType("decimal(10, 2)");
 
                     b.Property<decimal>("Valordeuda")
                         .HasColumnType("decimal(10, 2)");
 
                     b.HasKey("IdAbono")
-                        .HasName("PK__Abonos__A4693DA78D83026D");
+                        .HasName("PK__Abonos__A4693DA7FFF9E5A1");
+
+                    b.HasIndex("IdEstadoAbono");
 
                     b.HasIndex("IdReserva");
 
@@ -265,6 +258,30 @@ namespace Proyect.Migrations
                         .HasName("PK__EstadoRe__3E654CA85050FB3E");
 
                     b.ToTable("EstadoReserva", (string)null);
+                });
+
+            modelBuilder.Entity("Proyect.Models.EstadosAbono", b =>
+                {
+                    b.Property<int>("IdEstadoAbono")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEstadoAbono"));
+
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(255)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Nombre")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("IdEstadoAbono")
+                        .HasName("PK__EstadosA__6956405AAAC400AF");
+
+                    b.ToTable("EstadosAbonos");
                 });
 
             modelBuilder.Entity("Proyect.Models.FranjaHoraria", b =>
@@ -820,11 +837,19 @@ namespace Proyect.Migrations
 
             modelBuilder.Entity("Proyect.Models.Abono", b =>
                 {
+                    b.HasOne("Proyect.Models.EstadosAbono", "IdEstadoAbonoNavigation")
+                        .WithMany("Abonos")
+                        .HasForeignKey("IdEstadoAbono")
+                        .IsRequired()
+                        .HasConstraintName("FK__Abonos__IdEstado__778AC167");
+
                     b.HasOne("Proyect.Models.Reserva", "IdReservaNavigation")
                         .WithMany("Abonos")
                         .HasForeignKey("IdReserva")
                         .IsRequired()
-                        .HasConstraintName("FK__Abonos__IdReserv__75A278F5");
+                        .HasConstraintName("FK__Abonos__IdReserv__76969D2E");
+
+                    b.Navigation("IdEstadoAbonoNavigation");
 
                     b.Navigation("IdReservaNavigation");
                 });
@@ -869,7 +894,7 @@ namespace Proyect.Migrations
 
             modelBuilder.Entity("Proyect.Models.DetalleServicio", b =>
                 {
-                    b.HasOne("Proyect.Models.FranjaHoraria", "IdFranjaHorariaNavigation")
+                    b.HasOne("Proyect.Models.Servicio", "IdFranjaHorariaNavigation")
                         .WithMany()
                         .HasForeignKey("IdFranjaHoraria")
                         .IsRequired()
@@ -1059,6 +1084,11 @@ namespace Proyect.Migrations
             modelBuilder.Entity("Proyect.Models.EstadoReserva", b =>
                 {
                     b.Navigation("Reservas");
+                });
+
+            modelBuilder.Entity("Proyect.Models.EstadosAbono", b =>
+                {
+                    b.Navigation("Abonos");
                 });
 
             modelBuilder.Entity("Proyect.Models.Habitacione", b =>
