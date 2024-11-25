@@ -20,4 +20,6 @@ public partial class Servicio
     public virtual ICollection<DetalleServicio> DetalleServicios { get; set; } = new List<DetalleServicio>();
 
     public virtual ICollection<PaquetesServicio> PaquetesServicios { get; set; } = new List<PaquetesServicio>();
+
+    public virtual ICollection<FranjaHoraria> FranjasHorarias { get; set; } = new List<FranjaHoraria>(); // Nueva relación
 }
