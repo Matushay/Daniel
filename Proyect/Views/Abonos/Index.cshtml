@@ -5,80 +5,57 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Lista de Abonos</h1>
 
 <p>
     <a asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-primary">Crear Abono</a>
-
-<p class="text-end">
-    <a asp-controller="Abonos" asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-success"><i class="bi bi-plus-square"></i> Crear Abono</a>
 </p>
+
 <table class="table" id="AbonoTable">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaAbono)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Valordeuda)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pendiente)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ValorAbono)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Porcentaje)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Comprobante)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdEstadoAbonoNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdReservaNavigation)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.FechaAbono)</th>
+            <th>@Html.DisplayNameFor(model => model.Valordeuda)</th>
+            <th>@Html.DisplayNameFor(model => model.Pendiente)</th>
+            <th>@Html.DisplayNameFor(model => model.ValorAbono)</th>
+            <th>@Html.DisplayNameFor(model => model.Porcentaje)</th>
+            <th>Comprobante</th>
+            <th>@Html.DisplayNameFor(model => model.IdEstadoAbonoNavigation.Nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.IdReservaNavigation.IdReserva)</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaAbono)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Valordeuda)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pendiente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ValorAbono)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Porcentaje)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comprobante)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdEstadoAbonoNavigation.IdEstadoAbono)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdReservaNavigation.IdReserva)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdAbono">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdAbono">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdAbono">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.FechaAbono)</td>
+                <td>@Html.DisplayFor(modelItem => item.Valordeuda)</td>
+                <td>@Html.DisplayFor(modelItem => item.Pendiente)</td>
+                <td>@Html.DisplayFor(modelItem => item.ValorAbono)</td>
+                <td>@Html.DisplayFor(modelItem => item.Porcentaje)</td>
+                <td>
+                    @if (item.Comprobante != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(item.Comprobante)" alt="Comprobante" style="max-width: 100px; max-height: 100px;" />
+                    }
+                    else
+                    {
+                        <span>No disponible</span>
+                    }
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.IdEstadoAbonoNavigation.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdReservaNavigation.IdReserva)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdAbono">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdAbono">Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdAbono">Eliminar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
 @section Scripts {
     <script>
         $(document).ready(function () {
@@ -89,6 +66,6 @@
                     "sSearch": "Buscar:"
                 }
             });
-        })
+        });
     </script>
 }

@@ -94,7 +94,9 @@ namespace Proyect.Controllers
         // POST: Abonos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdAbono,IdReserva,ValorAbono,Porcentaje,Valordeuda,Pendiente,Comprobante,IdEstadoAbono")] Abono abono, IFormFile comprobanteFile)
+        public async Task<IActionResult> Create(
+            [Bind("IdAbono,IdReserva,ValorAbono,Porcentaje,Valordeuda,Pendiente,IdEstadoAbono")] Abono abono,
+            IFormFile comprobanteFile)
         {
             if (ModelState.IsValid)
             {
@@ -105,7 +107,6 @@ namespace Proyect.Controllers
 
                     // Obtener la reserva asociada
                     var reserva = await _context.Reservas.FirstOrDefaultAsync(r => r.IdReserva == abono.IdReserva);
-
                     if (reserva == null)
                     {
                         return NotFound();
@@ -114,17 +115,9 @@ namespace Proyect.Controllers
                     // Calcular el total abonado hasta el momento
                     var totalAbonado = await _context.Abonos
                         .Where(a => a.IdReserva == abono.IdReserva)
-                        .SumAsync(a => (decimal?)a.ValorAbono) ?? 0; // Manejo de valores nulos
+                        .SumAsync(a => (decimal?)a.ValorAbono) ?? 0;
 
-                    // Validar la deuda total antes de asignar
-                    if (reserva.Total <= 0)
-                    {
-                        ModelState.AddModelError("Valordeuda", "El valor total de la reserva no puede ser 0 o negativo.");
-                        ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "Nombre", abono.IdEstadoAbono);
-                        return View(abono);
-                    }
-
-                    // Asignar Valordeuda desde la reserva
+                    // Asignar el valor de la deuda desde la reserva
                     abono.Valordeuda = reserva.Total;
 
                     // Calcular el saldo pendiente después del abono
@@ -135,7 +128,7 @@ namespace Proyect.Controllers
                         ? Math.Round((abono.ValorAbono / abono.Valordeuda) * 100, 2)
                         : 0;
 
-                    // Procesar el archivo comprobante
+                    // Procesar el archivo comprobante si existe
                     if (comprobanteFile != null && comprobanteFile.Length > 0)
                     {
                         using (var memoryStream = new MemoryStream())
@@ -153,7 +146,7 @@ namespace Proyect.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Registrar el error en los logs (o consola)
+                    // Registrar el error en los logs
                     Console.WriteLine($"Error al crear abono: {ex.Message}");
                     ModelState.AddModelError("", "Se produjo un error al crear el abono. Intenta nuevamente.");
                 }
@@ -163,6 +156,7 @@ namespace Proyect.Controllers
             ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "Nombre", abono.IdEstadoAbono);
             return View(abono);
         }
+
 
 
 

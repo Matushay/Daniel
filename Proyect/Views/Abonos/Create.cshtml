@@ -53,11 +53,11 @@
             </div>
 
             <!-- Campo para cargar una sola imagen -->
-            <div class="form-group">
-                <label asp-for="Comprobante" class="control-label">Comprobante</label>
-                <input asp-for="Comprobante" class="form-control" type="file" accept="image/*" onchange="previewImage(event)" />
-                <span asp-validation-for="Comprobante" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Comprobante" class="control-label">Comprobante</label>
+                    <input class="form-control" type="file" id="Comprobante" name="comprobanteFile" accept="image/*" onchange="previewImage(event)" />
+                    <span asp-validation-for="Comprobante" class="text-danger"></span>
+                </div>
 
 
 
