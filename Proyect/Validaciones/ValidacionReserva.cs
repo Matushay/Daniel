@@ -1,6 +1,7 @@
 ﻿//using FluentValidation;
 //using Proyect.Models;
 
+<<<<<<< HEAD
 //namespace Proyect.Validaciones
 //{
 //    public class ValidacionReserva : AbstractValidator<Reserva>
@@ -14,6 +15,20 @@
 //            RuleFor(x => x.FechaFin)
 //                .NotEmpty().WithMessage("La fecha de fin es obligatoria.")
 //                .GreaterThan(x => x.FechaInicio).WithMessage("La fecha de fin debe ser posterior a la fecha de inicio.");
+=======
+namespace Proyect.Validaciones
+{
+    public class ValidacionReserva : AbstractValidator<Reserva>
+    {
+        public ValidacionReserva() 
+        {
+            RuleFor(x => x.FechaInicio)
+                .NotEmpty().WithMessage("La fecha de inicio es obligatoria.");
+                
+            RuleFor(x => x.FechaFin)
+                .NotEmpty().WithMessage("La fecha de fin es obligatoria.")
+                .GreaterThan(x => x.FechaInicio).WithMessage("La fecha de fin debe ser posterior a la fecha de inicio.");
+>>>>>>> remotes/origin/Daniel2
 
 //            RuleFor(x => x.Subtotal)
 //                .GreaterThan(0).WithMessage("El subtotal debe ser mayor que 0.");
