@@ -19,6 +19,8 @@ public partial class Habitacione
     [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
     public decimal Precio { get; set; }
 
+    public int Cantidad { get; set; }
+
     public virtual ICollection<DetalleHabitacione> DetalleHabitaciones { get; set; } = new List<DetalleHabitacione>();
 
     public virtual ICollection<HabitacionMueble> HabitacionMuebles { get; set; } = new List<HabitacionMueble>();

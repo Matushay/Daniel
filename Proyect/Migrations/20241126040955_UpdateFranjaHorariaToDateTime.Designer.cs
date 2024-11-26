@@ -12,15 +12,15 @@ using Proyect.Models;
 namespace Proyect.Migrations
 {
     [DbContext(typeof(ProyectContext))]
-    [Migration("20241125205119_Inicial")]
-    partial class Inicial
+    [Migration("20241126040955_UpdateFranjaHorariaToDateTime")]
+    partial class UpdateFranjaHorariaToDateTime
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -295,11 +295,11 @@ namespace Proyect.Migrations
                     b.Property<int>("Capacidad")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("HoraFin")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("HoraFin")
+                        .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan>("HoraInicio")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("HoraInicio")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("IdServicio")
                         .HasColumnType("int");
@@ -346,6 +346,9 @@ namespace Proyect.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdHabitacion"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
 
                     b.Property<string>("Descripcion")
                         .HasMaxLength(255)

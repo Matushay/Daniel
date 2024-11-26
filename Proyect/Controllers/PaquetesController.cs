@@ -55,16 +55,29 @@ namespace Proyect.Controllers
             ViewData["Habitaciones"] = _context.Habitaciones.Where(s => s.Estado == false).Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
             return View();
         }
-
-        // POST: Paquetes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdPaquete,Nombre,Descripcion,Precio,Estado")] Paquete paquete, int[] HabitacionesIds, int[] ServiciosIds, int[] MueblesIds)
+        public async Task<IActionResult> Create([Bind("IdPaquete,Nombre,Descripcion,Precio,Estado")] Paquete paquete, int[] HabitacionesIds, int[] ServiciosIds)
         {
             if (ModelState.IsValid)
             {
+                // Validar capacidad de las habitaciones seleccionadas
+                if (HabitacionesIds != null)
+                {
+                    foreach (var habitacionId in HabitacionesIds)
+                    {
+                        var habitacion = await _context.Habitaciones.FindAsync(habitacionId);
+                        if (habitacion != null && habitacion.Cantidad <= 0)
+                        {
+                            ModelState.AddModelError("", $"La habitación '{habitacion.Nombre}' no esta disponible.");
+                            // Recargar datos para la vista
+                            ViewData["Servicios"] = _context.Servicios.Where(s => s.Estado == false).Select(s => new { s.IdServicio, s.Nombre, s.Precio }).ToList();
+                            ViewData["Habitaciones"] = _context.Habitaciones.Where(h => h.Estado == false).Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
+                            return View(paquete);
+                        }
+                    }
+                }
+
                 // Guardar el paquete
                 _context.Add(paquete);
                 await _context.SaveChangesAsync();
@@ -74,28 +87,36 @@ namespace Proyect.Controllers
                 {
                     foreach (var habitacionId in HabitacionesIds)
                     {
-                        var habitaciones = await _context.Habitaciones.FindAsync(habitacionId);
-                        if (habitaciones != null)
+                        var habitacion = await _context.Habitaciones.FindAsync(habitacionId);
+                        if (habitacion != null)
                         {
-                            var paqueteHabitacion = new PaquetesHabitacione
+                            // Validar capacidad de la habitación
+                            if (habitacion.Cantidad > 0)
                             {
-                                IdPaquete = paquete.IdPaquete,
-                                IdHabitacion = habitacionId,
-                                Precio = habitaciones.Precio
-                            };
-                            _context.PaquetesHabitaciones.Add(paqueteHabitacion);
+                                habitacion.Cantidad--; // Reducir capacidad
+                                var paqueteHabitacion = new PaquetesHabitacione
+                                {
+                                    IdPaquete = paquete.IdPaquete,
+                                    IdHabitacion = habitacionId,
+                                    Precio = habitacion.Precio
+                                };
+                                _context.PaquetesHabitaciones.Add(paqueteHabitacion);
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("", $"La habitación '{habitacion.Nombre}' no tiene capacidad disponible.");
+                                return View(paquete);
+                            }
                         }
-                    
                     }
                     await _context.SaveChangesAsync();
                 }
 
-                // Asociar los servicios seleccionados al paquete con sus precios
+                // Asociar los servicios seleccionados al paquete
                 if (ServiciosIds != null)
                 {
                     foreach (var servicioId in ServiciosIds)
                     {
-                        // Obtener el servicio para acceder a su precio
                         var servicio = await _context.Servicios.FindAsync(servicioId);
                         if (servicio != null)
                         {
@@ -103,7 +124,7 @@ namespace Proyect.Controllers
                             {
                                 IdPaquete = paquete.IdPaquete,
                                 IdServicio = servicioId,
-                                Precio = servicio.Precio // Agregar el precio del servicio
+                                Precio = servicio.Precio
                             };
                             _context.PaquetesServicios.Add(paqueteServicio);
                         }
@@ -114,11 +135,10 @@ namespace Proyect.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["Servicios"] = new SelectList(_context.Servicios.Where(s => s.Estado == false), "IdServicio", "Nombre");
-            ViewData["Habitaciones"] = new SelectList(_context.Habitaciones.Where(s => s.Estado == false), "IdHabitacion", "Nombre");
+            ViewData["Servicios"] = _context.Servicios.Where(s => s.Estado == false).Select(s => new { s.IdServicio, s.Nombre, s.Precio }).ToList();
+            ViewData["Habitaciones"] = _context.Habitaciones.Where(h => h.Estado == false).Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
             return View(paquete);
         }
-
 
         // GET: Paquetes/Edit/5
         public async Task<IActionResult> Edit(int id)
@@ -186,27 +206,40 @@ namespace Proyect.Controllers
             {
                 try
                 {
-                    // Actualizar el precio del paquete
-                    paquete.Precio = PrecioTotal;
-
-                    // Actualizar el paquete en la base de datos
-                    _context.Update(paquete);
-                    await _context.SaveChangesAsync();
-
-                    // Actualizar las habitaciones seleccionadas
+                    // Obtener habitaciones previamente asociadas
                     var habitacionesExistentes = _context.PaquetesHabitaciones.Where(ph => ph.IdPaquete == id).ToList();
+
+                    // Eliminar relaciones actuales
                     _context.PaquetesHabitaciones.RemoveRange(habitacionesExistentes);
 
+                    // Validar y asociar nuevas habitaciones
                     foreach (var habitacionId in HabitacionesSeleccionadas)
                     {
-                        _context.PaquetesHabitaciones.Add(new PaquetesHabitacione
+                        var habitacion = await _context.Habitaciones.FindAsync(habitacionId);
+                        if (habitacion != null)
                         {
-                            IdPaquete = id,
-                            IdHabitacion = habitacionId
-                        });
+                            if (habitacion.Cantidad > 0)
+                            {
+                                habitacion.Cantidad--;
+                                _context.PaquetesHabitaciones.Add(new PaquetesHabitacione
+                                {
+                                    IdPaquete = id,
+                                    IdHabitacion = habitacionId
+                                });
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("", $"La habitación '{habitacion.Nombre}' no tiene capacidad disponible.");
+                                return View(paquete);
+                            }
+                        }
                     }
 
-                    // Actualizar los servicios seleccionados
+                    // Actualizar el paquete
+                    paquete.Precio = PrecioTotal;
+                    _context.Update(paquete);
+
+                    // Manejar los servicios seleccionados
                     var serviciosExistentes = _context.PaquetesServicios.Where(ps => ps.IdPaquete == id).ToList();
                     _context.PaquetesServicios.RemoveRange(serviciosExistentes);
 
@@ -235,35 +268,21 @@ namespace Proyect.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Recargar servicios y habitaciones si el modelo no es válido
+            // Recargar datos en caso de error
             ViewData["Servicios"] = _context.Servicios
                 .Where(s => s.Estado == false)
-                .Select(s => new
-                {
-                    s.IdServicio,
-                    s.Nombre,
-                    s.Precio,
-                    Seleccionado = ServiciosSeleccionados.Contains(s.IdServicio)
-                })
+                .Select(s => new { s.IdServicio, s.Nombre, s.Precio })
                 .ToList();
 
             ViewData["Habitaciones"] = _context.Habitaciones
-                .Where(s => s.Estado == false)
-                .Select(h => new
-                {
-                    h.IdHabitacion,
-                    h.Nombre,
-                    h.Precio,
-                    Seleccionado = HabitacionesSeleccionadas.Contains(h.IdHabitacion)
-                })
+                .Where(h => h.Estado == false)
+                .Select(h => new { h.IdHabitacion, h.Nombre, h.Precio })
                 .ToList();
 
             ViewData["PrecioTotal"] = PrecioTotal;
 
             return View(paquete);
         }
-
-
 
         // GET: Paquetes/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -302,6 +321,16 @@ namespace Proyect.Controllers
                 return NotFound();
             }
 
+            // Incrementar la capacidad de las habitaciones asociadas
+            foreach (var paqueteHabitacion in paquete.PaquetesHabitaciones)
+            {
+                var habitacion = await _context.Habitaciones.FindAsync(paqueteHabitacion.IdHabitacion);
+                if (habitacion != null)
+                {
+                    habitacion.Cantidad++; // Aumentar capacidad
+                }
+            }
+
             // Eliminar las relaciones de la tabla intermedia PaquetesServicios
             if (paquete.PaquetesServicios.Any())
             {
@@ -322,6 +351,7 @@ namespace Proyect.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
 
         public IActionResult ActualizarEstado(int id, bool estado)
         {

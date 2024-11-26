@@ -71,6 +71,12 @@ namespace Proyect.Controllers
 
             ViewBag.Servicios = servicios; // Pasar servicios a la vista
 
+            var clientes = await _context.Clientes
+                .Select(c => new { c.IdCliente, ClienteInfo = $"{c.Nombre} {c.Apellido}" })
+                .ToListAsync();
+
+            ViewBag.IdCliente = new SelectList(clientes, "IdCliente", "ClienteInfo");
+
             return View();
         }
 
@@ -109,6 +115,26 @@ namespace Proyect.Controllers
                     var servicio = await _context.Servicios.FindAsync(servicioId);
                     if (servicio != null)
                     {
+                        // Obtener las franjas horarias para este servicio (asumiendo que las franjas horarias están asociadas a los servicios)
+                        var franjasHorarias = await _context.FranjasHorarias
+                            .Where(f => f.IdServicio == servicio.IdServicio && f.HoraInicio >= reserva.FechaInicio && f.HoraFin <= reserva.FechaFin)
+                            .ToListAsync();
+
+                        foreach (var franja in franjasHorarias)
+                        {
+                            // Verificar si hay capacidad suficiente para la franja horaria seleccionada
+                            var reservasEnFranja = await _context.Reservas
+                                .Where(r => r.FechaInicio == franja.HoraInicio && r.FechaFin == franja.HoraFin)
+                                .SumAsync(r => r.NoPersonas);
+
+                            if (reservasEnFranja + reserva.NoPersonas > franja.Capacidad)
+                            {
+                                ModelState.AddModelError("NoPersonas", $"No hay suficiente capacidad para el servicio '{servicio.Nombre}' en la franja horaria seleccionada.");
+                                CargarDatosVista();
+                                return View(reserva);
+                            }
+                        }
+
                         reserva.DetalleServicios.Add(new DetalleServicio
                         {
                             IdServicio = servicio.IdServicio,
@@ -171,17 +197,6 @@ namespace Proyect.Controllers
             var abono = new Abono { IdReserva = id, FechaAbono = DateTime.Now };
             return View("CreateAbono", abono); // Asegúrate de pasar el modelo de Abono con el IdReserva
         }
-
-
-
-
-
-
-
-
-
-
-
 
         // GET: Reservas/Delete/5
         public async Task<IActionResult> Delete(int? id)
