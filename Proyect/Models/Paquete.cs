@@ -10,6 +10,7 @@ public partial class Paquete
 
     public string Nombre { get; set; }
 
+    [Required(ErrorMessage = "La descripción es requerida.")]
     public string Descripcion { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]

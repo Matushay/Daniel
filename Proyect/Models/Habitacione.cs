@@ -11,9 +11,12 @@ public partial class Habitacione
 
     public string Nombre { get; set; }
 
+    [Display(Name ="Tipo de Habitación")]
     public int IdTipoHabitacion { get; set; }
 
     public bool Estado { get; set; }
+
+    [Required(ErrorMessage = "La descripción es requerida.")]
     public string Descripcion { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]

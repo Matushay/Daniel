@@ -80,8 +80,6 @@ namespace Proyect.Controllers
             return View();
         }
 
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdReserva,FechaReserva,FechaInicio,FechaFin,Subtotal,Iva,Total,NoPersonas,IdCliente,IdUsuario,IdEstadoReserva,IdMetodoPago,Descuento")] Reserva reserva, int IdPaquete, List<int> ServiciosSeleccionados)
@@ -115,26 +113,6 @@ namespace Proyect.Controllers
                     var servicio = await _context.Servicios.FindAsync(servicioId);
                     if (servicio != null)
                     {
-                        // Obtener las franjas horarias para este servicio (asumiendo que las franjas horarias están asociadas a los servicios)
-                        var franjasHorarias = await _context.FranjasHorarias
-                            .Where(f => f.IdServicio == servicio.IdServicio && f.HoraInicio >= reserva.FechaInicio && f.HoraFin <= reserva.FechaFin)
-                            .ToListAsync();
-
-                        foreach (var franja in franjasHorarias)
-                        {
-                            // Verificar si hay capacidad suficiente para la franja horaria seleccionada
-                            var reservasEnFranja = await _context.Reservas
-                                .Where(r => r.FechaInicio == franja.HoraInicio && r.FechaFin == franja.HoraFin)
-                                .SumAsync(r => r.NoPersonas);
-
-                            if (reservasEnFranja + reserva.NoPersonas > franja.Capacidad)
-                            {
-                                ModelState.AddModelError("NoPersonas", $"No hay suficiente capacidad para el servicio '{servicio.Nombre}' en la franja horaria seleccionada.");
-                                CargarDatosVista();
-                                return View(reserva);
-                            }
-                        }
-
                         reserva.DetalleServicios.Add(new DetalleServicio
                         {
                             IdServicio = servicio.IdServicio,

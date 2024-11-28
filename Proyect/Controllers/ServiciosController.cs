@@ -59,6 +59,7 @@ namespace Proyect.Controllers
             {
                 _context.Add(servicio);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "El servicio se creo correctamente";
                 return RedirectToAction(nameof(Index));
             }
             return View(servicio);
@@ -110,6 +111,7 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "El servicio se edito correctamente";
                 return RedirectToAction(nameof(Index));
             }
             return View(servicio);
@@ -167,38 +169,7 @@ namespace Proyect.Controllers
             }
             return Json(new { success = false, message = "Habitación no encontrada." });
         }
-
-        // Método para obtener franjas horarias de un servicio
-        [HttpGet]
-        public JsonResult GetFranjasHorarias(int idServicio)
-        {
-            try
-            {
-                var franjas = _context.FranjasHorarias
-                    .Where(f => f.IdServicio == idServicio && f.Capacidad > 0) // Filtrar franjas válidas
-                    .Select(f => new
-                    {
-                        IdFranjaHoraria = f.IdFranjaHoraria,
-                        HoraInicio = f.HoraInicio.ToString(@"hh\:mm"),
-                        HoraFin = f.HoraFin.ToString(@"hh\:mm"),
-                        f.Capacidad
-                    })
-                    .ToList();
-
-                if (!franjas.Any())
-                {
-                    return Json(new { success = false, message = "No hay franjas horarias disponibles para este servicio." });
-                }
-
-                return Json(new { success = true, data = franjas });
-            }
-            catch (Exception ex)
-            {
-                // Registrar el error para depuración
-                return Json(new { success = false, message = $"Error: {ex.Message}" });
-            }
-        }
-
+     
         private bool ServicioExists(int id)
         {
             return _context.Servicios.Any(e => e.IdServicio == id);

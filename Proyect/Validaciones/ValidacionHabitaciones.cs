@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Proyect.Models;
+using System.Text.RegularExpressions;
 
 namespace Proyect.Validaciones
 {
@@ -9,7 +10,8 @@ namespace Proyect.Validaciones
         {
             RuleFor(x => x.Nombre)
                 .NotEmpty().WithMessage("El nombre es obligatorio.")
-                .Length(3, 50).WithMessage("El nombre debe tener entre 3 y 50 caracteres.");
+                .Length(3, 30).WithMessage("El nombre debe tener entre 3 y 30 caracteres.")
+                .Must(nombre => Regex.IsMatch(nombre, @"^[a-zA-Z\s]+$")).WithMessage("El nombre solo puede contener letras");
 
             RuleFor(x => x.IdTipoHabitacion)
                 .GreaterThan(0).WithMessage("Debe seleccionar un tipo de habitación.");

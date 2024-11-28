@@ -119,7 +119,7 @@ namespace Proyect.Controllers
 
                     await _context.SaveChangesAsync();
                 }
-
+                TempData["SuccessMessage"] = "La habitación se creo correctamente";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -251,6 +251,7 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "La habitación se edito correctamente";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -360,7 +361,7 @@ namespace Proyect.Controllers
             if (paqueteRelacionado)
             {
                 TempData["ErrorMessage"] = "No se puede eliminar la habitación porque está asociada a uno o más paquetes.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Delete));
             }
 
             // Devolver la cantidad de cada mueble a la tabla Muebles

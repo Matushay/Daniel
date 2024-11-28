@@ -6,7 +6,12 @@
 }
 
 <h1 class="page-title">Eliminar Habitación</h1>
-
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
 <div class="delete-container">
     <div class="card">
         <div class="card-header text-white bg-danger">

@@ -62,6 +62,7 @@ namespace Proyect.Controllers
             {
                 _context.Add(mueble);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "El mueble se creo correctamente.";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdTipoMueble"] = new SelectList(_context.TipoMuebles, "IdTipoMueble", "Nombre", mueble.IdTipoMueble);
@@ -115,6 +116,7 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "El mueble se edito correctamente.";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdTipoMueble"] = new SelectList(_context.TipoMuebles, "IdTipoMueble", "Nombre", mueble.IdTipoMueble);

@@ -156,7 +156,6 @@ namespace Proyect.Controllers
             {
                 _context.HabitacionMuebles.Remove(habitacionMueble);
             }
-
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
