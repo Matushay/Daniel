@@ -313,7 +313,7 @@ public partial class ProyectContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Estado).HasDefaultValue(true);
+            //entity.Property(e => e.Estado).HasDefaultValue(true);
             entity.Property(e => e.NombrePermiso)
                 .IsRequired()
                 .HasMaxLength(100)

@@ -1,6 +1,9 @@
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Proyect.Models;
+using Proyect.Validaciones.ValidacionesLuis;
+
 
 namespace Proyect
 {
@@ -14,20 +17,25 @@ namespace Proyect
             builder.Services.AddDbContext<ProyectContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ProyectConnection")));
 
-            builder.Services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+            // Registrar validadores de FluentValidation de toda la aplicación
+            builder.Services.AddControllers()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<UsuarioValidator>());
 
+            // Registrar validadores específicos si es necesario
+            builder.Services.AddScoped<IValidator<Usuario>, UsuarioValidator>();
+            builder.Services.AddScoped<IValidator<Role>, RolValidator>();
+            builder.Services.AddScoped<IValidator<Permiso>, PermisoValidator>();
 
-            // Add services to the container.
+            // Agregar servicios necesarios para la aplicación
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Configuración de la tubería de solicitudes HTTP
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts();  // Configuración para entornos de producción
             }
 
             app.UseHttpsRedirection();
@@ -37,6 +45,7 @@ namespace Proyect
 
             app.UseAuthorization();
 
+            // Configuración de rutas para controladores MVC
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -45,3 +54,4 @@ namespace Proyect
         }
     }
 }
+

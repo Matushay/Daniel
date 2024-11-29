@@ -1,95 +1,50 @@
 ﻿@model IEnumerable<Proyect.Models.Usuario>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Usuarios";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Usuarios</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Crear Nuevo Usuario</a>
 </p>
+
 <table class="table" id="UsuariosTable">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TipoDocumento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Documento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Apellido)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Celular)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Direccion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CorreoElectronico)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaCreacion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdRolNavigation)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.Apellido)</th>
+            <th>@Html.DisplayNameFor(model => model.CorreoElectronico)</th>
+            <th>@Html.DisplayNameFor(model => model.Estado)</th>
+            <th>@Html.DisplayNameFor(model => model.IdRolNavigation.NombreRol)</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TipoDocumento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Documento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Apellido)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Celular)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Direccion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CorreoElectronico)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaCreacion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdRolNavigation.NombreRol)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdUsuario">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdUsuario">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdUsuario">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.Apellido)</td>
+                <td>@Html.DisplayFor(modelItem => item.CorreoElectronico)</td>
+                <td>
+                    <!-- Checkbox para cambiar el estado -->
+                    <input type="checkbox" class="estadoCheckbox" data-id="@item.IdUsuario" @(item.Estado ? "checked" : "") />
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.IdRolNavigation.NombreRol)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdUsuario">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdUsuario">Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdUsuario">Eliminar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-@section Scripts {
 
+@section Scripts {
     <script>
         $(document).ready(function () {
             $('#UsuariosTable').DataTable({
@@ -98,6 +53,25 @@
                     "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
                     "sSearch": "Buscar:"
                 }
+            });
+
+            // Actualizar estado del usuario al hacer clic en el checkbox
+            $('.estadoCheckbox').on('change', function () {
+                var usuarioId = $(this).data('id');
+                var estado = $(this).prop('checked'); // true si está marcado, false si no
+
+                // Llamada AJAX para actualizar el estado
+                $.ajax({
+                    url: '@Url.Action("ActualizarEstado", "Usuarios")',
+                    type: 'POST',
+                    data: { id: usuarioId, estado: estado },
+                    success: function (data) {
+                        alert('Estado actualizado correctamente');
+                    },
+                    error: function () {
+                        alert('Error al actualizar el estado');
+                    }
+                });
             });
         })
     </script>
