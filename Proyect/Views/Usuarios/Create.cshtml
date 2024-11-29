@@ -7,73 +7,65 @@
 
 <h1 class="page-title">Crear Nuevo Usuario</h1>
 
-<div class="create-container">
-    <div class="card">
-        <div class="card-header text-white bg-primary">
-            <h4>Nuevo Usuario</h4>
-        </div>
-        <div class="card-body">
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h4>Usuario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <div class="form-group">
-                    <label asp-for="TipoDocumento" class="control-label"></label>
-                    <input asp-for="TipoDocumento" class="form-control" placeholder="Ingrese el tipo de documento" />
-                    <span asp-validation-for="TipoDocumento" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="TipoDocumento" class="control-label"></label>
+                <input asp-for="TipoDocumento" class="form-control" />
+                <span asp-validation-for="TipoDocumento" class="text-danger"></span>
+            </div>
 
-                <div class="form-group">
-                    <label asp-for="Documento" class="control-label"></label>
-                    <input asp-for="Documento" class="form-control" placeholder="Ingrese el número de documento" />
-                    <span asp-validation-for="Documento" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="Documento" class="control-label"></label>
+                <input asp-for="Documento" class="form-control" />
+                <span asp-validation-for="Documento" class="text-danger"></span>
+            </div>
 
-                <div class="form-group">
-                    <label asp-for="Nombre" class="control-label"></label>
-                    <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre del usuario" />
-                    <span asp-validation-for="Nombre" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
 
-                <div class="form-group">
-                    <label asp-for="Apellido" class="control-label"></label>
-                    <input asp-for="Apellido" class="form-control" placeholder="Ingrese el apellido del usuario" />
-                    <span asp-validation-for="Apellido" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="Apellido" class="control-label"></label>
+                <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
 
-                <div class="form-group">
-                    <label asp-for="Celular" class="control-label"></label>
-                    <input asp-for="Celular" class="form-control" placeholder="Ingrese el celular del usuario" />
-                    <span asp-validation-for="Celular" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="Celular" class="control-label"></label>
+                <input asp-for="Celular" class="form-control" />
+                <span asp-validation-for="Celular" class="text-danger"></span>
+            </div>
 
-                <div class="form-group">
-                    <label asp-for="Direccion" class="control-label"></label>
-                    <input asp-for="Direccion" class="form-control" placeholder="Ingrese la dirección del usuario" />
-                    <span asp-validation-for="Direccion" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="Direccion" class="control-label"></label>
+                <input asp-for="Direccion" class="form-control" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
 
-                <div class="form-group">
-                    <label asp-for="CorreoElectronico" class="control-label"></label>
-                    <input asp-for="CorreoElectronico" class="form-control" placeholder="Ingrese el correo electrónico" />
-                    <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="CorreoElectronico" class="control-label"></label>
+                <input asp-for="CorreoElectronico" class="form-control" />
+                <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+            </div>
 
-                <div class="form-group">
-                    <label asp-for="IdRol" class="control-label"></label>
-                    <select asp-for="IdRol" class="form-control" asp-items="ViewBag.IdRol">
-                        <option value="">Seleccione un rol</option>
-                    </select>
-                    <span asp-validation-for="IdRol" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="IdRol" class="control-label"></label>
+                <select asp-for="IdRol" class="form-control" asp-items="ViewBag.IdRol"></select>
+                <span asp-validation-for="IdRol" class="text-danger"></span>
+            </div>
 
-                <div class="form-group text-end">
-                    <input type="submit" value="Crear" class="btn btn-success btn-sm" />
-                </div>
-            </form>
-        </div>
-        <div class="card-footer text-center">
-            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
-        </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-success" />
+            </div>
+        </form>
     </div>
 </div>
 
@@ -82,4 +74,4 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-    
+

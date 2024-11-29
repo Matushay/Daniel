@@ -28,7 +28,6 @@
             <th>@Html.DisplayNameFor(model => model.ValorAbono)</th>
             <th>@Html.DisplayNameFor(model => model.Porcentaje)</th>
             <th>Comprobante</th>
-            <th>@Html.DisplayNameFor(model => model.IdEstadoAbonoNavigation.Nombre)</th>
             <th>@Html.DisplayNameFor(model => model.IdReservaNavigation.IdReserva)</th>
             <th>Acciones</th>
         </tr>
@@ -52,7 +51,6 @@
                         <span>No disponible</span>
                     }
                 </td>
-                <td>@Html.DisplayFor(modelItem => item.IdEstadoAbonoNavigation.Nombre)</td>
                 <td>@Html.DisplayFor(modelItem => item.IdReservaNavigation.IdReserva)</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.IdAbono" class="btn btn-info">Detalles</a>
