@@ -17,11 +17,26 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <!-- Selección de Cliente y Usuario -->
+                <!-- Búsqueda del Cliente por Documento -->
                 <div class="form-group">
-                    <label asp-for="IdCliente" class="control-label">Cliente</label>
-                    <select asp-for="IdCliente" class="form-control" asp-items="ViewBag.IdCliente"></select>
-                    <span asp-validation-for="IdCliente" class="text-danger"></span>
+                    <label for="DocumentoCliente" class="control-label">Documento del Cliente</label>
+                    <input type="text" id="DocumentoCliente" class="form-control" placeholder="Ingrese el documento del cliente" />
+                    <button type="button" class="btn btn-info" id="buscarCliente">Buscar Cliente</button>
                 </div>
+
+                <!-- Mostrar Información del Cliente -->
+                <div id="clienteInfo" style="display:none;">
+                    <h5>Datos del Cliente:</h5>
+                    <p><strong>Nombre:</strong> <span id="clienteNombre"></span></p>
+                    <p><strong>Apellido:</strong> <span id="clienteApellido"></span></p>
+                    <p><strong>Celular:</strong> <span id="clienteCelular"></span></p>
+                    <p><strong>Correo:</strong> <span id="clienteCorreo"></span></p>
+
+                    <!-- Asignar el cliente encontrado a la reserva -->
+                    <input type="hidden" id="IdCliente" name="IdCliente" />
+                </div>
+
+
                 <div class="form-group">
                     <label asp-for="IdUsuario" class="control-label">Usuario</label>
                     <select asp-for="IdUsuario" class="form-control" asp-items="ViewBag.IdUsuario"></select>
@@ -63,7 +78,7 @@
                         {
                             <div>
                                 <input type="checkbox" name="ServiciosSeleccionados" value="@servicio.IdServicio" />
-                                @servicio.Nombre - @servicio.Precio.ToString("C2")
+                                @servicio.Nombre - @servicio.Precio.ToString("C2", new System.Globalization.CultureInfo("es-CO"))
                             </div>
                         }
                     </div>
@@ -215,5 +230,40 @@
         document.querySelectorAll('input[name="ServiciosSeleccionados"]').forEach(function (checkbox) {
             checkbox.addEventListener('change', updateTotals);
         });
+
+        // AJAX para buscar el cliente por documento
+        document.getElementById('buscarCliente').addEventListener('click', function () {
+            var documento = document.getElementById('DocumentoCliente').value;
+
+            if (!documento) {
+                alert("Por favor ingrese un número de documento.");
+                return;
+            }
+
+            // Realizar la petición AJAX al controlador
+            fetch('/Reservas/BuscarClientePorDocumento?documento=' + documento)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        // Mostrar los datos del cliente en la vista
+                        document.getElementById('clienteNombre').textContent = data.nombre;
+                        document.getElementById('clienteApellido').textContent = data.apellido;
+                        document.getElementById('clienteCelular').textContent = data.celular;
+                        document.getElementById('clienteCorreo').textContent = data.correoElectronico;
+
+                        // Asignar el IdCliente al formulario
+                        document.getElementById('IdCliente').value = data.idCliente;
+
+                        // Mostrar la información del cliente
+                        document.getElementById('clienteInfo').style.display = 'block';
+                    } else {
+                        alert("Cliente no encontrado.");
+                    }
+                })
+                .catch(error => {
+                    alert("Error al buscar el cliente: " + error);
+                });
+        });
+
     </script>
 }

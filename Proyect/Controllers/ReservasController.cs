@@ -31,25 +31,45 @@ namespace Proyect.Controllers
         }
 
         // GET: Reservas/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int id)
         {
-            if (id == null) return NotFound();
+            // Obtener la reserva con todos los detalles
+            var reserva = _context.Reservas
+                .Include(r => r.IdClienteNavigation)  // Incluir cliente
+                .Include(r => r.IdUsuarioNavigation)  // Incluir usuario
+                .Include(r => r.IdEstadoReservaNavigation)  // Incluir estado de reserva
+                .Include(r => r.IdMetodoPagoNavigation)  // Incluir método de pago
+                .Include(r => r.IdPaqueteNavigation)  // Incluir paquete
+                .Include(r => r.DetallePaquetes)  // Incluir detalles de paquetes
+                .Include(r => r.DetalleServicios)  // Incluir detalles de servicios
+                .ThenInclude(ds => ds.IdServicioNavigation)  // Incluir servicios en detalles
+                .FirstOrDefault(r => r.IdReserva == id);
 
-            var reserva = await _context.Reservas
-                .Include(r => r.IdClienteNavigation)
-                .Include(r => r.IdEstadoReservaNavigation)
-                .Include(r => r.IdMetodoPagoNavigation)
-                .Include(r => r.IdPaqueteNavigation)
-                .Include(r => r.IdUsuarioNavigation)
-                .Include(r => r.DetalleHabitaciones)
-                .Include(r => r.DetalleServicios)
-                .FirstOrDefaultAsync(m => m.IdReserva == id);
+            if (reserva == null)
+            {
+                return NotFound();
+            }
 
-            if (reserva == null) return NotFound();
+            // Cargar la lista de paquetes y servicios seleccionados
+            var detallePaquetes = reserva.DetallePaquetes.Select(dp => new
+            {
+                Paquete = dp.IdPaqueteNavigation.Nombre,
+                Precio = dp.Precio
+            }).ToList();
+
+            var detalleServicios = reserva.DetalleServicios.Select(ds => new
+            {
+                Servicio = ds.IdServicioNavigation.Nombre,
+                Precio = ds.Precio,
+                Cantidad = ds.Cantidad
+            }).ToList();
+
+            // Pasar los datos a la vista
+            ViewBag.DetallePaquetes = detallePaquetes;
+            ViewBag.DetalleServicios = detalleServicios;
 
             return View(reserva);
         }
-
 
 
         public async Task<IActionResult> Create()
@@ -172,6 +192,33 @@ namespace Proyect.Controllers
             return View("CreateAbono", abono); // Asegúrate de pasar el modelo de Abono con el IdReserva
         }
 
+        public async Task<IActionResult> BuscarClientePorDocumento(string documento)
+        {
+            if (string.IsNullOrEmpty(documento))
+            {
+                return Json(null);  // Si no se pasa documento, devolver null
+            }
+
+            var cliente = await _context.Clientes
+                .FirstOrDefaultAsync(c => c.Documento == documento);
+
+            if (cliente == null)
+            {
+                return Json(null);  // Si no se encuentra el cliente, devolver null
+            }
+
+            // Devolver los datos del cliente en formato JSON
+            var clienteInfo = new
+            {
+                cliente.IdCliente,
+                cliente.Nombre,
+                cliente.Apellido,
+                cliente.Celular,
+                cliente.CorreoElectronico
+            };
+
+            return Json(clienteInfo);  // Devolver el objeto cliente como JSON
+        }
 
 
 
