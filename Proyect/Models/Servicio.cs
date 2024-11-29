@@ -12,6 +12,7 @@ public partial class Servicio
 
     public bool Estado { get; set; }
 
+    [Required(ErrorMessage = "La descripción es requerida.")]
     public string Descripcion { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
@@ -21,5 +22,4 @@ public partial class Servicio
 
     public virtual ICollection<PaquetesServicio> PaquetesServicios { get; set; } = new List<PaquetesServicio>();
 
-    public virtual ICollection<FranjaHoraria> FranjasHorarias { get; set; } = new List<FranjaHoraria>(); // Nueva relación
 }

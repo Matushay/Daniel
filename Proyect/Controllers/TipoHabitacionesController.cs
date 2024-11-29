@@ -59,6 +59,7 @@ namespace Proyect.Controllers
             {
                 _context.Add(tipoHabitacione);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "El tipo de habitación se ha creado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(tipoHabitacione);
@@ -110,6 +111,7 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "El tipo de habitación se ha Editado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(tipoHabitacione);

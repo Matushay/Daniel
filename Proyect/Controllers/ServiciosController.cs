@@ -59,6 +59,7 @@ namespace Proyect.Controllers
             {
                 _context.Add(servicio);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "El servicio se creo correctamente";
                 return RedirectToAction(nameof(Index));
             }
             return View(servicio);
@@ -110,6 +111,7 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "El servicio se edito correctamente";
                 return RedirectToAction(nameof(Index));
             }
             return View(servicio);
@@ -167,7 +169,7 @@ namespace Proyect.Controllers
             }
             return Json(new { success = false, message = "Habitación no encontrada." });
         }
-
+     
         private bool ServicioExists(int id)
         {
             return _context.Servicios.Any(e => e.IdServicio == id);

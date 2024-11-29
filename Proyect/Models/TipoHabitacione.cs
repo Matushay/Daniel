@@ -9,6 +9,7 @@ public partial class TipoHabitacione
 
     public string Nombre { get; set; }
 
+    [Required(ErrorMessage = "La descripción es requerida.")]
     public string Descripcion { get; set; }
 
     public int Capacidad { get; set; }

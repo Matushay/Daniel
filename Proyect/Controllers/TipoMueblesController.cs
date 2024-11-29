@@ -59,6 +59,7 @@ namespace Proyect.Controllers
             {
                 _context.Add(tipoMueble);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "El Tipo de Mueble se ha creado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(tipoMueble);
@@ -110,6 +111,7 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "El Tipo de Mueble se ha editado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(tipoMueble);

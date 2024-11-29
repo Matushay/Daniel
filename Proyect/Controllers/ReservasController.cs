@@ -91,10 +91,14 @@ namespace Proyect.Controllers
 
             ViewBag.Servicios = servicios; // Pasar servicios a la vista
 
+            var clientes = await _context.Clientes
+                .Select(c => new { c.IdCliente, ClienteInfo = $"{c.Nombre} {c.Apellido}" })
+                .ToListAsync();
+
+            ViewBag.IdCliente = new SelectList(clientes, "IdCliente", "ClienteInfo");
+
             return View();
         }
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -192,6 +196,7 @@ namespace Proyect.Controllers
             return View("CreateAbono", abono); // Asegúrate de pasar el modelo de Abono con el IdReserva
         }
 
+
         public async Task<IActionResult> BuscarClientePorDocumento(string documento)
         {
             if (string.IsNullOrEmpty(documento))
@@ -219,7 +224,6 @@ namespace Proyect.Controllers
 
             return Json(clienteInfo);  // Devolver el objeto cliente como JSON
         }
-
 
 
 

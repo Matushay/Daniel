@@ -10,15 +10,18 @@ public partial class Mueble
 
     public string Nombre { get; set; }
 
+    [Display(Name ="Tipo de Mueble")]
     public int IdTipoMueble { get; set; }
 
+    [Required(ErrorMessage = "La descripción es requerida.")]
     public string Descripcion { get; set; }
 
+    [Required(ErrorMessage ="la cantidad es requerida")]
     public int Cantidad { get; set; }
 
     public bool Estado { get; set; }
 
-    public DateTime FechaRegistro { get; set; }
+    public DateTime FechaRegistro { get; set; } = DateTime.Now;
 
     public virtual ICollection<HabitacionMueble> HabitacionMuebles { get; set; } = new List<HabitacionMueble>();
 

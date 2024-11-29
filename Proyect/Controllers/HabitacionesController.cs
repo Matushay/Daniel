@@ -65,10 +65,28 @@ namespace Proyect.Controllers
         // POST: Habitaciones/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdHabitacion,Nombre,IdTipoHabitacion,Estado,Descripcion,Precio")] Habitacione habitacione, int[] mueblesSeleccionados, int[] cantidadMuebles)
+        public async Task<IActionResult> Create(
+            [Bind("IdHabitacion,Nombre,IdTipoHabitacion,Estado,Descripcion,Precio,Cantidad")] Habitacione habitacione,
+            int[] mueblesSeleccionados,
+            int[] cantidadMuebles)
         {
             if (ModelState.IsValid)
             {
+                if (habitacione.Cantidad <= 0)
+                {
+                    ModelState.AddModelError("Cantidad", "La cantidad debe ser mayor a 0.");
+                    ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitaciones, "IdTipoHabitacion", "Nombre", habitacione.IdTipoHabitacion);
+                    ViewData["Muebles"] = _context.Muebles.Where(s => s.Estado == false).Select(m => new
+                    {
+                        Value = m.IdMueble.ToString(),
+                        Text = $"{m.Nombre} (Cantidad disponible: {m.Cantidad})",
+                        m.IdMueble,
+                        m.Nombre,
+                        m.Cantidad
+                    }).ToList();
+                    return View(habitacione);
+                }
+
                 // Guardar la habitación
                 _context.Add(habitacione);
                 await _context.SaveChangesAsync();
@@ -79,13 +97,13 @@ namespace Proyect.Controllers
                     for (int i = 0; i < mueblesSeleccionados.Length; i++)
                     {
                         var muebleId = mueblesSeleccionados[i];
-                        var cantidad = cantidadMuebles != null && i < cantidadMuebles.Length ? cantidadMuebles[i] : 0; // Default cantidad
+                        var cantidad = cantidadMuebles != null && i < cantidadMuebles.Length ? cantidadMuebles[i] : 0;
 
                         var habitacionMueble = new HabitacionMueble
                         {
                             IdHabitacion = habitacione.IdHabitacion,
                             IdMueble = muebleId,
-                            Cantidad = cantidad // Cantidad asignada a la habitación
+                            Cantidad = cantidad
                         };
 
                         _context.HabitacionMuebles.Add(habitacionMueble);
@@ -94,14 +112,14 @@ namespace Proyect.Controllers
                         var mueble = await _context.Muebles.FindAsync(muebleId);
                         if (mueble != null)
                         {
-                            mueble.Cantidad -= cantidad; // Restar la cantidad seleccionada
-                            _context.Update(mueble); // Marcar el mueble como modificado
+                            mueble.Cantidad -= cantidad;
+                            _context.Update(mueble);
                         }
                     }
 
                     await _context.SaveChangesAsync();
                 }
-
+                TempData["SuccessMessage"] = "La habitación se creo correctamente";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -109,6 +127,7 @@ namespace Proyect.Controllers
             ViewData["Muebles"] = new SelectList(_context.Muebles.Where(s => s.Estado == false), "IdMueble", "Nombre");
             return View(habitacione);
         }
+
 
         // GET: Habitaciones/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -120,7 +139,7 @@ namespace Proyect.Controllers
 
             var habitacione = await _context.Habitaciones
                 .Include(h => h.HabitacionMuebles)
-                .ThenInclude(hm => hm.IdMuebleNavigation) // Incluir información de muebles
+                .ThenInclude(hm => hm.IdMuebleNavigation)
                 .FirstOrDefaultAsync(h => h.IdHabitacion == id);
 
             if (habitacione == null)
@@ -130,7 +149,6 @@ namespace Proyect.Controllers
 
             ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitaciones, "IdTipoHabitacion", "Nombre", habitacione.IdTipoHabitacion);
 
-            // Obtener todos los muebles y la cantidad asignada en la habitación
             var muebles = await _context.Muebles.ToListAsync();
             var mueblesSeleccionados = habitacione.HabitacionMuebles.Select(hm => new
             {
@@ -149,11 +167,14 @@ namespace Proyect.Controllers
             return View(habitacione);
         }
 
-
         // POST: Habitaciones/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdHabitacion,Nombre,IdTipoHabitacion,Estado,Descripcion,Precio")] Habitacione habitacione, int[] mueblesSeleccionados, int[] cantidadMuebles)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("IdHabitacion,Nombre,IdTipoHabitacion,Estado,Descripcion,Precio,Cantidad")] Habitacione habitacione,
+            int[] mueblesSeleccionados,
+            int[] cantidadMuebles)
         {
             if (id != habitacione.IdHabitacion)
             {
@@ -162,35 +183,36 @@ namespace Proyect.Controllers
 
             if (ModelState.IsValid)
             {
+                if (habitacione.Cantidad <= 0)
+                {
+                    ModelState.AddModelError("Cantidad", "La cantidad debe ser mayor a 0.");
+                    return View(habitacione);
+                }
+
                 try
                 {
                     // Actualizar la habitación
                     _context.Update(habitacione);
                     await _context.SaveChangesAsync();
 
-                    // Obtener los muebles anteriores
                     var mueblesAnteriores = _context.HabitacionMuebles.Where(hm => hm.IdHabitacion == id).ToList();
 
-                    // Actualizar muebles existentes o agregar nuevos
                     for (int i = 0; i < mueblesSeleccionados.Length; i++)
                     {
                         var muebleId = mueblesSeleccionados[i];
                         var nuevaCantidad = cantidadMuebles[i];
 
-                        // Buscar mueble en la relación HabitacionMuebles
                         var muebleHabitacion = mueblesAnteriores.FirstOrDefault(hm => hm.IdMueble == muebleId);
                         var mueble = await _context.Muebles.FindAsync(muebleId);
 
                         if (muebleHabitacion != null)
                         {
-                            // Calcular la diferencia de cantidad y actualizar la cantidad en Muebles
                             var diferencia = nuevaCantidad - muebleHabitacion.Cantidad;
                             muebleHabitacion.Cantidad = nuevaCantidad;
                             mueble.Cantidad -= diferencia;
                         }
                         else
                         {
-                            // Si el mueble no existe en la relación, lo agrega
                             var nuevoMueble = new HabitacionMueble
                             {
                                 IdHabitacion = habitacione.IdHabitacion,
@@ -204,7 +226,6 @@ namespace Proyect.Controllers
                         _context.Update(mueble);
                     }
 
-                    // Eliminar muebles que ya no están seleccionados y ajustar la cantidad en Muebles
                     var mueblesAEliminar = mueblesAnteriores.Where(hm => !mueblesSeleccionados.Contains(hm.IdMueble)).ToList();
                     foreach (var muebleAEliminar in mueblesAEliminar)
                     {
@@ -230,19 +251,11 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "La habitación se edito correctamente";
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitaciones, "IdTipoHabitacion", "Nombre", habitacione.IdTipoHabitacion);
-            ViewData["Muebles"] = _context.Muebles
-                .Where(m => m.Estado == false)
-                .Select(m => new {
-                    IdMueble = m.IdMueble,
-                    Nombre = m.Nombre,
-                    Cantidad = m.Cantidad,
-                    Seleccionado = mueblesSeleccionados.Contains(m.IdMueble)
-                }).ToList();
-
             return View(habitacione);
         }
 
@@ -348,7 +361,7 @@ namespace Proyect.Controllers
             if (paqueteRelacionado)
             {
                 TempData["ErrorMessage"] = "No se puede eliminar la habitación porque está asociada a uno o más paquetes.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Delete));
             }
 
             // Devolver la cantidad de cada mueble a la tabla Muebles
