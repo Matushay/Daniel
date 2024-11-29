@@ -17,7 +17,7 @@ namespace Proyect.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -208,6 +208,9 @@ namespace Proyect.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
+                    b.Property<int>("IdFranjaHoraria")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdReserva")
                         .HasColumnType("int");
 
@@ -219,6 +222,8 @@ namespace Proyect.Migrations
 
                     b.HasKey("IdDetalleServicio")
                         .HasName("PK__DetalleS__0BFF94E69DEE454C");
+
+                    b.HasIndex("IdFranjaHoraria");
 
                     b.HasIndex("IdReserva");
 
@@ -274,6 +279,34 @@ namespace Proyect.Migrations
                         .HasName("PK__EstadosA__6956405AAAC400AF");
 
                     b.ToTable("EstadosAbonos");
+                });
+
+            modelBuilder.Entity("Proyect.Models.FranjaHoraria", b =>
+                {
+                    b.Property<int>("IdFranjaHoraria")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdFranjaHoraria"));
+
+                    b.Property<int>("Capacidad")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("HoraFin")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("HoraInicio")
+                        .HasColumnType("time");
+
+                    b.Property<int>("IdServicio")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdFranjaHoraria")
+                        .HasName("PK__FranjaHo__8F14E45FB9F9D1A4");
+
+                    b.HasIndex("IdServicio");
+
+                    b.ToTable("FranjasHorarias");
                 });
 
             modelBuilder.Entity("Proyect.Models.HabitacionMueble", b =>
@@ -858,6 +891,12 @@ namespace Proyect.Migrations
 
             modelBuilder.Entity("Proyect.Models.DetalleServicio", b =>
                 {
+                    b.HasOne("Proyect.Models.Servicio", "IdFranjaHorariaNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdFranjaHoraria")
+                        .IsRequired()
+                        .HasConstraintName("FK__DetalleSe__IdFra__8B62F20C");
+
                     b.HasOne("Proyect.Models.Reserva", "IdReservaNavigation")
                         .WithMany("DetalleServicios")
                         .HasForeignKey("IdReserva")
@@ -870,7 +909,20 @@ namespace Proyect.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__DetalleSe__IdSer__7A672E12");
 
+                    b.Navigation("IdFranjaHorariaNavigation");
+
                     b.Navigation("IdReservaNavigation");
+
+                    b.Navigation("IdServicioNavigation");
+                });
+
+            modelBuilder.Entity("Proyect.Models.FranjaHoraria", b =>
+                {
+                    b.HasOne("Proyect.Models.Servicio", "IdServicioNavigation")
+                        .WithMany("FranjasHorarias")
+                        .HasForeignKey("IdServicio")
+                        .IsRequired()
+                        .HasConstraintName("FK__FranjaHoraria__IdServicio");
 
                     b.Navigation("IdServicioNavigation");
                 });
@@ -1092,6 +1144,8 @@ namespace Proyect.Migrations
             modelBuilder.Entity("Proyect.Models.Servicio", b =>
                 {
                     b.Navigation("DetalleServicios");
+
+                    b.Navigation("FranjasHorarias");
 
                     b.Navigation("PaquetesServicios");
                 });
