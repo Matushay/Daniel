@@ -520,11 +520,11 @@ namespace Proyect.Migrations
                     b.Property<decimal>("Descuento")
                         .HasColumnType("decimal(5, 2)");
 
-                    b.Property<DateOnly>("FechaFin")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("FechaFin")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("FechaInicio")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaReserva")
                         .ValueGeneratedOnAdd()

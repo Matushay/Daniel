@@ -12,8 +12,8 @@ using Proyect.Models;
 namespace Proyect.Migrations
 {
     [DbContext(typeof(ProyectContext))]
-    [Migration("20241101164444_SyncCantidadColumn")]
-    partial class SyncCantidadColumn
+    [Migration("20241126175002_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -523,11 +523,11 @@ namespace Proyect.Migrations
                     b.Property<decimal>("Descuento")
                         .HasColumnType("decimal(5, 2)");
 
-                    b.Property<DateOnly>("FechaFin")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("FechaFin")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("FechaInicio")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaReserva")
                         .ValueGeneratedOnAdd()

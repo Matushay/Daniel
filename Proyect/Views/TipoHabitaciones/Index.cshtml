@@ -8,7 +8,7 @@
 <h1 class="page-title">Tipo de Habitaciones</h1>
 
 <p class="text-end">
-    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear nuevo tipo de habitación</a>
+    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear</a>
 </p>
 
 @if (TempData["SuccessMessage"] != null)
@@ -25,7 +25,7 @@
             <th>@Html.DisplayNameFor(model => model.Nombre)</th>
             <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
             <th>@Html.DisplayNameFor(model => model.Capacidad)</th>
-            <th>Acciones</th>
+            <th>Operaciones</th>
         </tr>
     </thead>
     <tbody>
@@ -36,9 +36,9 @@
                 <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
                 <td>@Html.DisplayFor(modelItem => item.Capacidad)</td>
                 <td class="action-icons">
-                    <a asp-action="Edit" asp-route-id="@item.IdTipoHabitacion" class="btn btn-icon"><i class="bi bi-pencil-square"></i> Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdTipoHabitacion" class="btn btn-icon"><i class="bi bi-list"></i> Detalles</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdTipoHabitacion" class="btn btn-icon"><i class="bi bi-trash3"></i> Eliminar</a>
+                    <a asp-action="Edit" asp-route-id="@item.IdTipoHabitacion" class="btn btn-icon"><i class="bi bi-pencil-square"></i> </a> |
+                    <a asp-action="Details" asp-route-id="@item.IdTipoHabitacion" class="btn btn-icon"><i class="bi bi-list"></i> </a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdTipoHabitacion" class="btn btn-icon"><i class="bi bi-trash3"></i> </a>
                 </td>
             </tr>
         }
@@ -52,7 +52,8 @@
                 language: {
                     "sLengthMenu": "Mostrar _MENU_ entradas",
                     "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                    "sSearch": "Buscar:"
+                    "sSearch": "Buscar:",
+                    "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA"
                 }
             });
         });

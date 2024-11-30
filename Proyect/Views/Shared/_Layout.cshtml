@@ -20,38 +20,47 @@
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="close-btn" onclick="closeSidebar()">&times;</a>
         <div class="navbar-nav flex-grow-1">
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill"></i>Home</a>
+            </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMuebles" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Habitacion
+                    <i class="bi bi-door-closed"></i>Habitacion
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMuebles">
                     <li><a class="dropdown-item" href="/Habitaciones">habitacion</a></li>
                     <li><a class="dropdown-item" href="/TipoHabitaciones">Tipo de Habitaciones</a></li>
                 </ul>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Muebles" asp-action="Index">Muebles</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMuebles" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-lamp-fill"></i>Muebles
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMuebles">
+                    <li><a class="dropdown-item" href="/Muebles">Muebles</a></li>
+                    <li><a class="dropdown-item" href="/TipoMuebles">Tipo de Muebles</a></li>
+                </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index"><i class="bi bi-person-fill-gear"></i>Roles</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Paquetes" asp-action="Index">Paquetes</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Paquetes" asp-action="Index"><i class="bi bi-archive-fill"></i>Paquetes</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Abonos" asp-action="Index">Abonos</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Abonos" asp-action="Index"><i class="bi bi-coin"></i>Abonos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Permisos" asp-action="Index">Permisos</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Permisos" asp-action="Index"><i class="bi bi-card-checklist"></i>Permisos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Reservas" asp-action="Index">Reservas</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Reservas" asp-action="Index"><i class="bi bi-calendar2-week-fill"></i>Reservas</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Servicios" asp-action="Index">Servicios</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Servicios" asp-action="Index"><i class="bi bi-database-fill-gear"></i>Servicios</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index"><i class="bi bi-people-fill"></i>Usuarios</a>
             </li>
         </div>
     </div>
@@ -75,17 +84,16 @@
     @await RenderSectionAsync("Scripts", required: false)
     <script defer src="https://cdn.datatables.net/v/dt/dt-2.1.8/datatables.min.js"></script>
     <script>
-        // Función para abrir la barra lateral
         function openSidebar() {
             document.getElementById('mySidebar').classList.add('open');
-            document.getElementById('mainContent').classList.add('shifted');
+            document.getElementById('mainContent').classList.add('shifted'); // Mueve el contenido a la derecha
         }
 
-        // Función para cerrar la barra lateral
         function closeSidebar() {
             document.getElementById('mySidebar').classList.remove('open');
-            document.getElementById('mainContent').classList.remove('shifted');
+            document.getElementById('mainContent').classList.remove('shifted'); // Vuelve a la posición original
         }
+    
     </script>
 </body>
 </html>

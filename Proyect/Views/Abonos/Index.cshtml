@@ -8,17 +8,17 @@
 <h1 class="page-title">Abonos</h1>
 
 <p class="text-end">
-    <a asp-controller="Abonos" asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-success"><i class="bi bi-plus-square"></i> Crear Abono</a>
+    <a asp-controller="Abonos" asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear </a>
 </p>
 
 <table class="table table-striped table-hover" id="AbonoTable">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.IdReservaNavigation)</th>
-            <th>@Html.DisplayNameFor(model => model.FechaAbono)</th>
+            <th>Id de ls Reserva</th>
+            <th>Fecha de Abono</th>
             <th>@Html.DisplayNameFor(model => model.Total)</th>
             <th>@Html.DisplayNameFor(model => model.Estado)</th>
-            <th>Acciones</th>
+            <th>Operaciones</th>
         </tr>
     </thead>
     <tbody>
@@ -30,9 +30,9 @@
                 <td>@Html.DisplayFor(modelItem => item.Subtotal)</td>
                 <td>@Html.DisplayFor(modelItem => item.Estado)</td>
                 <td class="action-icons">
-                    <a asp-action="Edit" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-pencil-square"></i> Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-list"></i> Detalles</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-trash3"></i> Eliminar</a>
+                    <a asp-action="Edit" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-pencil-square"></i> </a> |
+                    <a asp-action="Details" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-list"></i> </a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-trash3"></i> </a>
                 </td>
             </tr>
         }
@@ -46,7 +46,8 @@
                 language: {
                     "sLengthMenu": "Mostrar _MENU_ entradas",
                     "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                    "sSearch": "Buscar:"
+                    "sSearch": "Buscar:",
+                    "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA"
                 }
             });
         })

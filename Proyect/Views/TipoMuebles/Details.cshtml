@@ -5,12 +5,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Detalles</h1>
+<h1 class="page-title">Detalles</h1>
 
-<div>
-    <h4>Tipo de Mueble</h4>
-    <hr />
-    <dl class="row">
+<div class="details-container">
+    <div class="card">
+        <div class="card-header">
+            <h4>Información del Rol</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Nombre)
         </dt>
@@ -24,8 +27,10 @@
             @Html.DisplayFor(model => model.Descripcion)
         </dd>
     </dl>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdTipoMueble">Editar</a> |
-    <a asp-action="Index">Volver</a>
+</div>
+    <div class="card-footer text-end">
+            <a asp-action="Edit" asp-route-id="@Model?.IdTipoMueble" class="btn btn-primary btn-sm">Editar</a>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
 </div>
