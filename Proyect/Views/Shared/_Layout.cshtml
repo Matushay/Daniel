@@ -12,49 +12,67 @@
     <link href="https://cdn.datatables.net/v/dt/dt-2.1.8/datatables.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Botón de abrir barra lateral -->
-    <button class="open-sidebar-btn" onclick="openSidebar()">&#9776;</button>
-    <br />
+    @if (!(ViewContext.RouteData.Values["controller"].ToString() == "Account" &&
+    (
+        ViewContext.RouteData.Values["action"].ToString() == "ResetPassword" ||
+        ViewContext.RouteData.Values["action"].ToString() == "Login" ||
+        ViewContext.RouteData.Values["action"].ToString() == "ForgotPassword")))
+    {
+        <!-- Botón de abrir barra lateral -->
+        <button class="open-sidebar-btn" onclick="openSidebar()">&#9776;</button>
+        <br />
 
-    <!-- Barra lateral -->
-    <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="close-btn" onclick="closeSidebar()">&times;</a>
-        <div class="navbar-nav flex-grow-1">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMuebles" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Habitacion
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMuebles">
-                    <li><a class="dropdown-item" href="/Habitaciones">habitacion</a></li>
-                    <li><a class="dropdown-item" href="/TipoHabitaciones">Tipo de Habitaciones</a></li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Muebles" asp-action="Index">Muebles</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Paquetes" asp-action="Index">Paquetes</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Abonos" asp-action="Index">Abonos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Permisos" asp-action="Index">Permisos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Reservas" asp-action="Index">Reservas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Servicios" asp-action="Index">Servicios</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
-            </li>
+        <!-- Barra lateral -->
+        <div id="mySidebar" class="sidebar">
+            <a href="javascript:void(0)" class="close-btn" onclick="closeSidebar()">&times;</a>
+            <div class="navbar-nav flex-grow-1">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMuebles" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Habitacion
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMuebles">
+                        <li><a class="dropdown-item" href="/Habitaciones/Index">Habitacion</a></li>
+                        <li><a class="dropdown-item" href="/TipoHabitaciones/Index">Tipo de Habitaciones</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Muebles" asp-action="Index">Muebles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Paquetes" asp-action="Index">Paquetes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Abonos" asp-action="Index">Abonos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Permisos" asp-action="Index">Permisos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Reservas" asp-action="Index">Reservas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Servicios" asp-action="Index">Servicios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
+                </li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <span class="nav-link text-light">Hola, @User.Identity.Name</span>
+                    </li>
+                    <li class="nav-item">
+                        <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
+                            <button type="submit" class="btn btn-link nav-link text-light">Cerrar sesión</button>
+                        </form>
+                    </li>
+                }
+            </div>
         </div>
-    </div>
+    }
 
     <!-- Contenido principal -->
     <div id="mainContent" class="content">

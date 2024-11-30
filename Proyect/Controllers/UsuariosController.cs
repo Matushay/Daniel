@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Proyect.Models;
 
 namespace Proyect.Controllers
 {
+    [Authorize]
     public class UsuariosController : Controller
     {
         private readonly ProyectContext _context;
@@ -56,7 +58,7 @@ namespace Proyect.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdUsuario,TipoDocumento,Documento,Nombre,Apellido,Celular,Direccion,CorreoElectronico,Estado,FechaCreacion,IdRol")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("IdUsuario,TipoDocumento,Documento,Nombre,Apellido,Celular,Direccion,CorreoElectronico,Estado,Contraseña,FechaCreacion,IdRol")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +92,7 @@ namespace Proyect.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,TipoDocumento,Documento,Nombre,Apellido,Celular,Direccion,CorreoElectronico,Estado,FechaCreacion,IdRol")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,TipoDocumento,Documento,Nombre,Apellido,Celular,Direccion,CorreoElectronico,Estado,Contraseña,FechaCreacion,IdRol")] Usuario usuario)
         {
             if (id != usuario.IdUsuario)
             {
