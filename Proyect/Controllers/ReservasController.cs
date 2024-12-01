@@ -34,7 +34,7 @@ namespace Proyect.Controllers
         public IActionResult Details(int id)
         {
             // Obtener la reserva con todos los detalles
-            var reserva = _context.Reservas
+            var reserva = _context.Reservasw
                 .Include(r => r.IdClienteNavigation)  // Incluir cliente
                 .Include(r => r.IdUsuarioNavigation)  // Incluir usuario
                 .Include(r => r.IdEstadoReservaNavigation)  // Incluir estado de reserva

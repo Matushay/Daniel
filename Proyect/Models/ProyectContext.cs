@@ -176,11 +176,6 @@ public partial class ProyectContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__DetalleSe__IdSer__7A672E12");
 
-            // Relación con FranjaHoraria
-            entity.HasOne(d => d.IdFranjaHorariaNavigation).WithMany()
-                .HasForeignKey(d => d.IdFranjaHoraria)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DetalleSe__IdFra__8B62F20C");
         });
 
         modelBuilder.Entity<EstadoReserva>(entity =>

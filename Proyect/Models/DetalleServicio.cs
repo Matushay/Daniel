@@ -11,8 +11,6 @@ public partial class DetalleServicio
 
     public int IdServicio { get; set; }
 
-    public int IdFranjaHoraria { get; set; }
-
     public int Cantidad { get; set; }
 
     public decimal Precio { get; set; }
@@ -23,5 +21,4 @@ public partial class DetalleServicio
 
     public virtual Servicio IdServicioNavigation { get; set; }
 
-    public virtual Servicio IdFranjaHorariaNavigation { get; set; }
 }
