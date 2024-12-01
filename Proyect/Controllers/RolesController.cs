@@ -12,6 +12,7 @@ using Proyect.Validaciones.ValidacionesLuis;
 namespace Proyect.Controllers
 {
     //[Authorize] // Restringimos el acceso a usuarios autenticados
+    //[Authorize] // Restringimos el acceso a usuarios autenticados
     public class RolesController : Controller
     {
         private readonly ProyectContext _context;
@@ -46,7 +47,7 @@ namespace Proyect.Controllers
             {
                 return NotFound();
             }
-
+           
 
             return View(role);
 
@@ -65,7 +66,7 @@ namespace Proyect.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //[Authorize(Policy = "ManageRoles")]
-       
+
         public IActionResult Create([Bind("IdRol,NombreRol,Descripcion")] Role role, List<int> selectedPermisos)
         {
             // Obtener nombres existentes para pasar al validador
@@ -172,8 +173,7 @@ namespace Proyect.Controllers
                     var permisosExistentes = _context.RolesPermisos.Where(rp => rp.IdRol == id).ToList();
                     _context.RolesPermisos.RemoveRange(permisosExistentes);
 
-
-                   //asignar permisos
+                    // Asignar permisos
                     if (selectedPermisos != null && selectedPermisos.Count > 0)
                     {
                         foreach (var permisoId in selectedPermisos)
@@ -211,6 +211,7 @@ namespace Proyect.Controllers
             return View(role);
         }
 
+
         // GET: Roles/Delete/5
         //[Authorize(Policy = "ManageRoles")]
         public async Task<IActionResult> Delete(int? id)
@@ -220,50 +221,81 @@ namespace Proyect.Controllers
                 return NotFound();
             }
 
-            var role = await _context.Roles.FindAsync(id);
+            var role = await _context.Roles
+                .Include(r => r.Usuarios) // Carga los usuarios asociados al rol
+                .FirstOrDefaultAsync(m => m.IdRol == id);
+
             if (role == null)
             {
                 return NotFound();
             }
 
-            return View(role);
+            // Si el rol tiene usuarios asociados, mostrar advertencia
+            if (role.Usuarios.Any())
+            {
+                TempData["Error"] = "Este rol tiene usuarios asociados y no se puede eliminar.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(role); // Pasar el rol a la vista
         }
 
-        // POST: Roles/Delete/5
 
+
+        // POST: Roles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        //[Authorize(Policy = "ManageRoles")]
+
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var role = await _context.Roles.FindAsync(id);
-            if (role != null)
+            try
             {
-                // Verificar si el rol está protegido
-                //if (role.Protegido)
-                //{
-                //    // Agregar un mensaje de error y regresar a la vista de índice
-                //    TempData["Error"] = "Este rol está protegido y no se puede eliminar.";
-                //    return RedirectToAction(nameof(Index));
-                //}
+                var role = await _context.Roles
+                    .Include(r => r.Usuarios) // Incluye los usuarios para verificar relaciones
+                    .FirstOrDefaultAsync(r => r.IdRol == id);
 
-                // Eliminar las relaciones con RolesPermisos antes de eliminar el rol
+                if (role == null)
+                {
+                    return NotFound();
+                }
+
+                // Verificar si el rol tiene usuarios asociados
+                if (role.Usuarios.Any())
+                {
+                    TempData["Error"] = "Este rol tiene usuarios asociados y no se puede eliminar.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Eliminar relaciones con RolesPermisos
                 var rolesPermisosExistentes = _context.RolesPermisos.Where(rp => rp.IdRol == id);
-                _context.RolesPermisos.RemoveRange(rolesPermisosExistentes); // Eliminamos las relaciones
+                _context.RolesPermisos.RemoveRange(rolesPermisosExistentes);
 
-                // Ahora eliminamos el rol
+                // Eliminar el rol
                 _context.Roles.Remove(role);
-                await _context.SaveChangesAsync(); // Guardamos los cambios en la base de datos
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "Rol eliminado correctamente.";
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RoleExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
 
             return RedirectToAction(nameof(Index));
         }
 
+        // Método auxiliar para verificar si el rol existe
         private bool RoleExists(int id)
         {
             return _context.Roles.Any(e => e.IdRol == id);
-        }
+        }  }
 
-    }
 }
