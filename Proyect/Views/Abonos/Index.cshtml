@@ -1,15 +1,23 @@
 @model IEnumerable<Proyect.Models.Abono>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lista de Abonos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Lista de Abonos</h1>
 
-<p class="text-end">
-    <a asp-controller="Abonos" asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear </a>
+<p>
+    @if (ViewBag.Pendiente > 0)
+    {
+        <a asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-primary">Crear Abono</a>
+    }
+    else
+    {
+        <button class="btn btn-secondary" disabled>No se pueden crear más abonos</button>
+    }
 </p>
+
 
 <table class="table" id="AbonoTable">
     <thead>
@@ -19,7 +27,7 @@
             <th>@Html.DisplayNameFor(model => model.Pendiente)</th>
             <th>@Html.DisplayNameFor(model => model.ValorAbono)</th>
             <th>@Html.DisplayNameFor(model => model.Porcentaje)</th>
-            <th>@Html.DisplayNameFor(model => model.Comprobante)</th>
+            <th>@Html.DisplayNameFor(model => model.IdReservaNavigation.IdReserva)</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -41,15 +49,33 @@
                     {
                         <span>No disponible</span>
                     }
-                <td class="action-icons">
-                    <a asp-action="Edit" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-pencil-square"></i> </a> |
-                    <a asp-action="Details" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-list"></i> </a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-trash3"></i> </a>
+                <td>@Html.DisplayFor(modelItem => item.IdReservaNavigation.IdReserva)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.IdAbono" class="btn btn-info">Detalles</a>
+
+                    @if (!item.Anulado)
+                    {
+                        <!-- Si el abono no está anulado, se muestra el botón "Anular" -->
+                        <form asp-action="Anular" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@item.IdAbono" />
+                            <button type="submit" class="btn btn-danger">Anular</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <!-- Si el abono está anulado, mostrar un botón gris y deshabilitarlo -->
+                        <button class="btn btn-secondary" disabled>Anulado</button>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+
+
+
+
 
 @section Scripts {
     <script>

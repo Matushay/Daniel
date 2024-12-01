@@ -20,18 +20,43 @@ namespace Proyect.Controllers
             _context = context;
         }
 
+
         // GET: Abonos/Index
-        public async Task<IActionResult> Index(int idReserva)
+        public async Task<IActionResult> Index(int? idReserva)
         {
-            // Obtiene los abonos asociados a la reserva
+            if (idReserva == null)
+            {
+                return NotFound();
+            }
+
             var abonos = await _context.Abonos
                 .Include(a => a.IdReservaNavigation)
-                .Include(a => a.IdEstadoAbonoNavigation) // Opcional: incluye otros datos relacionados
-                .Where(a => a.IdReserva == idReserva) // Filtra por la reserva específica
+                .Include(a => a.IdEstadoAbonoNavigation)
+                .Where(a => a.IdReserva == idReserva)
                 .ToListAsync();
 
-            // Pasar el IdReserva a la vista para mantenerlo visible
+            // Calcular el total abonado (excluyendo los anulados)
+            var totalAbonado = abonos
+                .Where(a => !a.Anulado)
+                .Sum(a => (decimal?)a.ValorAbono) ?? 0;
+
+            var reserva = await _context.Reservas
+                .FirstOrDefaultAsync(r => r.IdReserva == idReserva);
+
+            if (reserva == null)
+            {
+                return NotFound();
+            }
+
+            var pendiente = Math.Max(0, reserva.Total - totalAbonado);
+
+            // Verificar si hay algún abono anulado
+            var tieneAbonoAnulado = abonos.Any(a => a.Anulado);
+
+            // Pasar los valores necesarios a la vista
             ViewBag.IdReserva = idReserva;
+            ViewBag.Pendiente = pendiente;
+            ViewBag.TieneAbonoAnulado = tieneAbonoAnulado; // Pasar si hay abono anulado
 
             return View(abonos);
         }
@@ -70,9 +95,9 @@ namespace Proyect.Controllers
                 return NotFound();
             }
 
-            // Calcular el total abonado hasta el momento
+            // Calcular el total abonado hasta el momento (excluyendo los anulados)
             var totalAbonado = _context.Abonos
-                .Where(a => a.IdReserva == idReserva)
+                .Where(a => a.IdReserva == idReserva && !a.Anulado) // Excluir abonos anulados
                 .Sum(a => (decimal?)a.ValorAbono) ?? 0; // Manejo de valores nulos
 
             // Calcular el saldo pendiente
@@ -100,66 +125,84 @@ namespace Proyect.Controllers
             [Bind("IdAbono,IdReserva,ValorAbono,Porcentaje,Valordeuda,Pendiente,IdEstadoAbono")] Abono abono,
             IFormFile comprobanteFile)
         {
+            //var validator = new Validaciones.ValidacionAbono();
+            //var validationResult = validator.Validate(abono);
+
+            //if (!validationResult.IsValid)
+            //{
+            //    foreach (var error in validationResult.Errors)
+            //    {
+            //        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            //    }
+            //}
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Asignar la fecha actual al campo FechaAbono
                     abono.FechaAbono = DateTime.Now;
-
-                    // Obtener la reserva asociada
                     var reserva = await _context.Reservas.FirstOrDefaultAsync(r => r.IdReserva == abono.IdReserva);
-                    if (reserva == null)
-                    {
-                        return NotFound();
-                    }
+                    if (reserva == null) return NotFound();
 
-                    // Calcular el total abonado hasta el momento
                     var totalAbonado = await _context.Abonos
-                        .Where(a => a.IdReserva == abono.IdReserva)
+                        .Where(a => a.IdReserva == abono.IdReserva && !a.Anulado)
                         .SumAsync(a => (decimal?)a.ValorAbono) ?? 0;
 
-                    // Asignar el valor de la deuda desde la reserva
                     abono.Valordeuda = reserva.Total;
-
-                    // Calcular el saldo pendiente después del abono
                     abono.Pendiente = Math.Max(0, abono.Valordeuda - (totalAbonado + abono.ValorAbono));
 
-                    // Calcular el porcentaje abonado
-                    abono.Porcentaje = abono.Valordeuda > 0
-                        ? Math.Round((abono.ValorAbono / abono.Valordeuda) * 100, 2)
-                        : 0;
-
-                    // Procesar el archivo comprobante si existe
                     if (comprobanteFile != null && comprobanteFile.Length > 0)
                     {
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            await comprobanteFile.CopyToAsync(memoryStream);
-                            abono.Comprobante = memoryStream.ToArray(); // Convertir a byte[]
-                        }
+                        using var memoryStream = new MemoryStream();
+                        await comprobanteFile.CopyToAsync(memoryStream);
+                        abono.Comprobante = memoryStream.ToArray();
                     }
 
-                    // Guardar el abono en la base de datos
                     _context.Add(abono);
                     await _context.SaveChangesAsync();
-
                     return RedirectToAction("Index", new { idReserva = abono.IdReserva });
                 }
                 catch (Exception ex)
                 {
-                    // Registrar el error en los logs
                     Console.WriteLine($"Error al crear abono: {ex.Message}");
                     ModelState.AddModelError("", "Se produjo un error al crear el abono. Intenta nuevamente.");
                 }
             }
 
-            // Si hay errores en el modelo, cargar los datos para la vista
             ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "Nombre", abono.IdEstadoAbono);
             return View(abono);
         }
 
 
+
+
+        // POST: Abonos/Anular/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Anular(int id)
+        {
+            var abono = await _context.Abonos.FindAsync(id);
+            if (abono == null)
+            {
+                return NotFound();
+            }
+
+            // Marcar el abono como anulado
+            abono.Anulado = true;
+
+            try
+            {
+                _context.Update(abono);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al anular abono: {ex.Message}");
+                ModelState.AddModelError("", "Se produjo un error al anular el abono.");
+            }
+
+            return RedirectToAction("Index", new { idReserva = abono.IdReserva });
+        }
 
 
 

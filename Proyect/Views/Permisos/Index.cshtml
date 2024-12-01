@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Proyect.Models.Permiso>
+@model IEnumerable<Proyect.Models.Permiso>
 
 @{
     ViewData["Title"] = "Index";
@@ -10,14 +10,13 @@
 <p class="text-end">
     <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear   </a>
 </p>
-
-<table class="table table-striped table-hover" id="PermisosTable">
+<table class="table" id="PermisosTable">
     <thead>
         <tr>
-            <th>Nombre del Permiso</th>
+            <th>@Html.DisplayNameFor(model => model.NombrePermiso)</th>
             <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
             <th>@Html.DisplayNameFor(model => model.Estado)</th>
-            <th>Operaciones</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -32,13 +31,24 @@
                     <a asp-action="Details" asp-route-id="@item.IdPermiso" class="btn btn-icon"><i class="bi bi-list"></i> </a> |
                     <a asp-action="Delete" asp-route-id="@item.IdPermiso" class="btn btn-icon"><i class="bi bi-trash3"></i> </a>
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripcion)
+                </td>
+                
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdPermiso">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdPermiso">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdPermiso">Delete</a>
+                </td>
             </tr>
         }
     </tbody>
 </table>
 
 @section Scripts {
-    <script>
+
+     <script>
+
         $(document).ready(function () {
             $('#PermisosTable').DataTable({
                 language: {

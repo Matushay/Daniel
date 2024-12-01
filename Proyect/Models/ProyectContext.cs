@@ -176,11 +176,6 @@ public partial class ProyectContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__DetalleSe__IdSer__7A672E12");
 
-            // Relación con FranjaHoraria
-            entity.HasOne(d => d.IdFranjaHorariaNavigation).WithMany()
-                .HasForeignKey(d => d.IdFranjaHoraria)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DetalleSe__IdFra__8B62F20C");
         });
 
         modelBuilder.Entity<EstadoReserva>(entity =>
@@ -334,7 +329,7 @@ public partial class ProyectContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Estado).HasDefaultValue(true);
+            //entity.Property(e => e.Estado).HasDefaultValue(true);
             entity.Property(e => e.NombrePermiso)
                 .IsRequired()
                 .HasMaxLength(100)

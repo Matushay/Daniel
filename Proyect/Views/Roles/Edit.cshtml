@@ -1,27 +1,29 @@
 ﻿    @model Proyect.Models.Role
 
 @{
-    ViewData["Title"] = "Editar Rol";
+    ViewData["Title"] = "Edit Role";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="page-title">Editar Rol</h1>
-
-<h4 class="form-subtitle">Modifica los detalles del rol</h4>
+<h1>Editar Rol</h1>
 <hr />
 
-<div class="row justify-content-center">
+<div class="row">
     <div class="col-md-6">
-        <form asp-action="Edit" class="form-container">
+        <form asp-action="Edit" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+            <!-- Campo oculto para el Id del Rol -->
             <input type="hidden" asp-for="IdRol" />
 
+            <!-- Nombre del Rol -->
             <div class="form-group">
                 <label asp-for="NombreRol" class="form-label">Nombre del Rol</label>
                 <input asp-for="NombreRol" class="form-control" placeholder="Ingresa el nombre del rol" />
                 <span asp-validation-for="NombreRol" class="text-danger"></span>
             </div>
+
+            <!-- Descripción del Rol -->
 
             <div class="form-group">
                 <label asp-for="Descripcion" class="form-label">Descripción</label>
@@ -29,19 +31,45 @@
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
 
+            <!-- Permisos asociados al Rol (Checkboxes) -->
             <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-primary btn-lg w-100" />
+                <label class="control-label">Permisos:</label>
+                @if (ViewData["Permisos"] is List<Proyect.Models.Permiso> permisos && permisos.Any())
+                {
+                    foreach (var permiso in permisos)
+                    {
+                        <div class="form-check">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   name="selectedPermisos"
+                                   value="@permiso.IdPermiso"
+                            @(ViewData["SelectedPermisos"] is List<int> selectedPermisos
+                                && selectedPermisos.Contains(permiso.IdPermiso) ? "checked" : "") />
+                            <label class="form-check-label">@permiso.NombrePermiso</label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No hay permisos disponibles.</p>
+                }
+
             </div>
+
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
         </form>
     </div>
 </div>
 
-<div class="mt-4 text-center">
-    <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
+<div>
+    <a asp-action="Index">Volver a la lista de Roles</a>
+
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+
+};
+

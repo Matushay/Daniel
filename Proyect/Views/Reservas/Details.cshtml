@@ -8,96 +8,129 @@
 <h1 class="page-title">Detalles de la Reserva</h1>
 
 <div>
-    <h4>Reserva</h4>
+    <h4>Datos del Cliente</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaReserva)
+        <dt class="col-sm-2">
+            <strong>Nombre:</strong>
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaReserva)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaInicio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaInicio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaFin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaFin)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Subtotal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Subtotal)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Iva)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Iva)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Total)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Total)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descuento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descuento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoPersonas)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoPersonas)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdClienteNavigation.Nombre)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdClienteNavigation)
+            <strong>Apellido:</strong>
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IdClienteNavigation.Apellido)
         </dd>
-
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdEstadoReservaNavigation)
+            <strong>Documento:</strong>
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdEstadoReservaNavigation.Estados)
+            @Html.DisplayFor(model => model.IdClienteNavigation.Documento)
+        </dd>
+        <dt class="col-sm-2">
+            <strong>Celular:</strong>
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdClienteNavigation.Celular)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdMetodoPagoNavigation)
+            <strong>Correo:</strong>
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdMetodoPagoNavigation.Nombre)
+            @Html.DisplayFor(model => model.IdClienteNavigation.CorreoElectronico)
         </dd>
-
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdPaqueteNavigation)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdPaqueteNavigation.Nombre)
-        </dd>
-
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdUsuarioNavigation)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdUsuarioNavigation.Apellido)
-        </dd>
-
     </dl>
 </div>
+
+<h4>Reserva</h4>
+<hr />
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.FechaReserva)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.FechaReserva)
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.FechaInicio)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.FechaInicio)
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.FechaFin)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.FechaFin)
+    </dd>
+
+
+    <!-- Paquetes seleccionados -->
+    <dt class="col-sm-2">Paquetes Seleccionados</dt>
+    <dd class="col-sm-10">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre del Paquete</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var paquete in ViewBag.DetallePaquetes)
+                {
+                    <tr>
+                        <td>@paquete.Paquete</td>
+                        <td>@paquete.Precio.ToString("C2", new System.Globalization.CultureInfo("es-CO"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </dd>
+
+    <!-- Servicios seleccionados -->
+    <dt class="col-sm-2">Servicios Seleccionados</dt>
+    <dd class="col-sm-10">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre del Servicio</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var servicio in ViewBag.DetalleServicios)
+                {
+                    <tr>
+                        <td>@servicio.Servicio</td>
+                        <td>@servicio.Cantidad</td>
+                        <td>@servicio.Precio.ToString("C2", new System.Globalization.CultureInfo("es-CO"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </dd>
+
+    <!-- Mostrar el Total -->
+    <dt class="col-sm-2">
+        <strong>Total</strong>
+    </dt>
+    <dd class="col-sm-10">
+        <strong>@Model.Total.ToString("C2", new System.Globalization.CultureInfo("es-CO"))</strong>
+    </dd>
+</dl>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdReserva">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.IdReserva">Editar</a> |
+    <a asp-action="Index">Volver a la lista</a>
+</div>
+
+<div>
+    <a asp-action="DescargarPDF" asp-route-id="@Model?.IdReserva" class="btn btn-primary">Descargar PDF</a>
 </div>
 

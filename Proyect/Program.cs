@@ -1,3 +1,4 @@
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using MailKit;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -6,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Proyect.Models;
 using Proyect.Servicios;
 using Proyect.Validaciones;
+using Proyect.Validaciones.ValidacionesLuis;
+
 
 namespace Proyect
 {
@@ -37,21 +40,27 @@ namespace Proyect
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/Account/Login"; // Redirige a la página de inicio de sesión si no está autenticado
+                    options.LoginPath = "/Account/Login"; // Redirige a la pï¿½gina de inicio de sesiï¿½n si no estï¿½ autenticado
                     options.AccessDeniedPath = "/Account/AccessDenied";
                 });
 
             // Add services to the container.
+
+            // Registrar validadores especï¿½ficos si es necesario
+            builder.Services.AddScoped<IValidator<Usuario>, UsuarioValidator>();
+            builder.Services.AddScoped<IValidator<Role>, RolValidator>();
+            builder.Services.AddScoped<IValidator<Permiso>, PermisoValidator>();
+
+            // Agregar servicios necesarios para la aplicaciï¿½n
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Configuraciï¿½n de la tuberï¿½a de solicitudes HTTP
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts();  // Configuraciï¿½n para entornos de producciï¿½n
             }
             using (var scope = app.Services.CreateScope())
             {
@@ -65,10 +74,10 @@ namespace Proyect
                         Nombre = "Administrador", 
                         Apellido = "Principal", 
                         Celular = "1234567890", 
-                        Direccion = "Dirección Admin", 
+                        Direccion = "Direcciï¿½n Admin", 
                         CorreoElectronico = "admin@proyect.com", 
                         Estado = true, 
-                        Contraseña = "Admin123.", 
+                        Contraseï¿½a = "Admin123.", 
                         FechaCreacion = DateTime.Now, 
                         IdRol = 1 
                     }; 
@@ -82,6 +91,7 @@ namespace Proyect
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // Configuraciï¿½n de rutas para controladores MVC
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Account}/{action=Login}/{id?}");

@@ -1,13 +1,11 @@
 ﻿@model Proyect.Models.Abono
 
 @{
-
     ViewData["Title"] = "Crear Abono";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1 class="page-title">Crear Nuevo Abono</h1>
-
 
 <div class="create-container">
     <div class="card">
@@ -18,71 +16,63 @@
             <form asp-action="Create" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <!-- IdReserva (readonly) -->
-            <div class="form-group">
-                <label asp-for="IdReserva" class="control-label">Id Reserva</label>
-                <input asp-for="IdReserva" class="form-control" readonly />
-            </div>
+                <!-- IdReserva (readonly) -->
+                <div class="form-group">
+                    <label asp-for="IdReserva" class="control-label">Id Reserva</label>
+                    <input asp-for="IdReserva" class="form-control" readonly />
+                </div>
 
-            <!-- Mostrar valor total de la deuda -->
-            <div class="form-group">
-                <label asp-for="Valordeuda" class="control-label">Valor Deuda</label>
-                <input asp-for="Valordeuda" class="form-control" readonly value="@Model.Valordeuda.ToString("0")" />
-            </div>
+                <!-- Mostrar valor total de la deuda -->
+                <div class="form-group">
+                    <label asp-for="Valordeuda" class="control-label">Valor Deuda</label>
+                    <input asp-for="Valordeuda" class="form-control" readonly value="@Model.Valordeuda.ToString("0")" />
+                </div>
 
-            <!-- Campo Pendiente (calculado dinámicamente) -->
-            <div class="form-group">
-                <label for="PendienteActual" class="control-label">Pendiente</label>
-                <input type="text" class="form-control" id="PendienteActual" readonly
-                       value="@Model.Pendiente.ToString("C")" />
-                <span asp-validation-for="Pendiente" class="text-danger"></span>
-            </div>
+                <!-- Campo Pendiente (calculado dinámicamente) -->
+                <div class="form-group">
+                    <label for="PendienteActual" class="control-label">Pendiente</label>
+                    <input type="text" class="form-control" id="PendienteActual" readonly value="@Model.Pendiente.ToString("0")" />
+                </div>
 
-            <!-- Campo para el Valor del Abono -->
-            <div class="form-group">
-                <label asp-for="ValorAbono" class="control-label">Valor Abono</label>
-                <input asp-for="ValorAbono" class="form-control" id="ValorAbono" oninput="calcularPendienteYPorcentaje()" />
-                <span asp-validation-for="ValorAbono" class="text-danger"></span>
-            </div>
+                <!-- Campo para el Valor del Abono -->
+                <div class="form-group">
+                    <label asp-for="ValorAbono" class="control-label">Valor Abono</label>
+                    <input asp-for="ValorAbono" class="form-control" id="ValorAbono" oninput="calcularPendienteYPorcentaje()" />
+                    <span asp-validation-for="ValorAbono" class="text-danger"></span>
+                </div>
 
-            <!-- Campo Porcentaje calculado dinámicamente -->
-            <div class="form-group">
-                <label for="PorcentajePago" class="control-label">Porcentaje del Pago</label>
-                <input type="text" class="form-control" id="PorcentajePago" readonly value="0 %" />
-                <span asp-validation-for="Porcentaje" class="text-danger"></span>
-            </div>
+                <!-- Campo Porcentaje calculado dinámicamente -->
+                <div class="form-group">
+                    <label for="PorcentajePago" class="control-label">Porcentaje del Pago</label>
+                    <input type="text" class="form-control" id="PorcentajePago" readonly value="0 %" />
+                </div>
 
-            <!-- Campo para cargar una sola imagen -->
+                <!-- Campo para cargar una sola imagen -->
                 <div class="form-group">
                     <label asp-for="Comprobante" class="control-label">Comprobante</label>
                     <input class="form-control" type="file" id="Comprobante" name="comprobanteFile" accept="image/*" onchange="previewImage(event)" />
                     <span asp-validation-for="Comprobante" class="text-danger"></span>
                 </div>
 
-
-
-
-            <!-- Contenedor para la imagen del comprobante -->
-            <div class="form-group">
-                <label>Imagen del Comprobante</label>
-                <div id="imageContainer" style="width: 100%; height: 300px; border: 1px solid #ccc; padding: 10px; overflow: hidden;">
-                    <!-- La imagen se mostrará aquí -->
+                <!-- Contenedor para la imagen del comprobante -->
+                <div class="form-group">
+                    <label>Imagen del Comprobante</label>
+                    <div id="imageContainer" style="width: 100%; height: 300px; border: 1px solid #ccc; padding: 10px; overflow: hidden;">
+                        <!-- La imagen se mostrará aquí -->
+                    </div>
                 </div>
-            </div>
 
+                <!-- Selección de Estado del Abono -->
+                <div class="form-group">
+                    <label asp-for="IdEstadoAbono" class="control-label">Estado Abono</label>
+                    <select asp-for="IdEstadoAbono" class="form-control" asp-items="ViewBag.IdEstadoAbono"></select>
+                </div>
 
-
-
-            <!-- Selección de Estado del Abono -->
-            <div class="form-group">
-                <label asp-for="IdEstadoAbono" class="control-label">Estado Abono</label>
-                <select asp-for="IdEstadoAbono" class="form-control" asp-items="ViewBag.IdEstadoAbono"></select>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -93,14 +83,23 @@
             const pendienteInicial = parseFloat("@Model.Pendiente") || 0;
             const deudaTotal = parseFloat("@Model.Valordeuda") || 0;
 
-            const valorAbono = parseFloat(document.getElementById("ValorAbono").value) || 0;
+            let valorAbono = parseFloat(document.getElementById("ValorAbono").value) || 0;
 
+            // Validar que el valor del abono no exceda el pendiente
+            if (valorAbono > pendienteInicial) {
+                document.getElementById("ValorAbono").setCustomValidity("El valor del abono no puede exceder el saldo pendiente.");
+            } else {
+                document.getElementById("ValorAbono").setCustomValidity("");
+            }
+
+            // Calcular el nuevo pendiente
             const nuevoPendiente = Math.max(0, pendienteInicial - valorAbono);
             document.getElementById("PendienteActual").value = nuevoPendiente.toLocaleString('es-CO', {
                 style: 'currency',
                 currency: 'COP'
             });
 
+            // Calcular el porcentaje del pago
             const porcentajePago = deudaTotal > 0 ? (valorAbono / deudaTotal) * 100 : 0;
             document.getElementById("PorcentajePago").value = porcentajePago.toFixed(2) + " %";
         }
@@ -112,23 +111,26 @@
             // Limpiar el contenedor antes de agregar la nueva imagen
             imageContainer.innerHTML = '';
 
-            // Verificar si se seleccionó un archivo
             if (file) {
                 const reader = new FileReader();
-
                 reader.onload = function (e) {
                     const img = document.createElement('img');
                     img.src = e.target.result;
-                    img.style.width = '100%';  // Hace que la imagen ocupe todo el contenedor
-                    img.style.height = '100%'; // Asegura que la imagen ocupe toda la altura
-                    img.style.objectFit = 'cover';  // Recorta la imagen si es necesario para que ocupe todo el espacio
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'contain'; // Mostrar la imagen completa dentro del contenedor
                     imageContainer.appendChild(img);
                 };
-
                 reader.readAsDataURL(file);
             }
         }
 
+        // Actualizar dinámicamente los valores al escribir
+        document.getElementById("ValorAbono").addEventListener("input", calcularPendienteYPorcentaje);
 
+        // Inicializar valores al cargar la página
+        window.onload = function () {
+            calcularPendienteYPorcentaje();
+        };
     </script>
 }

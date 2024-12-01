@@ -11,7 +11,9 @@ public partial class Role
 
     public string Descripcion { get; set; }
 
-    public virtual ICollection<RolesPermiso> RolesPermisos { get; set; } = new List<RolesPermiso>();
+    //public bool Protegido { get; set; } // Nueva propiedad para marcar roles protegidos
 
+    public virtual ICollection<RolesPermiso> RolesPermisos { get; set; } = new List<RolesPermiso>();
+  
     public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

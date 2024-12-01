@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Proyect.Models;
+using Proyect.Validaciones.ValidacionesLuis; // Importar las validaciones
 
 namespace Proyect.Controllers
 {
@@ -18,6 +18,7 @@ namespace Proyect.Controllers
         public UsuariosController(ProyectContext context)
         {
             _context = context;
+            
         }
 
         // GET: Usuarios
@@ -49,54 +50,78 @@ namespace Proyect.Controllers
         // GET: Usuarios/Create
         public IActionResult Create()
         {
-            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "NombreRol");
+            ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol");
             return View();
         }
 
         // POST: Usuarios/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdUsuario,TipoDocumento,Documento,Nombre,Apellido,Celular,Direccion,CorreoElectronico,Estado,Contraseña,FechaCreacion,IdRol")] Usuario usuario)
         {
+            // Validación manual con el validador
+            var validator = new UsuarioValidator(_context); // Crear instancia del validador
+            var validationResult = validator.Validate(usuario); // Validar de forma síncrona
+
+            if (!validationResult.IsValid)
+            {
+                // Si la validación falla, agregar los errores al ModelState
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(usuario);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges(); // Operación síncrona para mantener consistencia
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
+
+            // Si hay errores, recargar los roles y devolver la vista
+            ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
 
+
         // GET: Usuarios/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
-            {
-                return NotFound();
-            }
-
-            var usuario = await _context.Usuarios.FindAsync(id);
+            { return NotFound();}
+             
+       
+            var usuario = _context.Usuarios.Find(id);
             if (usuario == null)
-            {
+
                 return NotFound();
-            }
-            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
+
+            ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
 
         // POST: Usuarios/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,TipoDocumento,Documento,Nombre,Apellido,Celular,Direccion,CorreoElectronico,Estado,Contraseña,FechaCreacion,IdRol")] Usuario usuario)
         {
             if (id != usuario.IdUsuario)
-            {
                 return NotFound();
+
+            // Validación manual con el validador
+            var validator = new UsuarioValidator(_context); // Crear instancia del validador
+            var validationResult = validator.Validate(usuario); // Validar de forma síncrona
+
+            if (!validationResult.IsValid)
+            {
+                // Si la validación falla, agregar los errores al ModelState
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
             }
 
             if (ModelState.IsValid)
@@ -104,23 +129,38 @@ namespace Proyect.Controllers
                 try
                 {
                     _context.Update(usuario);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges(); // Operación síncrona
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UsuarioExists(usuario.IdUsuario))
-                    {
+                    if (!_context.Usuarios.Any(e => e.IdUsuario == usuario.IdUsuario))
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdRol"] = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
+
+            // Si hay errores, recargar los roles y devolver la vista
+            ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
+        }
+
+
+        // POST: Usuarios/ActualizarEstado
+        [HttpPost]
+        public async Task<IActionResult> ActualizarEstado(int id, bool estado)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario != null)
+            {
+                usuario.Estado = estado;
+                _context.Update(usuario);
+                await _context.SaveChangesAsync();
+                return Ok(); // Responde con éxito
+            }
+            return BadRequest(); // En caso de error
         }
 
         // GET: Usuarios/Delete/5
@@ -163,3 +203,5 @@ namespace Proyect.Controllers
         }
     }
 }
+
+
