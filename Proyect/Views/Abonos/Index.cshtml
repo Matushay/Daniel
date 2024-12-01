@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Proyect.Models.Abono>
+@model IEnumerable<Proyect.Models.Abono>
 
 @{
     ViewData["Title"] = "Index";
@@ -7,8 +7,8 @@
 
 <h1>Lista de Abonos</h1>
 
-<p>
-    <a asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-primary">Crear Abono</a>
+<p class="text-end">
+    <a asp-controller="Abonos" asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear </a>
 </p>
 
 <table class="table" id="AbonoTable">
@@ -19,9 +19,7 @@
             <th>@Html.DisplayNameFor(model => model.Pendiente)</th>
             <th>@Html.DisplayNameFor(model => model.ValorAbono)</th>
             <th>@Html.DisplayNameFor(model => model.Porcentaje)</th>
-            <th>Comprobante</th>
-            <th>@Html.DisplayNameFor(model => model.IdEstadoAbonoNavigation.Nombre)</th>
-            <th>@Html.DisplayNameFor(model => model.IdReservaNavigation.IdReserva)</th>
+            <th>@Html.DisplayNameFor(model => model.Comprobante)</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -43,13 +41,10 @@
                     {
                         <span>No disponible</span>
                     }
-                </td>
-                <td>@Html.DisplayFor(modelItem => item.IdEstadoAbonoNavigation.Nombre)</td>
-                <td>@Html.DisplayFor(modelItem => item.IdReservaNavigation.IdReserva)</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdAbono">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdAbono">Detalles</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdAbono">Eliminar</a>
+                <td class="action-icons">
+                    <a asp-action="Edit" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-pencil-square"></i> </a> |
+                    <a asp-action="Details" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-list"></i> </a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdAbono" class="btn btn-icon"><i class="bi bi-trash3"></i> </a>
                 </td>
             </tr>
         }
@@ -63,7 +58,8 @@
                 language: {
                     "sLengthMenu": "Mostrar _MENU_ entradas",
                     "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                    "sSearch": "Buscar:"
+                    "sSearch": "Buscar:",
+                    "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA"
                 }
             });
         });
