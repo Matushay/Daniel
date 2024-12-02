@@ -18,17 +18,17 @@
             <th>@Html.DisplayNameFor(model => model.Documento)</th>
             <th>@Html.DisplayNameFor(model => model.Nombre)</th>
             <th>@Html.DisplayNameFor(model => model.Apellido)</th>
-            <th>@Html.DisplayNameFor(model => model.Direccion)</th>
             <th>@Html.DisplayNameFor(model => model.Estado)</th>
             <th>@Html.DisplayNameFor(model => model.IdRolNavigation)</th>
             <th>Acciones</th>
-       
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+                <td>@Html.DisplayFor(modelItem => item.TipoDocumento)</td>
+                <td>@Html.DisplayFor(modelItem => item.Documento)</td>
                 <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
                 <td>@Html.DisplayFor(modelItem => item.Apellido)</td>
                 <td>@Html.DisplayFor(modelItem => item.Estado)</td>

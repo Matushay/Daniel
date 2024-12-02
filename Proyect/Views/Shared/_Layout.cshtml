@@ -14,75 +14,79 @@
 <body>
     @if (!(ViewContext.RouteData.Values["controller"].ToString() == "Account" &&
     (
-        ViewContext.RouteData.Values["action"].ToString() == "ResetPassword" ||
-        ViewContext.RouteData.Values["action"].ToString() == "Login" ||
-        ViewContext.RouteData.Values["action"].ToString() == "ForgotPassword")))
-    {
-        <!-- Botón de abrir barra lateral -->
-        <button class="open-sidebar-btn" onclick="openSidebar()">&#9776;</button>
-        <br />
+    ViewContext.RouteData.Values["action"].ToString() == "ResetPassword" ||
+    ViewContext.RouteData.Values["action"].ToString() == "Login" ||
+    ViewContext.RouteData.Values["action"].ToString() == "ForgotPassword")))
 
-    <!-- Barra lateral -->
-    <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="close-btn" onclick="closeSidebar()">&times;</a>
-        <div class="navbar-nav flex-grow-1">
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill"></i>Home</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMuebles" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-door-closed"></i>Habitacion
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMuebles">
-                    <li><a class="dropdown-item" href="/Habitaciones/Index">Habitaciones</a></li>
-                        <li><a class="dropdown-item" href="/TipoHabitaciones/Index">Tipo de Habitaciones</a></li>
-                </ul>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMuebles" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-lamp-fill"></i>Muebles
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMuebles">
-                        <li><a class="dropdown-item" href="/Muebles/Index">Muebles</a></li>
-                        <li><a class="dropdown-item" href="/TipoMuebles/Index">Tipo de Muebles</a></li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index"><i class="bi bi-person-fill-gear"></i>Roles</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Paquetes" asp-action="Index"><i class="bi bi-archive-fill"></i>Paquetes</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Abonos" asp-action="Index"><i class="bi bi-coin"></i>Abonos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Permisos" asp-action="Index"><i class="bi bi-card-checklist"></i>Permisos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Reservas" asp-action="Index"><i class="bi bi-calendar2-week-fill"></i>Reservas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Servicios" asp-action="Index"><i class="bi bi-database-fill-gear"></i>Servicios</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index"><i class="bi bi-people-fill"></i>Usuarios</a>
-            </li>
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <li class="nav-item">
-                        <span class="nav-link text-light">Hola, @User.Identity.Name</span>
-                    </li>
-                    <li class="nav-item">
-                        <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
-                            <button type="submit" class="btn btn-link nav-link text-light">Cerrar sesión</button>
-                        </form>
-                    </li>
-                }
+    {
+        <!-- Barra lateral -->
+        <div id="mySidebar" class="sidebar">
+            <a href="javascript:void(0)" class="close-btn" onclick="closeSidebar()">&times;</a>
+            <div class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill"></i>Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMuebles" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-door-closed"></i>Habitación
+                    </a>
+                    <ul class="dropdown-menu text-dark" aria-labelledby="navbarDropdownMuebles">
+                        <li><a class="dropdown-item text-dark" href="/Habitaciones/Index">Habitaciones</a></li>
+                        <li><a class="dropdown-item text-dark" href="/TipoHabitaciones/Index">Tipo de Habitaciones</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMuebles" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-lamp-fill"></i>Muebles
+                    </a>
+                    <ul class="dropdown-menu text-dark" aria-labelledby="navbarDropdownMuebles">
+                        <li><a class="dropdown-item text-dark" href="/Muebles/Index">Muebles</a></li>
+                        <li><a class="dropdown-item text-dark" href="/TipoMuebles/Index">Tipo de Muebles</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index"><i class="bi bi-person-fill-gear"></i>Roles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Paquetes" asp-action="Index"><i class="bi bi-archive-fill"></i>Paquetes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Abonos" asp-action="Index"><i class="bi bi-coin"></i>Abonos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Permisos" asp-action="Index"><i class="bi bi-card-checklist"></i>Permisos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Reservas" asp-action="Index"><i class="bi bi-calendar2-week-fill"></i>Reservas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Servicios" asp-action="Index"><i class="bi bi-database-fill-gear"></i>Servicios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index"><i class="bi bi-people-fill"></i>Usuarios</a>
+                </li>
             </div>
         </div>
-    }
+        <!-- Barra superior con el nombre de usuario y botón de cerrar sesión -->
+        <div class="top-navbar">
+            <div class="brand">
+                <!-- Aquí va el logo o nombre del proyecto si es necesario -->
+                <i class=" sidebar-toggle" onclick="openSidebar()"> <img src="~/img/logo.png" alt="Logo" class="img-fluid rounded-circle" style="max-width: 40px; height: 40px; object-fit: cover; margin-top:-10px;" /></i>
 
+            </div>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="user-info">
+                    <span class="username">Usuario: @User.Identity.Name</span>
+                    <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
+                        <button type="submit" class="logoutButton">Cerrar sesión</button>
+                    </form>
+                </div>
+            }
+        </div>
+    }
+    
     <!-- Contenido principal -->
     <div id="mainContent" class="content">
         <div class="container">
@@ -100,7 +104,7 @@
     <script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    <script defer src="https://cdn.datatables.net/v/dt/dt-2.1.8/datatables.min.js"></script>
+
     <script>
         function openSidebar() {
             document.getElementById('mySidebar').classList.add('open');
@@ -111,7 +115,7 @@
             document.getElementById('mySidebar').classList.remove('open');
             document.getElementById('mainContent').classList.remove('shifted'); // Vuelve a la posición original
         }
-    
     </script>
+
 </body>
 </html>

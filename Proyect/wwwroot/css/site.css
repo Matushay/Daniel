@@ -12,19 +12,18 @@ html {
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #F5F1E7;
-    margin: 0;
-    padding: 0;
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 100vh;
-    width:100%;
+    height: 100vh;
+
+
 }
 
 .content {
     transition: margin-left 0.3s ease, width 0.3s ease;
-    padding: 20px;
+    padding: 10px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -32,24 +31,25 @@ body {
     max-width: none;
     overflow-x: visible;
 }
-.superdiv {
-    margin-top: -100px;
+#mainContent{
+    width: 90%;
+    margin: 40px 60px;
 }
-
-.sidebar.open {
-    left: 0;
+/* Mueve el contenido principal hacia la derecha cuando la barra lateral está abierta */
+#mainContent.shifted {
+    margin-left: 200px;
 }
 
 .sidebar {
     position: fixed;
-    top: 0;
+    top: 50px;
     left: -250px;
-    width: 250px;
+    width: 200px;
     height: 100%;
     color: white;
-    background-color: #007bff;
-    padding-top: 80px;
-    padding-left: 30px;
+    background-color: #4A628A;
+    padding-top: 0px;
+    padding-left: 10px;
     transition: left 0.3s ease-in-out, box-shadow 0.3s ease;
     z-index: 1050;
     box-shadow: 2px 0 15px rgba(0, 0, 0, 0.15);
@@ -81,28 +81,40 @@ body {
             padding-left: 30px;
             transform: translateX(8px);
         }
-#navbarDropdownMuebles{
-    color:white;
-}
-.sidebar .bi {
-    margin-right: 12px;
-    font-size: 22px;
+
+#navbarDropdownMuebles {
+    color: white;
 }
 
-    .sidebar .close-btn {
-        font-size: 36px;
-        color: #fff;
-        position: absolute;
-        top: 0px;
-        right: 20px;
-        cursor: pointer;
-        z-index: 1100;
-        transition: transform 0.3s ease;
+.nav-item {
+    width: 80%;
+    height: 40px;
+}
+
+.nav-link {
+    color: white;
+    font-size: 8px;
+    text-decoration: none;
+    display: block;
+    border-radius: 6px;
+    background-color: ghostwhite;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .close-btn {
+    font-size: 36px;
+    color: #fff;
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    cursor: pointer;
+    z-index: 1100;
+    transition: transform 0.3s ease;
+}
+
+    .sidebar .close-btn:hover {
+        transform: rotate(90deg);
     }
-
-        .sidebar .close-btn:hover {
-            transform: rotate(90deg);
-        }
 
 .open-sidebar-btn {
     font-size: 30px;
@@ -116,8 +128,9 @@ body {
     cursor: pointer;
     transition: transform 0.3s ease, color 0.3s ease;
 }
+
 .sidebar .dropdown-menu .dropdown-item:hover {
-    background-color: #f1f1f1 !important; 
+    background-color: #f1f1f1 !important;
     color: black !important;
 }
 
@@ -125,11 +138,11 @@ body {
     background-color: skyblue;
 }
 
-    .open-sidebar-btn:hover {
-        transform: scale(1.2);
-        color: #356e58;
-    }
-    
+.open-sidebar-btn:hover {
+    transform: scale(1.2);
+    color: #356e58;
+}
+
 
 footer {
     background-color: #4A6F66;
@@ -316,6 +329,7 @@ form .volver {
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: #f9f9f9;
 }
+
 .table-hover tbody tr:hover {
     background-color: #f1f1f1;
     cursor: pointer;
@@ -404,6 +418,7 @@ input.form-control {
     text-align: center;
     margin-top: 20px;
 }
+
 .d-flex {
     display: flex;
     justify-content: space-between;
@@ -413,16 +428,50 @@ input.form-control {
 .mb-3 {
     margin-bottom: 1rem;
 }
-#RolesTable_filter {
+
+/* barra superior cierre de sesion */
+.top-navbar {
+    background-color: #4A628A;
+    color: white;
+    padding: 10px 10px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    z-index: 100;
 }
 
-    #RolesTable_filter label {
-        margin-bottom: 0; /* Asegura que el label de búsqueda esté alineado */
+    .top-navbar .brand {
+        font-size: 1.1rem;
     }
 
-#crearRolBtn {
-    margin-right: 10px; /* Ajusta la separación del botón "Crear" */
+/* Contenedor para la sección de usuario y cierre de sesión */
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Alinea hacia la derecha */
 }
+/* Estilo para el nombre del usuario */
+.username {
+    margin-right: 15px;
+    font-size: 1rem;
+}
+/* Estilo para el botón de cerrar sesión */
+.logoutButton {
+    padding: 6px 12px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+    /* Efecto hover para el botón de cerrar sesión */
+    .logoutButton:hover {
+        background-color: #D3F1DF;
+    }
+/* Hasta aca  */

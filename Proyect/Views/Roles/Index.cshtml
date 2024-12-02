@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="superdiv">
+
 <h1 class="page-title">Roles</h1>
 
 <p class="text-end">
@@ -35,25 +35,19 @@
     </tbody>
 </table>
 
-    @section Scripts {
+@section Scripts {
         <script>
             $(document).ready(function () {
-                // Inicializa DataTables
-                var table = $('#RolesTable').DataTable({
+                $('#RolesTable').DataTable({
+                    scrollX: true,
                     language: {
                         "sLengthMenu": "Mostrar _MENU_ entradas",
                         "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
                         "sSearch": "Buscar:",
-                        "emptyTable": "NO HAY NINGUN ELEMENTO EN LA TABLA"
-                    },
-                    dom: '<"top"lfB>rt<"bottom"ip><"clear">', // Organiza los elementos de DataTables
+                        "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA",
+                        "sInfo":"Mostrando START a END de TOTAL entradas"
+                    }
                 });
-
-                // Agregar el botón Crear al lado del filtro
-                let createButton = '<a asp-action="Create" class="btn btn-custom me-3" id="crearRolBtn"><i class="bi bi-plus-square"></i> Crear</a>';
-                $('#RolesTable_filter').addClass('d-flex align-items-center justify-content-between'); // Ajusta la posición
-                $('#RolesTable_filter').prepend(createButton); // Inserta el botón antes del buscador
-            });
+            })
         </script>
 }
-</div>

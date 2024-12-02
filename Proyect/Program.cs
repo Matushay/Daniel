@@ -62,29 +62,33 @@ namespace Proyect
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();  // Configuraci�n para entornos de producci�n
             }
+
             using (var scope = app.Services.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<ProyectContext>(); context.Database.Migrate();
-                if (!context.Usuarios.Any()) 
-                { 
-                    var adminUser = new Usuario 
+                var context = scope.ServiceProvider.GetRequiredService<ProyectContext>();
+
+                // Verifica si el usuario ya existe
+                if (!context.Usuarios.Any(u => u.CorreoElectronico == "unknownmurder569@gmail.com"))
+                {
+                    var adminUser = new Usuario
                     {
-                        TipoDocumento = "CC", 
+                        TipoDocumento = "CC",
                         Documento = "123456789",
-                        Nombre = "Administrador", 
-                        Apellido = "Principal", 
-                        Celular = "1234567890", 
-                        Direccion = "Direcci�n Admin", 
-                        CorreoElectronico = "admin@proyect.com", 
-                        Estado = true, 
-                        Contrase�a = "Admin123.", 
-                        FechaCreacion = DateTime.Now, 
-                        IdRol = 1 
-                    }; 
-                    context.Usuarios.Add(adminUser); 
-                    context.SaveChanges(); 
-                } 
+                        Nombre = "Administrador",
+                        Apellido = "Principal",
+                        Celular = "1234567890",
+                        Direccion = "Direccion Admin",
+                        CorreoElectronico = "unknownmurder569@gmail.com",
+                        Estado = true,
+                        Contraseña = "Admin123.", // Asegúrate de que esto se encripte si usas autenticación real.
+                        FechaCreacion = DateTime.Now,
+                        IdRol = 1
+                    };
+                    context.Usuarios.Add(adminUser);
+                    context.SaveChanges();
+                }
             }
+
             app.UseStaticFiles();
             app.UseRouting();
             app.UseSession();
