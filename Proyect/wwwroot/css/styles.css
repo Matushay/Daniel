@@ -10975,8 +10975,13 @@ body {
 .sb-sidenav {
   display: flex;
   flex-direction: column;
-  height: 40px;
+  height: 100vh;
   flex-wrap: nowrap;
+}
+
+.sb-sidenav .d-flex {
+  flex-direction: column;
+  height: 100%;
 }
 .sb-sidenav .sb-sidenav-menu {
   flex-grow: 1;
@@ -10998,6 +11003,10 @@ body {
   padding-bottom: 0.75rem;
   position: relative;
 }
+    .sb-sidenav .nav-link[aria-label="Habitaciones"],
+    .sb-sidenav .nav-link[aria-label="Muebles"] {
+        margin-left: -20px; /* Ajusta según tus preferencias */
+    }
 .sb-sidenav .sb-sidenav-menu .nav .nav-link .sb-nav-link-icon {
   font-size: 0.9rem;
 }

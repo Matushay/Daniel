@@ -5,68 +5,71 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="page-title">Crear Nuevo Usuario</h1>
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Crear Nuevo Usuario</h1>
 
-<h4>Usuario</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-group">
-                <label asp-for="TipoDocumento" class="control-label">Tipo de Documento</label>
-                <select asp-for="TipoDocumento" class="form-control">
-                    <option value="CC">Cédula de Ciudadanía</option>
-                    <option value="Pasaporte">Pasaporte</option>
-                    <option value="Otro">Otro</option>
-                </select>
-                <span asp-validation-for="TipoDocumento" class="text-danger"></span>
-            </div>
-
-
-            <div class="form-group">
-                <label asp-for="Documento" class="control-label"></label>
-                <input asp-for="Documento" class="form-control" />
-                <span asp-validation-for="Documento" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Apellido" class="control-label"></label>
-                <input asp-for="Apellido" class="form-control" />
-                <span asp-validation-for="Apellido" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Celular" class="control-label"></label>
-                <input asp-for="Celular" class="form-control" />
-                <span asp-validation-for="Celular" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Direccion" class="control-label"></label>
-                <input asp-for="Direccion" class="form-control" />
-                <span asp-validation-for="Direccion" class="text-danger"></span>
-            </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Formulario de Registro</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="form-group">
-                    <label asp-for="CorreoElectronico" class="control-label"></label>
+                    <label asp-for="TipoDocumento" class="control-label">Tipo de Documento</label>
+                    <select asp-for="TipoDocumento" class="form-control">
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="Pasaporte">Pasaporte</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <span asp-validation-for="TipoDocumento" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Documento" class="control-label">Documento</label>
+                    <input asp-for="Documento" class="form-control" />
+                    <span asp-validation-for="Documento" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Nombre" class="control-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Apellido" class="control-label">Apellido</label>
+                    <input asp-for="Apellido" class="form-control" />
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Celular" class="control-label">Celular</label>
+                    <input asp-for="Celular" class="form-control" />
+                    <span asp-validation-for="Celular" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Direccion" class="control-label">Dirección</label>
+                    <input asp-for="Direccion" class="form-control" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CorreoElectronico" class="control-label">Correo Electrónico</label>
                     <input asp-for="CorreoElectronico" class="form-control" placeholder="Ingrese el correo electrónico" />
                     <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
                 </div>
-                <div class="form-group"> 
-                    <label asp-for="Contraseña" class="control-label"></label> 
-                    <input asp-for="Contraseña" class="form-control" type="password" /> 
-                    <span asp-validation-for="Contraseña" class="text-danger"></span> 
-                </div>
+
                 <div class="form-group">
-                    <label asp-for="IdRol" class="control-label"></label>
+                    <label asp-for="Contraseña" class="control-label">Contraseña</label>
+                    <input asp-for="Contraseña" class="form-control" type="password" />
+                    <span asp-validation-for="Contraseña" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IdRol" class="control-label">Rol</label>
                     <select asp-for="IdRol" class="form-control" asp-items="ViewBag.IdRol">
                         <option value="">Seleccione un rol</option>
                     </select>
@@ -74,15 +77,21 @@
                 </div>
 
                 <div class="form-group text-center">
-                    <input type="submit" value="Crear Usuario   " class="btn btn-primary btn-lg" />
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save"></i> Crear Usuario
+                    </button>
                 </div>
             </form>
         </div>
+
         <div class="card-footer text-center">
-            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver a la lista
+            </a>
         </div>
     </div>
 </div>
+ 
 
 @section Scripts {
     @{
