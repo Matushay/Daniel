@@ -371,6 +371,10 @@ public partial class ProyectContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            // Configuración para el campo "Activo"
+            entity.Property(e => e.Activo)
+                .HasColumnName("Activo")  // Asegúrate de que el nombre coincida con la columna de la base de datos
+                .IsRequired();           // Indica que no puede ser nulo (NOT NULL)
         });
 
         modelBuilder.Entity<RolesPermiso>(entity =>
