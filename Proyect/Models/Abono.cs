@@ -26,8 +26,8 @@ public partial class Abono
 
     public byte[]? Comprobante { get; set; }
 
+    [Display(Name = "Estado")]
     public int IdEstadoAbono { get; set; }
-
 
     public bool Anulado { get; set; }
 

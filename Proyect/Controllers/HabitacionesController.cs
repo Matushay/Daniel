@@ -10,7 +10,7 @@ using Proyect.Models;
 
 namespace Proyect.Controllers
 {
-    [Authorize]
+    [Authorize] 
     public class HabitacionesController : Controller
     {
         private readonly ProyectContext _context;
