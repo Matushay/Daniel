@@ -63,6 +63,32 @@ namespace Proyect.Controllers
             }
             return View(cliente);
         }
+        // POST: Clientes/Create from modal (partial)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateFromModal([Bind("IdCliente,TipoDocumento,Documento,Nombre,Apellido,Direccion,Celular,CorreoElectronico,Estado")] Cliente cliente)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Agregar el cliente al contexto de la base de datos
+                    _context.Add(cliente);
+                    await _context.SaveChangesAsync();
+
+                    // Retornar el ID del cliente creado en la respuesta JSON
+                    return Json(new { success = true, clientId = cliente.IdCliente });
+                }
+                catch (Exception ex)
+                {
+                    // Si ocurre algún error, devolver un mensaje detallado
+                    return Json(new { success = false, message = $"Error al crear el cliente: {ex.Message}" });
+                }
+            }
+            // Si el modelo no es válido, devolver un mensaje detallado
+            return Json(new { success = false, message = "Datos inválidos, por favor revise los campos del formulario." });
+        }
+
 
         // GET: Clientes/Edit/5
         public async Task<IActionResult> Edit(int? id)

@@ -35,6 +35,10 @@
                     <!-- Asignar el cliente encontrado a la reserva -->
                     <input type="hidden" id="IdCliente" name="IdCliente" />
                 </div>
+                <!-- Botón para abrir el modal de crear cliente -->
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#createClienteModal">
+                    Crear Cliente
+                </button>
 
 
         
@@ -130,9 +134,29 @@
         </div>
     </div>
 </div>
+<!-- Modal para Crear Cliente -->
+<div class="modal fade" id="createClienteModal" tabindex="-1" role="dialog" aria-labelledby="createClienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createClienteModalLabel">Crear Cliente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("~/Views/Clientes/_CreateClienteForm.cshtml", new Proyect.Models.Cliente())
+
+            </div>
+
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     @Html.Partial("_ValidationScriptsPartial");
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         // Configuración de restricciones de fecha
@@ -253,6 +277,36 @@
                 });
         });
 
-    </script>
+        // Evento para el envío del formulario en el modal (crear cliente)
+        $(document).ready(function () {
+            $('#createClienteForm').submit(function (event) {
+                event.preventDefault();
+                var formData = $(this).serialize(); // Serializa el formulario
 
+                $.ajax({
+                    url: '@Url.Action("CreateFromModal", "Clientes")', // Acción para crear el cliente desde el modal
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Cliente creado exitosamente.');
+                            $('#createClienteModal').modal('hide'); // Cerrar el modal
+
+                            // Mostrar el mensaje de éxito en la vista principal (Reserva)
+                            alert('Cliente creado con éxito. Ahora puedes asignarlo a la reserva.');
+
+                            // Aquí actualizas la vista de cliente en la página de creación de la reserva si es necesario
+                            // Por ejemplo, podrías actualizar los campos de cliente con la información del nuevo cliente
+
+                        } else {
+                            alert(response.message); // Mostrar el error si no fue exitoso
+                        }
+                    },
+                    error: function () {
+                        alert('Ocurrió un error al crear el cliente.');
+                    }
+                });
+            });
+        });
+    </script>
 }
