@@ -12,8 +12,8 @@ using Proyect.Models;
 namespace Proyect.Migrations
 {
     [DbContext(typeof(ProyectContext))]
-    [Migration("20241202215810_inicial")]
-    partial class inicial
+    [Migration("20241203180706_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -567,21 +567,18 @@ namespace Proyect.Migrations
                     b.Property<int>("IdPaquete")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Iva")
                         .HasColumnType("decimal(10, 2)")
                         .HasColumnName("IVA");
-
-                    b.Property<int>("NoPersonas")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(10, 2)");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(10, 2)");
+
+                    b.Property<int?>("UsuarioIdUsuario")
+                        .HasColumnType("int");
 
                     b.HasKey("IdReserva")
                         .HasName("PK__Reservas__0E49C69D5897E3BE");
@@ -594,7 +591,7 @@ namespace Proyect.Migrations
 
                     b.HasIndex("IdPaquete");
 
-                    b.HasIndex("IdUsuario");
+                    b.HasIndex("UsuarioIdUsuario");
 
                     b.ToTable("Reservas");
                 });
@@ -611,6 +608,11 @@ namespace Proyect.Migrations
                         .HasMaxLength(255)
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("Estado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("NombreRol")
                         .IsRequired()
@@ -997,11 +999,9 @@ namespace Proyect.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__Reservas__IdPaqu__6EF57B66");
 
-                    b.HasOne("Proyect.Models.Usuario", "IdUsuarioNavigation")
+                    b.HasOne("Proyect.Models.Usuario", null)
                         .WithMany("Reservas")
-                        .HasForeignKey("IdUsuario")
-                        .IsRequired()
-                        .HasConstraintName("FK__Reservas__IdUsua__6E01572D");
+                        .HasForeignKey("UsuarioIdUsuario");
 
                     b.Navigation("IdClienteNavigation");
 
@@ -1010,8 +1010,6 @@ namespace Proyect.Migrations
                     b.Navigation("IdMetodoPagoNavigation");
 
                     b.Navigation("IdPaqueteNavigation");
-
-                    b.Navigation("IdUsuarioNavigation");
                 });
 
             modelBuilder.Entity("Proyect.Models.RolesPermiso", b =>

@@ -126,7 +126,7 @@ namespace Proyect.Controllers
             var rol = await _context.Roles.FindAsync(id);
             if (rol != null)
             {
-                rol.Activo = estado; // Actualizamos el estado (activo o inactivo)
+                rol.Estado = estado; // Actualizamos el estado (activo o inactivo)
                 _context.Update(rol);
                 await _context.SaveChangesAsync();
                 return Ok(); // Retornamos un 200 OK si la actualización fue exitosa

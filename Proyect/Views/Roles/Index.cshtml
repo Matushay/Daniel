@@ -31,7 +31,7 @@
         <tr>
             <th>@Html.DisplayNameFor(model => model.NombreRol)</th>
             <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
-            <th>@Html.DisplayNameFor(model => model.Activo)</th> <!-- Nueva columna para el estado -->
+            <th>@Html.DisplayNameFor(model => model.Estado)</th> <!-- Nueva columna para el estado -->
             <th>Acciones</th>
         </tr>
     </thead>
@@ -43,9 +43,9 @@
                 <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
                 <td>
                     <!-- Aquí usamos un botón que cambia el estado -->
-                    <button class="btn @((item.Activo) ? "btn-success" : "btn-secondary") btn-sm changeState"
-                            data-id="@item.IdRol" data-estado="@item.Activo">
-                        @(item.Activo ? "Activo" : "Inactivo")
+                    <button class="btn @((item.Estado) ? "btn-success" : "btn-secondary") btn-sm changeState"
+                            data-id="@item.IdRol" data-estado="@item.Estado">
+                        @(item.Estado ? "Activo" : "Inactivo")
                     </button>
                 </td>
                 <td>

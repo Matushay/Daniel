@@ -33,7 +33,6 @@ namespace Proyect.Servicios
             emailMessage.From.Add(new MailboxAddress(string.Empty, _emailSettings.FromEmail));
             emailMessage.To.Add(new MailboxAddress(string.Empty, toEmail));
             emailMessage.Subject = subject;
-            emailMessage.Body = new TextPart("plain") { Text = body };
 
             // Email body with HTML and CSS styling
             var builder = new BodyBuilder
@@ -86,7 +85,6 @@ namespace Proyect.Servicios
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease;
-
         }}
         .btn:hover {{
             background-color: #e0e0e0;
@@ -119,10 +117,10 @@ namespace Proyect.Servicios
     </div>
 </body>
 </html>"
-
             };
 
             emailMessage.Body = builder.ToMessageBody();
+    
 
             using var client = new SmtpClient();
             await client.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.SmtpPort, false);

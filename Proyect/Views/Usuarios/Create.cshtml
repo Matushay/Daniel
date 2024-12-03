@@ -63,12 +63,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="Contraseña" class="control-label">Contraseña</label>
-                    <input asp-for="Contraseña" class="form-control" type="password" />
-                    <span asp-validation-for="Contraseña" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
                     <label asp-for="IdRol" class="control-label">Rol</label>
                     <select asp-for="IdRol" class="form-control" asp-items="ViewBag.IdRol">
                         <option value="">Seleccione un rol</option>
@@ -91,7 +85,7 @@
         </div>
     </div>
 </div>
- 
+
 
 @section Scripts {
     @{

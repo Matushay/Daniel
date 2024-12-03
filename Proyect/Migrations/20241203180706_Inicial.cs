@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Proyect.Migrations
 {
     /// <inheritdoc />
-    public partial class inicial : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -110,7 +110,8 @@ namespace Proyect.Migrations
                     IdRol = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NombreRol = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true)
+                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true),
+                    Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -299,16 +300,20 @@ namespace Proyect.Migrations
                     IVA = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Descuento = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    NoPersonas = table.Column<int>(type: "int", nullable: false),
                     IdCliente = table.Column<int>(type: "int", nullable: false),
-                    IdUsuario = table.Column<int>(type: "int", nullable: false),
                     IdPaquete = table.Column<int>(type: "int", nullable: false),
                     IdEstadoReserva = table.Column<int>(type: "int", nullable: false),
-                    IdMetodoPago = table.Column<int>(type: "int", nullable: false)
+                    IdMetodoPago = table.Column<int>(type: "int", nullable: false),
+                    UsuarioIdUsuario = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__Reservas__0E49C69D5897E3BE", x => x.IdReserva);
+                    table.ForeignKey(
+                        name: "FK_Reservas_Usuarios_UsuarioIdUsuario",
+                        column: x => x.UsuarioIdUsuario,
+                        principalTable: "Usuarios",
+                        principalColumn: "IdUsuario");
                     table.ForeignKey(
                         name: "FK__Reservas__IdClie__6D0D32F4",
                         column: x => x.IdCliente,
@@ -329,11 +334,6 @@ namespace Proyect.Migrations
                         column: x => x.IdPaquete,
                         principalTable: "Paquetes",
                         principalColumn: "IdPaquete");
-                    table.ForeignKey(
-                        name: "FK__Reservas__IdUsua__6E01572D",
-                        column: x => x.IdUsuario,
-                        principalTable: "Usuarios",
-                        principalColumn: "IdUsuario");
                 });
 
             migrationBuilder.CreateTable(
@@ -603,9 +603,9 @@ namespace Proyect.Migrations
                 column: "IdPaquete");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservas_IdUsuario",
+                name: "IX_Reservas_UsuarioIdUsuario",
                 table: "Reservas",
-                column: "IdUsuario");
+                column: "UsuarioIdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RolesPermisos_IdPermiso",
@@ -675,6 +675,9 @@ namespace Proyect.Migrations
                 name: "Permisos");
 
             migrationBuilder.DropTable(
+                name: "Usuarios");
+
+            migrationBuilder.DropTable(
                 name: "Clientes");
 
             migrationBuilder.DropTable(
@@ -685,9 +688,6 @@ namespace Proyect.Migrations
 
             migrationBuilder.DropTable(
                 name: "Paquetes");
-
-            migrationBuilder.DropTable(
-                name: "Usuarios");
 
             migrationBuilder.DropTable(
                 name: "TipoMueble");
