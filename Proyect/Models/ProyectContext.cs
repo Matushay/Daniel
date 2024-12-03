@@ -370,10 +370,6 @@ public partial class ProyectContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Reservas__IdPaqu__6EF57B66");
 
-            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Reservas)
-                .HasForeignKey(d => d.IdUsuario)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Reservas__IdUsua__6E01572D");
         });
 
         modelBuilder.Entity<Role>(entity =>

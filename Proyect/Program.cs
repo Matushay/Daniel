@@ -5,7 +5,6 @@ using Proyect.Models;
 using Proyect.Validaciones;
 using Proyect.Validaciones.ValidacionesLuis;
 
-
 namespace Proyect
 {
     public class Program
@@ -14,7 +13,7 @@ namespace Proyect
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Agrega el DbContext al contenedor de servicios
+            // Agregar el DbContext al contenedor de servicios
             builder.Services.AddDbContext<ProyectContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ProyectConnection")));
 
@@ -22,21 +21,22 @@ namespace Proyect
             builder.Services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<UsuarioValidator>());
 
-
-            // Add services to the container.
-
             // Registrar validadores específicos si es necesario
             builder.Services.AddScoped<IValidator<Usuario>, UsuarioValidator>();
             builder.Services.AddScoped<IValidator<Role>, RolValidator>();
             builder.Services.AddScoped<IValidator<Permiso>, PermisoValidator>();
 
-            // Agregar servicios necesarios para la aplicación
+            // Agregar servicios necesarios para la aplicación, como los controladores con vistas
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
             // Configuración de la tubería de solicitudes HTTP
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();  // Configuración para entornos de producción
@@ -55,8 +55,6 @@ namespace Proyect
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
-
         }
     }
 }
-

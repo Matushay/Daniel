@@ -5,107 +5,63 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="page-title">Editar Reserva</h1>
+<h1>Editar Reserva</h1>
 
-<h4 class="form-subtitle">Modifica los detalles de la reserva</h4>
-<hr />
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <form asp-action="Edit" class="form-container">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Edit" method="post">
             <input type="hidden" asp-for="IdReserva" />
 
             <div class="form-group">
-                <label asp-for="FechaReserva" class="form-label">Fecha de Reserva</label>
-                <input asp-for="FechaReserva" class="form-control" />
+                <label asp-for="FechaReserva" class="control-label">Fecha de Reserva</label>
+                <input asp-for="FechaReserva" class="form-control" type="date" />
                 <span asp-validation-for="FechaReserva" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="FechaInicio" class="form-label">Fecha de Inicio</label>
-                <input asp-for="FechaInicio" class="form-control" />
+                <label asp-for="FechaInicio" class="control-label">Fecha de Inicio</label>
+                <input asp-for="FechaInicio" class="form-control" type="date" />
                 <span asp-validation-for="FechaInicio" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="FechaFin" class="form-label">Fecha de Fin</label>
-                <input asp-for="FechaFin" class="form-control" />
+                <label asp-for="FechaFin" class="control-label">Fecha de Fin</label>
+                <input asp-for="FechaFin" class="form-control" type="date" />
                 <span asp-validation-for="FechaFin" class="text-danger"></span>
             </div>
 
+            <!-- Paquete -->
             <div class="form-group">
-                <label asp-for="Subtotal" class="form-label">Subtotal</label>
-                <input asp-for="Subtotal" class="form-control" />
-                <span asp-validation-for="Subtotal" class="text-danger"></span>
+                <label asp-for="IdPaquete" class="control-label">Paquete</label>
+                <select asp-for="IdPaquete" class="form-control" asp-items="ViewBag.Paquetes">
+                    <option value="">Seleccione Paquete</option>
+                </select>
+            </div>
+
+            <!-- Servicios -->
+            <div class="form-group">
+                <label>Servicios</label>
+                <div>
+                    @foreach (var servicio in ViewBag.Servicios)
+                    {
+                        <div>
+                            <input type="checkbox" name="serviciosSeleccionados" value="@servicio.IdServicio" />
+                            @servicio.Nombre
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Total y Subtotal -->
+            <div class="form-group">
+                <label for="total">Total</label>
+                <input type="text" id="total" class="form-control" readonly />
             </div>
 
             <div class="form-group">
-                <label asp-for="Iva" class="form-label">IVA</label>
-                <input asp-for="Iva" class="form-control" />
-                <span asp-validation-for="Iva" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Total" class="form-label">Total</label>
-                <input asp-for="Total" class="form-control" />
-                <span asp-validation-for="Total" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Descuento" class="form-label">Descuento</label>
-                <input asp-for="Descuento" class="form-control" />
-                <span asp-validation-for="Descuento" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="NoPersonas" class="form-label">Número de Personas</label>
-                <input asp-for="NoPersonas" class="form-control" />
-                <span asp-validation-for="NoPersonas" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="IdCliente" class="form-label">Cliente</label>
-                <select asp-for="IdCliente" class="form-control" asp-items="ViewBag.IdCliente"></select>
-                <span asp-validation-for="IdCliente" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="IdUsuario" class="form-label">Usuario</label>
-                <select asp-for="IdUsuario" class="form-control" asp-items="ViewBag.IdUsuario"></select>
-                <span asp-validation-for="IdUsuario" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="IdPaquete" class="form-label">Paquete</label>
-                <select asp-for="IdPaquete" class="form-control" asp-items="ViewBag.IdPaquete"></select>
-                <span asp-validation-for="IdPaquete" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="IdEstadoReserva" class="form-label">Estado de Reserva</label>
-                <select asp-for="IdEstadoReserva" class="form-control" asp-items="ViewBag.IdEstadoReserva"></select>
-                <span asp-validation-for="IdEstadoReserva" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="IdMetodoPago" class="form-label">Método de Pago</label>
-                <select asp-for="IdMetodoPago" class="form-control" asp-items="ViewBag.IdMetodoPago"></select>
-                <span asp-validation-for="IdMetodoPago" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-primary btn-lg w-100" />
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>
     </div>
 </div>
-
-<div class="mt-4 text-center">
-    <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
-</div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

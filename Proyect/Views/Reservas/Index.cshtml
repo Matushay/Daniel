@@ -30,11 +30,11 @@
                 <td>@Html.DisplayFor(modelItem => item.FechaReserva)</td>
                 <td>@Html.DisplayFor(modelItem => item.FechaInicio)</td>
                 <td>@Html.DisplayFor(modelItem => item.FechaFin)</td>
-                <td>@Html.DisplayFor(modelItem => item.IdClienteNavigation.Apellido)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdClienteNavigation.Documento)</td>
                 <td>@Html.DisplayFor(modelItem => item.Total)</td>
                 <td>@Html.DisplayFor(modelItem => item.IdEstadoReservaNavigation.Estados)</td>
                 <td class="action-icons">
-                    <a asp-action="Edit" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-pencil-square"></i></a> |
+                    <a asp-action="Edit" asp-route-id="@item.IdReserva" class="btn btn-warning">Editar</a> |
                     <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-list"></i></a> |
                     <a asp-controller="Abonos" asp-action="Index" asp-route-idReserva="@item.IdReserva" class="btn btn-primary"><i class="bi bi-wallet2"></i></a>
                 </td>

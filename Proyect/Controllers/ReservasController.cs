@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Proyect.Models;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using System.Globalization;
+
 
 namespace Proyect.Controllers
 {
@@ -25,8 +29,7 @@ namespace Proyect.Controllers
                 .Include(r => r.IdClienteNavigation)
                 .Include(r => r.IdEstadoReservaNavigation)
                 .Include(r => r.IdMetodoPagoNavigation)
-                .Include(r => r.IdPaqueteNavigation)
-                .Include(r => r.IdUsuarioNavigation);
+                .Include(r => r.IdPaqueteNavigation);
             return View(await proyectContext.ToListAsync());
         }
 
@@ -34,9 +37,8 @@ namespace Proyect.Controllers
         public IActionResult Details(int id)
         {
             // Obtener la reserva con todos los detalles
-            var reserva = _context.Reservasw
+            var reserva = _context.Reservas
                 .Include(r => r.IdClienteNavigation)  // Incluir cliente
-                .Include(r => r.IdUsuarioNavigation)  // Incluir usuario
                 .Include(r => r.IdEstadoReservaNavigation)  // Incluir estado de reserva
                 .Include(r => r.IdMetodoPagoNavigation)  // Incluir método de pago
                 .Include(r => r.IdPaqueteNavigation)  // Incluir paquete
@@ -70,9 +72,100 @@ namespace Proyect.Controllers
 
             return View(reserva);
         }
+public async Task<IActionResult> DescargarPDF(int id)
+    {
+        // Obtener los detalles de la reserva
+        var reserva = await _context.Reservas
+            .Include(r => r.IdClienteNavigation)
+            .Include(r => r.DetallePaquetes)
+            .ThenInclude(dp => dp.IdPaqueteNavigation)
+            .Include(r => r.DetalleServicios)
+            .ThenInclude(ds => ds.IdServicioNavigation)
+            .FirstOrDefaultAsync(r => r.IdReserva == id);
+
+        if (reserva == null)
+        {
+            return NotFound("Reserva no encontrada.");
+        }
+
+        // Crear un nuevo documento PDF
+        using (var document = new PdfDocument())
+        {
+            var page = document.AddPage();
+            var graphics = XGraphics.FromPdfPage(page);
+
+                // Configurar estilos de fuente
+                var fontTitle = new XFont("Arial Bold", 14); // Negrita
+                var fontSubtitle = new XFont("Arial", 14);
+                var fontNormal = new XFont("Arial", 12);    // Texto normal
+
+                // Crear cultura colombiana
+                var colombianCulture = new CultureInfo("es-CO");
+
+                // Definir colores de la temática (Verde y blanco, inspirados en el Nacional)
+                var greenColor = XBrushes.Green; // Verde Nacional
+                var whiteColor = XBrushes.White; // Blanco para contraste
+                
+
+                // Títulos
+                var title = "Detalles de la Reserva";
+                var titleWidth = graphics.MeasureString(title, fontTitle).Width;
+                graphics.DrawString(title, fontTitle, greenColor, new XPoint((page.Width - titleWidth) / 2, 40)); // Centrado
+
+                // Datos del cliente
+                graphics.DrawString("Datos del Cliente", fontSubtitle, greenColor, new XPoint(40, 80));
+                graphics.DrawString($"Cliente: {reserva.IdClienteNavigation.Nombre} {reserva.IdClienteNavigation.Apellido}", fontNormal, XBrushes.Black, new XPoint(40, 120));
+                graphics.DrawString($"Documento: {reserva.IdClienteNavigation.Documento}", fontNormal, XBrushes.Black, new XPoint(40, 140));
+                graphics.DrawString($"Correo: {reserva.IdClienteNavigation.CorreoElectronico}", fontNormal, XBrushes.Black, new XPoint(40, 160));
+
+                // Detalles de la reserva
+                graphics.DrawString($"Fecha de Reserva: {reserva.FechaReserva.ToShortDateString()}", fontNormal, XBrushes.Black, new XPoint(40, 200));
+                graphics.DrawString($"Fecha de Inicio: {reserva.FechaInicio.ToShortDateString()}", fontNormal, XBrushes.Black, new XPoint(40, 220));
+                graphics.DrawString($"Fecha de Fin: {reserva.FechaFin.ToShortDateString()}", fontNormal, XBrushes.Black, new XPoint(40, 240));
+
+                // Detalles de los paquetes
+                graphics.DrawString("Paquetes Seleccionados:", fontSubtitle, greenColor, new XPoint(40, 280));
+                int yPosition = 300;
+                foreach (var detallePaquete in reserva.DetallePaquetes)
+                {
+                    var precioPaquete = detallePaquete.Precio.ToString("C", colombianCulture);
+                    graphics.DrawString($"- {detallePaquete.IdPaqueteNavigation.Nombre} - Precio: {precioPaquete}", fontNormal, XBrushes.Black, new XPoint(40, yPosition));
+                    yPosition += 20;
+                }
+
+                // Detalles de los servicios
+                graphics.DrawString("Servicios Seleccionados:", fontSubtitle, greenColor, new XPoint(40, yPosition + 20));
+                yPosition += 40;
+                foreach (var detalleServicio in reserva.DetalleServicios)
+                {
+                    var precioServicio = detalleServicio.Precio.ToString("C", colombianCulture);
+                    graphics.DrawString($"- {detalleServicio.IdServicioNavigation.Nombre} - Precio: {precioServicio} - Cantidad: {detalleServicio.Cantidad}", fontNormal, XBrushes.Black, new XPoint(40, yPosition));
+                    yPosition += 20;
+                }
+
+                // Formatear total a moneda colombiana
+                var totalReserva = reserva.Total.ToString("C", colombianCulture);
+                graphics.DrawString($"Total: {totalReserva}", fontNormal, XBrushes.Black, new XPoint(40, yPosition));
 
 
-        public async Task<IActionResult> Create()
+
+                // Guardar PDF en memoria
+                using (var stream = new MemoryStream())
+            {
+                document.Save(stream, false);
+                return File(stream.ToArray(), "application/pdf", $"Reserva_{id}.pdf");
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+    public async Task<IActionResult> Create()
         {
             CargarDatosVista(); // Cargar clientes, métodos de pago y estados de reserva
 
@@ -180,8 +273,6 @@ namespace Proyect.Controllers
             // Cargar estados de reserva
             ViewData["IdEstadoReserva"] = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Estados");
 
-            // Cargar usuarios disponibles (si es necesario)
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Nombre");
         }
         public async Task<IActionResult> AgregarAbono(int id)
         {
@@ -226,7 +317,99 @@ namespace Proyect.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var reserva = _context.Reservas
+                .Include(r => r.DetallePaquetes)
+                .Include(r => r.DetalleServicios)
+                .Include(r => r.IdClienteNavigation)
+                .FirstOrDefault(r => r.IdReserva == id);
 
+            if (reserva == null)
+            {
+                return NotFound();
+            }
+
+            // Cargar los datos necesarios para la vista (paquetes, servicios, métodos de pago, etc.)
+            ViewBag.Paquetes = new SelectList(_context.Paquetes.Where(p => p.Estado), "IdPaquete", "Nombre");
+            ViewBag.Servicios = new SelectList(_context.Servicios.Where(s => s.Estado), "IdServicio", "Nombre");
+            ViewBag.MetodosPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre");
+            ViewBag.EstadosReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Estados");
+
+            return View(reserva);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Reserva reserva, List<int> serviciosSeleccionados, List<int> paquetesSeleccionados)
+        {
+            if (id != reserva.IdReserva)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Actualizar los datos de la reserva
+                var reservaDb = _context.Reservas.Include(r => r.DetallePaquetes).Include(r => r.DetalleServicios)
+                    .FirstOrDefault(r => r.IdReserva == id);
+
+                if (reservaDb == null)
+                {
+                    return NotFound();
+                }
+
+                // Actualizamos la reserva
+                reservaDb.FechaReserva = reserva.FechaReserva;
+                reservaDb.FechaInicio = reserva.FechaInicio;
+                reservaDb.FechaFin = reserva.FechaFin;
+                reservaDb.IdMetodoPago = reserva.IdMetodoPago;
+                reservaDb.IdEstadoReserva = reserva.IdEstadoReserva;
+                reservaDb.Descuento = reserva.Descuento;
+                reservaDb.Total = reserva.Total;
+                reservaDb.Subtotal = reserva.Subtotal;
+                reservaDb.Iva = reserva.Iva;
+
+                // Actualizar detalle de paquetes (eliminar los anteriores y agregar los nuevos)
+                _context.DetallePaquetes.RemoveRange(reservaDb.DetallePaquetes);
+                foreach (var paqueteId in paquetesSeleccionados)
+                {
+                    reservaDb.DetallePaquetes.Add(new DetallePaquete
+                    {
+                        IdPaquete = paqueteId,
+                        Precio = _context.Paquetes.Find(paqueteId)?.Precio ?? 0,
+                        Estado = true
+                    });
+                }
+
+                // Actualizar detalle de servicios (eliminar los anteriores y agregar los nuevos)
+                _context.DetalleServicios.RemoveRange(reservaDb.DetalleServicios);
+                foreach (var servicioId in serviciosSeleccionados)
+                {
+                    reservaDb.DetalleServicios.Add(new DetalleServicio
+                    {
+                        IdServicio = servicioId,
+                        Precio = _context.Servicios.Find(servicioId)?.Precio ?? 0,
+                        Cantidad = 1, // Asumimos una cantidad de 1 por servicio, esto puede cambiar
+                        Estado = true
+                    });
+                }
+
+                // Guardar cambios
+                _context.SaveChanges();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Si llegamos aquí es porque hubo un error de validación
+            ViewBag.Paquetes = new SelectList(_context.Paquetes.Where(p => p.Estado), "IdPaquete", "Nombre");
+            ViewBag.Servicios = new SelectList(_context.Servicios.Where(s => s.Estado), "IdServicio", "Nombre");
+            ViewBag.MetodosPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre");
+            ViewBag.EstadosReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Estados");
+
+            return View(reserva);
+        }
 
 
 
