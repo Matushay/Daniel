@@ -39,35 +39,87 @@ namespace Proyect.Servicios
             var builder = new BodyBuilder
             {
                 HtmlBody = $@"
-                <html>
-                <head>
-                    <style>
-                        .btn {{
-                            display: inline-block;
-                            padding: 10px 10px;
-                            margin: 20px 0;
-                            font-size: 16px;
-                            color: #000;
-                            background-color: #90ee90;
-                            text-decoration: none;
-                            border-radius: 5px;
-                        }}
-                        .btn i {{
-                            margin-right: 5px;
-                        }}
-                    </style>
-                </head>
-                <body style='font-family: Arial, sans-serif;'>
-                    <div style='text-align: center; margin: 20px;'>
-                        <h2 style='color: #333;'>Recuperación de contraseña</h2>
-                        <p>Por favor, restablezca su contraseña haciendo clic en el botón de abajo:</p>
-                        <a href='{body}' class='btn' >
-                            <i class='bi bi-link-45deg'></i> Restablecer Contraseña
-                        </a>
-                        <p>Si no solicitó un cambio de contraseña, ignore este mensaje.</p>
-                    </div>
-                </body>
-                </html>"
+<html>
+<head>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }}
+        .email-container {{
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }}
+        .logo-container {{
+            margin-bottom: 20px;
+        }}
+        .logo {{
+            max-width: 150px; /* Asegúrate de que la imagen se ajuste */
+        }}
+        .email-header {{
+            font-size: 24px;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 20px;
+        }}
+        .email-content {{
+            font-size: 16px;
+            color: #555555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }}
+        .btn {{
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 16px;
+            color: white; /* Color de la letra blanco */
+            background-color: #f1f3f4;
+            text-decoration: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+
+        }}
+        .btn:hover {{
+            background-color: #e0e0e0;
+        }}
+        .footer {{
+            font-size: 12px;
+            color: #888888;
+            margin-top: 20px;
+        }}
+    </style>
+</head>
+<body>
+    <div class='email-container'>
+        <div class='logo-container'>
+            <!-- Asegúrate de que la URL del logo sea correcta -->
+            <img src='https://imgur.com/a/FFbmozo' class='logo'/>
+        </div>
+        <div class='email-header'>Recuperación de contraseña</div>
+        <div class='email-content'>
+            Por favor, restablezca su contraseña haciendo clic en el botón de abajo:
+        </div>
+        <a href='{body}' class='btn btn-primary text-white'>Restablecer Contraseña</a>
+        <br />
+        <br />
+
+        <div class='email-content'>
+            Si no solicitó un cambio de contraseña, ignore este mensaje.
+        </div>
+        <div class='footer'>© 2024 Medellin Salvaje. Todos los derechos reservados.</div>
+    </div>
+</body>
+</html>"
+
             };
 
             emailMessage.Body = builder.ToMessageBody();

@@ -148,20 +148,20 @@ namespace Proyect.Controllers
         }
 
 
-        // POST: Usuarios/ActualizarEstado
-        [HttpPost]
-        public async Task<IActionResult> ActualizarEstado(int id, bool estado)
-        {
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario != null)
+            // POST: Usuarios/ActualizarEstado
+            [HttpPost]
+            public async Task<IActionResult> ActualizarEstado(int id, bool estado)
             {
-                usuario.Estado = estado;
-                _context.Update(usuario);
-                await _context.SaveChangesAsync();
-                return Ok(); // Responde con éxito
+                var usuario = await _context.Usuarios.FindAsync(id);
+                if (usuario != null)
+                {
+                    usuario.Estado = estado;
+                    _context.Update(usuario);
+                    await _context.SaveChangesAsync();
+                    return Ok(); // Responde con éxito
+                }
+                return BadRequest(); // En caso de error
             }
-            return BadRequest(); // En caso de error
-        }
 
         // GET: Usuarios/Delete/5
         public async Task<IActionResult> Delete(int? id)

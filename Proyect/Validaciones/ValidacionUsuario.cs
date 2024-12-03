@@ -16,11 +16,11 @@ namespace Proyect.Validaciones
 
             RuleFor(x => x.Nombre)
                 .NotEmpty().WithMessage("El nombre es obligatorio.")
-                .Length(2, 50).WithMessage("El nombre debe tener entre 2 y 50 caracteres.");
+                .Length(3, 30).WithMessage("El nombre debe tener entre 3 y 30 caracteres.");
 
             RuleFor(x => x.Apellido)
                 .NotEmpty().WithMessage("El apellido es obligatorio.")
-                .Length(2, 50).WithMessage("El apellido debe tener entre 2 y 50 caracteres.");
+                .Length(3, 30).WithMessage("El apellido debe tener entre 3 y 30 caracteres.");
 
             RuleFor(x => x.Celular)
                 .Matches(@"^\d{10}$").WithMessage("El celular debe tener exactamente 10 dígitos.")

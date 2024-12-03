@@ -10849,7 +10849,7 @@ body {
 #layoutAuthentication {
   display: flex;
   flex-direction: column;
-  min-height: 40vh;
+  min-height: 100vh;
 }
 #layoutAuthentication #layoutAuthentication_content {
   min-width: 0;
@@ -10876,7 +10876,7 @@ body {
   justify-content: space-between;
   min-width: 0;
   flex-grow: 1;
-  min-height: calc(40vh - 56px);
+  min-height: calc(100vh - 56px);
   margin-left: -225px;
 }
 
@@ -10890,7 +10890,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 400px;
+  height: 100%;
   background: #000;
   z-index: 1037;
   opacity: 0.5;
@@ -10920,7 +10920,7 @@ body {
 }
 .sb-nav-fixed #layoutSidenav #layoutSidenav_nav {
   width: 225px;
-  height: 400px;
+  height: 100vh;
   z-index: 1038;
 }
 .sb-nav-fixed #layoutSidenav #layoutSidenav_nav .sb-sidenav {
@@ -10937,7 +10937,7 @@ body {
 #layoutError {
   display: flex;
   flex-direction: column;
-  min-height: 30vh;
+  min-height: 100vh;
 }
 #layoutError #layoutError_content {
   min-width: 0;
@@ -10975,13 +10975,8 @@ body {
 .sb-sidenav {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  flex-wrap: nowrap;
-}
-
-.sb-sidenav .d-flex {
-  flex-direction: column;
   height: 100%;
+  flex-wrap: nowrap;
 }
 .sb-sidenav .sb-sidenav-menu {
   flex-grow: 1;
@@ -11003,10 +10998,6 @@ body {
   padding-bottom: 0.75rem;
   position: relative;
 }
-    .sb-sidenav .nav-link[aria-label="Habitaciones"],
-    .sb-sidenav .nav-link[aria-label="Muebles"] {
-        margin-left: -20px; /* Ajusta según tus preferencias */
-    }
 .sb-sidenav .sb-sidenav-menu .nav .nav-link .sb-nav-link-icon {
   font-size: 0.9rem;
 }

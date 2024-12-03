@@ -31,7 +31,12 @@
                 <td>@Html.DisplayFor(modelItem => item.Documento)</td>
                 <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
                 <td>@Html.DisplayFor(modelItem => item.Apellido)</td>
-                <td>@Html.DisplayFor(modelItem => item.Estado)</td>
+                <td>
+                    <label class="switch">
+                        <input type="checkbox" class="status-toggle" data-id="@item.IdUsuario" @(item.Estado ? "checked" : "")>
+                        <span class="slider"></span>
+                    </label>
+                </td>
                 <td>@Html.DisplayFor(modelItem => item.IdRolNavigation.NombreRol)</td>
                 <td class="action-icons">
                     <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="btn btn-icon">
@@ -60,23 +65,24 @@
             });
 
             // Actualizar estado del usuario al hacer clic en el checkbox
-            $('.estadoCheckbox').on('change', function () {
-                var usuarioId = $(this).data('id');
-                var estado = $(this).prop('checked'); // true si está marcado, false si no
+            $('.status-toggle').on('change', function () 
+            {
+            var usuarioId = $(this).data('id');
+            var estado = $(this).prop('checked'); // true si está marcado, false si no
 
-                // Llamada AJAX para actualizar el estado
-                $.ajax({
-                    url: '@Url.Action("ActualizarEstado", "Usuarios")',
-                    type: 'POST',
-                    data: { id: usuarioId, estado: estado },
-                    success: function (data) {
-                        alert('Estado actualizado correctamente');
-                    },
-                    error: function () {
-                        alert('Error al actualizar el estado');
-                    }
-                });
-            });
-        })
+            // Llamada AJAX para actualizar el estado
+            $.ajax({
+            url: '@Url.Action("ActualizarEstado", "Usuarios")',
+            type: 'POST',
+            data: { id: usuarioId, estado: estado },
+            success: function (data) {
+                console.log("Estado actualizado correctamente");
+                alert('Estado actualizado correctamente');
+            },
+            error: function () {
+                console.log("Error al actualizar el estado");
+                alert('Error al actualizar el estado');
+            }
+        });
     </script>
 }
