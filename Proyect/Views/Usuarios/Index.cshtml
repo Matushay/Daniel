@@ -39,11 +39,11 @@
                 </td>
                 <td>@Html.DisplayFor(modelItem => item.IdRolNavigation.NombreRol)</td>
                 <td class="action-icons">
-                    <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="btn btn-icon">
+                    <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="btn btn-icon" data-toggle="tooltip" title="Editar">
                         <i class="bi bi-pencil-square"></i></a> |
-                    <a asp-action="Details" asp-route-id="@item.IdUsuario" class="btn btn-icon">
+                    <a asp-action="Details" asp-route-id="@item.IdUsuario" class="btn btn-icon" data-toggle="tooltip" title="Detalles">
                         <i class="bi bi-info-lg"></i></a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdUsuario" class="btn btn-icon">
+                    <a asp-action="Delete" asp-route-id="@item.IdUsuario" class="btn btn-icon" data-toggle="tooltip" title="Eliminar">
                         <i class="bi bi-trash"></i></a>
                 </td>
             </tr>

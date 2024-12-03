@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Proyect.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,6 +46,20 @@ namespace Proyect.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EstadosAbonos",
+                columns: table => new
+                {
+                    IdEstadoAbono = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__EstadosA__6956405AAAC400AF", x => x.IdEstadoAbono);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MetodoPago",
                 columns: table => new
                 {
@@ -66,7 +80,7 @@ namespace Proyect.Migrations
                     IdPaquete = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true),
+                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: false),
                     Precio = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
@@ -82,8 +96,7 @@ namespace Proyect.Migrations
                     IdPermiso = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NombrePermiso = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true),
-                    Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -112,7 +125,7 @@ namespace Proyect.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true),
+                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: false),
                     Precio = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
                 },
                 constraints: table =>
@@ -127,7 +140,7 @@ namespace Proyect.Migrations
                     IdTipoHabitacion = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true),
+                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: false),
                     Capacidad = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -142,7 +155,7 @@ namespace Proyect.Migrations
                     IdTipoMueble = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true)
+                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -187,8 +200,10 @@ namespace Proyect.Migrations
                     Direccion = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: true),
                     CorreoElectronico = table.Column<string>(type: "varchar(150)", unicode: false, maxLength: 150, nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    Contraseña = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
-                    IdRol = table.Column<int>(type: "int", nullable: false)
+                    IdRol = table.Column<int>(type: "int", nullable: false),
+                    CodigoRestablecimiento = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -234,8 +249,9 @@ namespace Proyect.Migrations
                     Nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     IdTipoHabitacion = table.Column<int>(type: "int", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true),
-                    Precio = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: false),
+                    Precio = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -255,7 +271,7 @@ namespace Proyect.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
                     IdTipoMueble = table.Column<int>(type: "int", nullable: false),
-                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true),
+                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: false),
                     Cantidad = table.Column<int>(type: "int", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     FechaRegistro = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())")
@@ -379,19 +395,23 @@ namespace Proyect.Migrations
                     IdReserva = table.Column<int>(type: "int", nullable: false),
                     FechaAbono = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
                     Valordeuda = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Pendiente = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    ValorAbono = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Porcentaje = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    Subtotal = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    IVA = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Comprobante = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    CantidadAbono = table.Column<int>(type: "int", nullable: true),
-                    Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    IdEstadoAbono = table.Column<int>(type: "int", nullable: false),
+                    Anulado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Abonos__A4693DA78D83026D", x => x.IdAbono);
+                    table.PrimaryKey("PK__Abonos__A4693DA7FFF9E5A1", x => x.IdAbono);
                     table.ForeignKey(
-                        name: "FK__Abonos__IdReserv__75A278F5",
+                        name: "FK__Abonos__IdEstado__778AC167",
+                        column: x => x.IdEstadoAbono,
+                        principalTable: "EstadosAbonos",
+                        principalColumn: "IdEstadoAbono");
+                    table.ForeignKey(
+                        name: "FK__Abonos__IdReserv__76969D2E",
                         column: x => x.IdReserva,
                         principalTable: "Reservas",
                         principalColumn: "IdReserva");
@@ -475,6 +495,11 @@ namespace Proyect.Migrations
                         principalTable: "Servicios",
                         principalColumn: "IdServicio");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Abonos_IdEstadoAbono",
+                table: "Abonos",
+                column: "IdEstadoAbono");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Abonos_IdReserva",
@@ -630,6 +655,9 @@ namespace Proyect.Migrations
 
             migrationBuilder.DropTable(
                 name: "RolesPermisos");
+
+            migrationBuilder.DropTable(
+                name: "EstadosAbonos");
 
             migrationBuilder.DropTable(
                 name: "Reservas");

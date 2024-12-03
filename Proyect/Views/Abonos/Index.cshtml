@@ -51,7 +51,7 @@
                     }
                 <td>@Html.DisplayFor(modelItem => item.IdReservaNavigation.IdReserva)</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.IdAbono" class="btn btn-info">Detalles</a>
+                    <a asp-action="Details" asp-route-id="@item.IdAbono" class="btn btn-info" data-toggle="tooltip" title="Detalles">Detalles</a>
 
                     @if (!item.Anulado)
                     {
