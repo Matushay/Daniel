@@ -38,6 +38,24 @@
                 </select>
             </div>
 
+            <!-- Metodo de Pago -->
+            <div class="form-group">
+                <label asp-for="IdMetodoPago" class="control-label">Metodo de Pago</label>
+                <select asp-for="IdMetodoPago" class="form-control" asp-items="ViewBag.MetodoPago">
+                    <option value="">Seleccione Metodo de Pago</option>
+                </select>
+            </div>
+
+            <!-- Estado de la Reserva -->
+            <div class="form-group">
+                <label asp-for="IdEstadoReserva" class="control-label">Estado de Reserva</label>
+                <select asp-for="IdEstadoReserva" class="form-control" asp-items="ViewBag.EstadoReserva">
+                    <option value="">Seleccione Estado</option>
+                </select>
+                <span asp-validation-for="IdEstadoReserva" class="text-danger"></span>
+            </div>
+
+
             <!-- Servicios -->
             <div class="form-group">
                 <label>Servicios</label>
@@ -45,18 +63,34 @@
                     @foreach (var servicio in ViewBag.Servicios)
                     {
                         <div>
-                            <input type="checkbox" name="serviciosSeleccionados" value="@servicio.IdServicio" />
+                            <input type="checkbox" name="serviciosSeleccionados" value="@servicio.IdServicio"
+                            @(ViewBag.ServiciosSeleccionados.Contains(servicio.IdServicio) ? "checked" : "") />
                             @servicio.Nombre
                         </div>
                     }
                 </div>
             </div>
 
-            <!-- Total y Subtotal -->
             <div class="form-group">
-                <label for="total">Total</label>
-                <input type="text" id="total" class="form-control" readonly />
+                <label for="Descuento">Descuento</label>
+                <input type="number" class="form-control" id="Descuento" name="Descuento" value="@Model.Descuento" />
             </div>
+
+            <div class="form-group">
+                <label for="Subtotal">Subtotal</label>
+                <input type="text" class="form-control" id="Subtotal" name="Subtotal" value="@Model.Subtotal" readonly />
+            </div>
+
+            <div class="form-group">
+                <label for="Iva">IVA</label>
+                <input type="text" class="form-control" id="Iva" name="Iva" value="@Model.Iva" readonly />
+            </div>
+
+            <div class="form-group">
+                <label for="Total">Total</label>
+                <input type="text" class="form-control" id="Total" name="Total" value="@Model.Total" readonly />
+            </div>
+
 
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
@@ -65,3 +99,15 @@
         </form>
     </div>
 </div>
+<script>
+    document.getElementById('Descuento').addEventListener('input', function() {
+        var descuento = parseFloat(this.value) || 0;
+        var subtotal = parseFloat(document.getElementById('Subtotal').value) || 0;
+        var iva = parseFloat(document.getElementById('Iva').value) || 0;
+
+        var total = subtotal + iva - descuento;
+
+        // Actualizar el total en el campo
+        document.getElementById('Total').value = total.toFixed(2);
+    });
+</script>

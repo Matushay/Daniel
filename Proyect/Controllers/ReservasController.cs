@@ -330,14 +330,15 @@ public async Task<IActionResult> DescargarPDF(int id)
             return Json(new { success = false, message = "Error al crear el cliente." });
         }
 
-
         [HttpGet]
         public IActionResult Edit(int id)
         {
+            // Obtener la reserva incluyendo la relación con MetodoPago, EstadoReserva, DetalleServicios y DetallePaquetes
             var reserva = _context.Reservas
-                .Include(r => r.DetallePaquetes)
-                .Include(r => r.DetalleServicios)
-                .Include(r => r.IdClienteNavigation)
+                .Include(r => r.IdMetodoPagoNavigation)  // Incluir la relación con MetodoPago
+                .Include(r => r.IdEstadoReservaNavigation)  // Incluir la relación con EstadoReserva
+                .Include(r => r.DetalleServicios)  // Incluir la relación con DetalleServicios para obtener los servicios seleccionados
+                .Include(r => r.DetallePaquetes)  // Incluir la relación con DetallePaquetes para obtener los paquetes seleccionados
                 .FirstOrDefault(r => r.IdReserva == id);
 
             if (reserva == null)
@@ -345,14 +346,33 @@ public async Task<IActionResult> DescargarPDF(int id)
                 return NotFound();
             }
 
-            // Cargar los datos necesarios para la vista (paquetes, servicios, métodos de pago, etc.)
-            ViewBag.Paquetes = new SelectList(_context.Paquetes.Where(p => p.Estado), "IdPaquete", "Nombre");
-            ViewBag.Servicios = new SelectList(_context.Servicios.Where(s => s.Estado), "IdServicio", "Nombre");
-            ViewBag.MetodosPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre");
-            ViewBag.EstadosReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Estados");
+            // Calcular Subtotal, IVA y Total
+            decimal subtotal = reserva.DetalleServicios.Sum(ds => ds.Precio * ds.Cantidad) + reserva.DetallePaquetes.Sum(dp => dp.Precio);
+            decimal iva = subtotal * 0.16m;  // Suponiendo que el IVA es del 16%
+            decimal total = subtotal + iva - reserva.Descuento;
+
+            // Asignar los valores calculados a la reserva
+            reserva.Subtotal = subtotal;
+            reserva.Iva = iva;
+            reserva.Total = total;
+
+            // Cargar datos para el dropdown de Paquetes, MetodoPago y EstadoReserva
+            ViewBag.Paquetes = new SelectList(_context.Paquetes, "IdPaquete", "Nombre", reserva.IdPaquete);
+            ViewBag.MetodoPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre", reserva.IdMetodoPago);
+            ViewBag.EstadoReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Estados", reserva.IdEstadoReserva);
+
+            // Obtener todos los servicios y pasarlos a la vista
+            ViewBag.Servicios = _context.Servicios.ToList();
+
+            // Obtener una lista de los Ids de los servicios seleccionados
+            var serviciosSeleccionados = reserva.DetalleServicios.Select(ds => ds.IdServicio).ToList();
+            ViewBag.ServiciosSeleccionados = serviciosSeleccionados;
 
             return View(reserva);
         }
+
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -366,20 +386,21 @@ public async Task<IActionResult> DescargarPDF(int id)
             if (ModelState.IsValid)
             {
                 // Actualizar los datos de la reserva
-                var reservaDb = _context.Reservas.Include(r => r.DetallePaquetes).Include(r => r.DetalleServicios)
-                    .FirstOrDefault(r => r.IdReserva == id);
+                var reservaDb = _context.Reservas.Include(r => r.DetallePaquetes)
+                                                 .Include(r => r.DetalleServicios)
+                                                 .FirstOrDefault(r => r.IdReserva == id);
 
                 if (reservaDb == null)
                 {
                     return NotFound();
                 }
 
-                // Actualizamos la reserva
+                // Actualizar los datos de la reserva
                 reservaDb.FechaReserva = reserva.FechaReserva;
                 reservaDb.FechaInicio = reserva.FechaInicio;
                 reservaDb.FechaFin = reserva.FechaFin;
                 reservaDb.IdMetodoPago = reserva.IdMetodoPago;
-                reservaDb.IdEstadoReserva = reserva.IdEstadoReserva;
+                reservaDb.IdEstadoReserva = reserva.IdEstadoReserva;  // Actualizamos el estado de la reserva
                 reservaDb.Descuento = reserva.Descuento;
                 reservaDb.Total = reserva.Total;
                 reservaDb.Subtotal = reserva.Subtotal;
@@ -405,12 +426,12 @@ public async Task<IActionResult> DescargarPDF(int id)
                     {
                         IdServicio = servicioId,
                         Precio = _context.Servicios.Find(servicioId)?.Precio ?? 0,
-                        Cantidad = 1, // Asumimos una cantidad de 1 por servicio, esto puede cambiar
+                        Cantidad = 1,  // Asumimos una cantidad de 1 por servicio, esto puede cambiar
                         Estado = true
                     });
                 }
 
-                // Guardar cambios
+                // Guardar los cambios
                 _context.SaveChanges();
 
                 return RedirectToAction(nameof(Index));
@@ -420,10 +441,11 @@ public async Task<IActionResult> DescargarPDF(int id)
             ViewBag.Paquetes = new SelectList(_context.Paquetes.Where(p => p.Estado), "IdPaquete", "Nombre");
             ViewBag.Servicios = new SelectList(_context.Servicios.Where(s => s.Estado), "IdServicio", "Nombre");
             ViewBag.MetodosPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre");
-            ViewBag.EstadosReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Estados");
+            ViewBag.EstadosReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Descripcion");
 
             return View(reserva);
         }
+
 
 
 
