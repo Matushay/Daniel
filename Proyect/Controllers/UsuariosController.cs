@@ -60,13 +60,20 @@ namespace Proyect.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdUsuario,TipoDocumento,Documento,Nombre,Apellido,Celular,Direccion,CorreoElectronico,Estado,Contraseña,FechaCreacion,IdRol")] Usuario usuario)
         {
+            // Validación: Verificar si el rol está activo
+            var rol = _context.Roles.FirstOrDefault(r => r.IdRol == usuario.IdRol);
+            if (rol != null && !rol.Activo)
+            {
+                ModelState.AddModelError("IdRol", "El rol seleccionado está inactivo y no puede ser asignado.");
+            }
+
             // Validación manual con el validador
-            var validator = new UsuarioValidator(_context); // Crear instancia del validador
-            var validationResult = validator.Validate(usuario); // Validar de forma síncrona
+            var validator = new UsuarioValidator(_context);
+            var validationResult = validator.Validate(usuario);
 
             if (!validationResult.IsValid)
             {
-                // Si la validación falla, agregar los errores al ModelState
+
                 foreach (var error in validationResult.Errors)
                 {
                     ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
@@ -76,11 +83,11 @@ namespace Proyect.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(usuario);
-                _context.SaveChanges(); // Operación síncrona para mantener consistencia
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
 
-            // Si hay errores, recargar los roles y devolver la vista
+
             ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
@@ -90,17 +97,21 @@ namespace Proyect.Controllers
         public IActionResult Edit(int? id)
         {
             if (id == null)
-            { return NotFound();}
-             
-       
+            {
+                return NotFound();
+            }
+
+
             var usuario = _context.Usuarios.Find(id);
             if (usuario == null)
-
+            {
                 return NotFound();
+            }
 
             ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
+
 
         // POST: Usuarios/Edit/5
 
@@ -109,15 +120,24 @@ namespace Proyect.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,TipoDocumento,Documento,Nombre,Apellido,Celular,Direccion,CorreoElectronico,Estado,Contraseña,FechaCreacion,IdRol")] Usuario usuario)
         {
             if (id != usuario.IdUsuario)
+            {
                 return NotFound();
+            }
+
+            // Validación: Verificar si el rol está activo
+            var rol = _context.Roles.FirstOrDefault(r => r.IdRol == usuario.IdRol);
+            if (rol != null && !rol.Activo)
+            {
+                ModelState.AddModelError("IdRol", "El rol seleccionado está inactivo y no puede ser asignado.");
+            }
 
             // Validación manual con el validador
-            var validator = new UsuarioValidator(_context); // Crear instancia del validador
-            var validationResult = validator.Validate(usuario); // Validar de forma síncrona
+            var validator = new UsuarioValidator(_context);
+            var validationResult = validator.Validate(usuario);
 
             if (!validationResult.IsValid)
             {
-                // Si la validación falla, agregar los errores al ModelState
+
                 foreach (var error in validationResult.Errors)
                 {
                     ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
@@ -129,20 +149,21 @@ namespace Proyect.Controllers
                 try
                 {
                     _context.Update(usuario);
-                    _context.SaveChanges(); // Operación síncrona
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!_context.Usuarios.Any(e => e.IdUsuario == usuario.IdUsuario))
+                    {
                         return NotFound();
-
+                    }
                     throw;
                 }
 
                 return RedirectToAction(nameof(Index));
             }
 
-            // Si hay errores, recargar los roles y devolver la vista
+
             ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }

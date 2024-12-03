@@ -10,6 +10,7 @@ public partial class Role
     public string NombreRol { get; set; }
 
     public string Descripcion { get; set; }
+    public bool Activo { get; set; } // Nullable porque la columna lo permite
 
     //public bool Protegido { get; set; } // Nueva propiedad para marcar roles protegidos
 
