@@ -22,11 +22,7 @@ namespace Proyect.Models
 
         public decimal Descuento { get; set; }
 
-        public int NoPersonas { get; set; }
-
         public int IdCliente { get; set; }
-
-        public int IdUsuario { get; set; }
 
         public int IdPaquete { get; set; }
 
@@ -42,7 +38,7 @@ namespace Proyect.Models
 
         public virtual ICollection<DetalleServicio> DetalleServicios { get; set; } = new List<DetalleServicio>();
 
-        [Display(Name = "Apellido del Cliente")]
+        [Display(Name = "Documento del Cliente")]
         public virtual Cliente IdClienteNavigation { get; set; }
 
         [Display(Name = "Estado de la Reserva")]
@@ -54,8 +50,6 @@ namespace Proyect.Models
         [Display(Name = "Nombre del Paquete")]
         public virtual Paquete IdPaqueteNavigation { get; set; }
 
-        [Display(Name = "Apellido del Usuario")]
-        public virtual Usuario IdUsuarioNavigation { get; set; }
 
 
     }

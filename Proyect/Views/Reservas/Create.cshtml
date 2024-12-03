@@ -37,12 +37,7 @@
                 </div>
 
 
-                <div class="form-group">
-                    <label asp-for="IdUsuario" class="control-label">Usuario</label>
-                    <select asp-for="IdUsuario" class="form-control" asp-items="ViewBag.IdUsuario"></select>
-                    <span asp-validation-for="IdUsuario" class="text-danger"></span>
-                </div>
-
+        
                 <!-- Selección de Fecha de Inicio y Fecha Fin -->
                 <div class="form-group">
                     <label asp-for="FechaInicio" class="control-label">Fecha de Inicio</label>
@@ -94,13 +89,6 @@
                     <label asp-for="IdEstadoReserva" class="control-label">Estado de Reserva</label>
                     <select asp-for="IdEstadoReserva" class="form-control" asp-items="ViewBag.IdEstadoReserva"></select>
                     <span asp-validation-for="IdEstadoReserva" class="text-danger"></span>
-                </div>
-
-                <!-- Otros campos de la reserva -->
-                <div class="form-group">
-                    <label asp-for="NoPersonas" class="control-label">Número de Personas</label>
-                    <input asp-for="NoPersonas" class="form-control" />
-                    <span asp-validation-for="NoPersonas" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">

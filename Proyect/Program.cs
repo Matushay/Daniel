@@ -9,7 +9,6 @@ using Proyect.Servicios;
 using Proyect.Validaciones;
 using Proyect.Validaciones.ValidacionesLuis;
 
-
 namespace Proyect
 {
     public class Program
@@ -18,7 +17,7 @@ namespace Proyect
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Agrega el DbContext al contenedor de servicios
+            // Agregar el DbContext al contenedor de servicios
             builder.Services.AddDbContext<ProyectContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ProyectConnection")));
 
@@ -51,13 +50,17 @@ namespace Proyect
             builder.Services.AddScoped<IValidator<Role>, RolValidator>();
             builder.Services.AddScoped<IValidator<Permiso>, PermisoValidator>();
 
-            // Agregar servicios necesarios para la aplicaci�n
+            // Agregar servicios necesarios para la aplicaci�n, como los controladores con vistas
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
             // Configuraci�n de la tuber�a de solicitudes HTTP
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();  // Configuraci�n para entornos de producci�n
@@ -104,4 +107,3 @@ namespace Proyect
         }
     }
 }
-
