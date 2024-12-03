@@ -19,7 +19,7 @@
             <!-- Nombre del Rol -->
             <div class="form-group">
                 <label asp-for="NombreRol" class="control-label"></label>
-                <input asp-for="NombreRol" class="form-control" />
+                <input asp-for="NombreRol" class="form-control" readonly />
                 <span asp-validation-for="NombreRol" class="text-danger"></span>
             </div>
 
@@ -54,14 +54,16 @@
                 }
             </div>
 
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button><br />
+            <div>
+                <a asp-action="Index">Volver a la lista de Roles</a>
+            </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Volver a la lista de Roles</a>
-</div>
+
 
 @section Scripts {
     @{

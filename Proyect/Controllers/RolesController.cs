@@ -136,32 +136,36 @@ namespace Proyect.Controllers
         }
 
         // GET: Roles/Edit/5
-        //[Authorize(Policy = "ManageRoles")]
+
         public async Task<IActionResult> Edit(int? id)
         {
+            // Si no se pasa un ID, devolver NotFound
             if (id == null)
             {
                 return NotFound();
             }
 
-
+            // Cargar el rol junto con sus permisos asociados
             var role = await _context.Roles
-                .Include(r => r.RolesPermisos)
-                .ThenInclude(rp => rp.IdPermisoNavigation)
-                .FirstOrDefaultAsync(m => m.IdRol == id);
+                .Include(r => r.RolesPermisos) // Incluir la relación RolesPermisos (los permisos asociados al rol)
+                .ThenInclude(rp => rp.IdPermisoNavigation) // Si tienes una navegación al modelo Permiso para obtener detalles sobre los permisos
+                .FirstOrDefaultAsync(r => r.IdRol == id); // Buscar el rol por ID
 
+            // Si no se encuentra el rol, devolver NotFound
             if (role == null)
             {
                 return NotFound();
             }
 
-            //pasar 
-
+            // Pasar todos los permisos disponibles a la vista
             ViewData["Permisos"] = await _context.Permisos.ToListAsync();
 
+            // Pasar los permisos seleccionados (los permisos asociados al rol) a la vista
+            ViewData["SelectedPermisos"] = role.RolesPermisos
+                .Select(rp => rp.IdPermiso) // Obtener los IDs de los permisos asociados al rol
+                .ToList();
 
-            ViewData["SelectedPermisos"] = role.RolesPermisos.Select(rp => rp.IdPermiso).ToList();
-
+            // Retornar la vista con el rol cargado y los permisos seleccionados
             return View(role);
         }
 
@@ -170,43 +174,58 @@ namespace Proyect.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdRol,NombreRol,Descripcion,Activo")] Role role, List<int> selectedPermisos)
+        public async Task<IActionResult> Edit(int id, [Bind("IdRol,Descripcion,Activo")] Role role, List<int> selectedPermisos)
         {
+            // Si el ID del rol no coincide con el ID en la URL, devolver NotFound
             if (id != role.IdRol)
             {
                 return NotFound();
             }
 
+            // Recuperar el rol original de la base de datos sin hacer un seguimiento (AsNoTracking)
+            var existingRole = await _context.Roles.AsNoTracking()
+                .Include(r => r.RolesPermisos) // Incluir los permisos asociados al rol
+                .FirstOrDefaultAsync(r => r.IdRol == id); // Buscar el rol por ID
+
+            // Si no se encuentra el rol, devolver NotFound
+            if (existingRole == null)
+            {
+                return NotFound();
+            }
+
+            // Bloquear cambios en el NombreRol para que no pueda ser modificado
+            role.NombreRol = existingRole.NombreRol;
+
+            // Verificar si el modelo es válido
             if (ModelState.IsValid)
             {
                 try
                 {
-
+                    // Actualizar el rol en la base de datos (solo los campos permitidos)
                     _context.Update(role);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(); // Guardar cambios en la base de datos
 
-
+                    // Eliminar los permisos asociados previamente al rol
                     var permisosExistentes = _context.RolesPermisos.Where(rp => rp.IdRol == id).ToList();
-                    _context.RolesPermisos.RemoveRange(permisosExistentes);
+                    _context.RolesPermisos.RemoveRange(permisosExistentes); // Eliminar los permisos antiguos
 
-
+                    // Si se seleccionaron nuevos permisos, agregarlos
                     if (selectedPermisos != null && selectedPermisos.Count > 0)
                     {
-                        foreach (var permisoId in selectedPermisos)
+                        var nuevosRolesPermisos = selectedPermisos.Select(permisoId => new RolesPermiso
                         {
-                            var rolesPermiso = new RolesPermiso
-                            {
-                                IdRol = role.IdRol,
-                                IdPermiso = permisoId
-                            };
-                            _context.RolesPermisos.Add(rolesPermiso);
-                        }
+                            IdRol = role.IdRol,
+                            IdPermiso = permisoId
+                        });
+                        _context.RolesPermisos.AddRange(nuevosRolesPermisos); // Agregar los nuevos permisos
                     }
 
+                    // Guardar los cambios (tanto el rol como los permisos)
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    // Si hay un error de concurrencia, verificar si el rol aún existe
                     if (!RoleExists(role.IdRol))
                     {
                         return NotFound();
@@ -217,15 +236,17 @@ namespace Proyect.Controllers
                     }
                 }
 
+                // Redirigir a la lista de roles
                 return RedirectToAction(nameof(Index));
             }
 
-
+            // Si hay errores de validación, recargar la lista de permisos
             ViewData["Permisos"] = await _context.Permisos.ToListAsync();
-            ViewData["SelectedPermisos"] = selectedPermisos;
+            ViewData["SelectedPermisos"] = selectedPermisos; // Volver a pasar los permisos seleccionados en caso de error
 
             return View(role);
         }
+
 
 
         // GET: Roles/Delete/5
