@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Proyect.Models;
+using Proyect.ViewModel;
 
 namespace Proyect.Controllers
 {
@@ -48,19 +49,19 @@ namespace Proyect.Controllers
 
             return View(habitacione);
         }
-
         // GET: Habitaciones/Create
         public IActionResult Create()
         {
             ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitaciones, "IdTipoHabitacion", "Nombre");
-            ViewData["Muebles"] = _context.Muebles.Where(s => s.Estado == false).Select(m => new
+            var muebles = _context.Muebles.Where(s => s.Estado == false).Select(m => new MuebleViewModel
             {
                 Value = m.IdMueble.ToString(),
                 Text = $"{m.Nombre} (Cantidad disponible: {m.Cantidad})",
-                m.IdMueble,
-                m.Nombre,
-                m.Cantidad
+                IdMueble = m.IdMueble,
+                Nombre = m.Nombre,
+                Cantidad = m.Cantidad
             }).ToList();
+            ViewData["Muebles"] = muebles;
             return View();
         }
 
@@ -78,14 +79,15 @@ namespace Proyect.Controllers
                 {
                     ModelState.AddModelError("Cantidad", "La cantidad debe ser mayor a 0.");
                     ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitaciones, "IdTipoHabitacion", "Nombre", habitacione.IdTipoHabitacion);
-                    ViewData["Muebles"] = _context.Muebles.Where(s => s.Estado == false).Select(m => new
+                    var muebles = _context.Muebles.Where(s => s.Estado == false).Select(m => new MuebleViewModel
                     {
                         Value = m.IdMueble.ToString(),
                         Text = $"{m.Nombre} (Cantidad disponible: {m.Cantidad})",
-                        m.IdMueble,
-                        m.Nombre,
-                        m.Cantidad
+                        IdMueble = m.IdMueble,
+                        Nombre = m.Nombre,
+                        Cantidad = m.Cantidad
                     }).ToList();
+                    ViewData["Muebles"] = muebles;
                     return View(habitacione);
                 }
 
@@ -121,15 +123,22 @@ namespace Proyect.Controllers
 
                     await _context.SaveChangesAsync();
                 }
-                TempData["SuccessMessage"] = "La habitación se creo correctamente";
+                TempData["SuccessMessage"] = "La habitación se creó correctamente";
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitaciones, "IdTipoHabitacion", "Nombre", habitacione.IdTipoHabitacion);
-            ViewData["Muebles"] = new SelectList(_context.Muebles.Where(s => s.Estado == false), "IdMueble", "Nombre");
+            var remainingMuebles = _context.Muebles.Where(s => s.Estado == false).Select(m => new MuebleViewModel
+            {
+                Value = m.IdMueble.ToString(),
+                Text = $"{m.Nombre} (Cantidad disponible: {m.Cantidad})",
+                IdMueble = m.IdMueble,
+                Nombre = m.Nombre,
+                Cantidad = m.Cantidad
+            }).ToList();
+            ViewData["Muebles"] = remainingMuebles;
             return View(habitacione);
         }
-
 
         // GET: Habitaciones/Edit/5
         public async Task<IActionResult> Edit(int? id)

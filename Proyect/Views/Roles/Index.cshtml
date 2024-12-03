@@ -31,7 +31,7 @@
         <tr>
             <th>@Html.DisplayNameFor(model => model.NombreRol)</th>
             <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
-            <th>@Html.DisplayNameFor(model => model.Estado)</th> <!-- Nueva columna para el estado -->
+            <th>@Html.DisplayNameFor(model => model.Activo)</th> <!-- Nueva columna para el estado -->
             <th>Acciones</th>
         </tr>
     </thead>
@@ -84,6 +84,20 @@
 </div>
 
 @section Scripts {
+        <script>
+            $(document).ready(function () {
+                $('#RolesTable').DataTable({
+                    scrollX: true,
+                    language: {
+                        "sLengthMenu": "Mostrar _MENU_ entradas",
+                        "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                        "sSearch": "Buscar:",
+                        "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA",
+                        "sInfo":"Mostrando START a END de TOTAL entradas"
+                    }
+                });
+            })
+        </script>
     <script>
         // Lógica para cargar la información del rol en el modal de eliminación
         $(document).on('click', '[data-bs-target="#deleteModal"]', function () {
@@ -126,20 +140,4 @@
             });
         });
     </script>
-
-@section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#RolesTable').DataTable({
-                    scrollX: true,
-                    language: {
-                        "sLengthMenu": "Mostrar _MENU_ entradas",
-                        "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                        "sSearch": "Buscar:",
-                        "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA",
-                        "sInfo":"Mostrando START a END de TOTAL entradas"
-                    }
-                });
-            })
-        </script>
 }
