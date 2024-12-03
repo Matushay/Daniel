@@ -317,6 +317,20 @@ public async Task<IActionResult> DescargarPDF(int id)
 
             return Json(clienteInfo);  // Devolver el objeto cliente como JSON
         }
+        // Acción para crear un cliente desde el modal
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCliente([Bind("IdCliente,TipoDocumento,Documento,Nombre,Apellido,Direccion,Celular,CorreoElectronico,Estado")] Cliente cliente)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Clientes.Add(cliente);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, id = cliente.IdCliente, name = $"{cliente.Nombre} {cliente.Apellido}" });
+            }
+
+            return Json(new { success = false, message = "Error al crear el cliente." });
+        }
 
 
         [HttpGet]
