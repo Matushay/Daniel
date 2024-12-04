@@ -5,42 +5,51 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="page-title">Crear Nuevo Servicio</h1>
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Crear Nuevo Servicio</h1>
 
-<div class="create-container">
-    <div class="card">
-        <div class="card-header text-white bg-primary">
-            <h4>Nuevo Servicio</h4>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Formulario para Crear Servicio</h6>
         </div>
         <div class="card-body">
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                <!-- Nombre del Servicio -->
                 <div class="form-group">
-                    <label asp-for="Nombre" class="control-label"></label>
+                    <label asp-for="Nombre" class="control-label">Nombre del Servicio</label>
                     <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre del servicio" />
                     <span asp-validation-for="Nombre" class="text-danger"></span>
                 </div>
 
+                <!-- Descripción del Servicio -->
                 <div class="form-group">
-                    <label asp-for="Descripcion" class="control-label"></label>
+                    <label asp-for="Descripcion" class="control-label">Descripción del Servicio</label>
                     <input asp-for="Descripcion" class="form-control" placeholder="Ingrese la descripción del servicio" />
                     <span asp-validation-for="Descripcion" class="text-danger"></span>
                 </div>
 
+                <!-- Precio del Servicio -->
                 <div class="form-group">
-                    <label asp-for="Precio" class="control-label"></label>
+                    <label asp-for="Precio" class="control-label">Precio del Servicio</label>
                     <input asp-for="Precio" class="form-control" placeholder="Ingrese el precio del servicio" />
                     <span asp-validation-for="Precio" class="text-danger"></span>
                 </div>
 
-                <div class="form-group text-center">
-                    <input type="submit" value="Crear Servicio" class="btn btn-primary btn-lg" />
+                <!-- Botón de enviar -->
+                <div class="form-group text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save"></i> Crear Servicio
+                    </button>
                 </div>
             </form>
         </div>
+
         <div class="card-footer text-center">
-            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver a la lista
+            </a>
         </div>
     </div>
 </div>
