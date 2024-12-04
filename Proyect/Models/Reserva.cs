@@ -20,6 +20,7 @@ namespace Proyect.Models
 
         public decimal Total { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
         public decimal Descuento { get; set; }
 
         public int IdCliente { get; set; }
