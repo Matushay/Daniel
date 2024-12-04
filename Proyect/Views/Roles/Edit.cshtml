@@ -19,12 +19,12 @@
                 <!-- Campo oculto para el Id del Rol -->
                 <input type="hidden" asp-for="IdRol" />
 
-            <!-- Nombre del Rol -->
-            <div class="form-group">
-                <label asp-for="NombreRol" class="control-label"></label>
-                <input asp-for="NombreRol" class="form-control" placeholder="Ingresa el nombre del rol" readonly />
-                <span asp-validation-for="NombreRol" class="text-danger"></span>
-            </div>
+                <!-- Nombre del Rol -->
+                <div class="form-group">
+                    <label asp-for="NombreRol" class="form-label">Nombre del Rol</label>
+                    <input asp-for="NombreRol" class="form-control" placeholder="Ingresa el nombre del rol" />
+                    <span asp-validation-for="NombreRol" class="text-danger"></span>
+                </div>
 
                 <!-- Descripción del Rol -->
                 <div class="form-group">
@@ -72,8 +72,6 @@
         </a>
     </div>
 </div>
-
-
 
 @section Scripts {
     @{

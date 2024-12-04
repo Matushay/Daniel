@@ -11,6 +11,7 @@
     <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i>Crear </a>
 </p>
 
+<table class="table" id="RolesTable">
 <!-- Mostrar mensajes de error o éxito -->
 @if (TempData["Error"] != null)
 {
@@ -35,6 +36,7 @@
             <th>Acciones</th>
         </tr>
     </thead>
+
     <tbody>
         @foreach (var item in Model)
         {
