@@ -5,43 +5,50 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="page-title">Editar Tipo de Habitación</h1>
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Editar Tipo de Habitación</h1>
 
-<h4 class="form-subtitle">Modifica los detalles del tipo de habitación</h4>
-<hr />
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <form asp-action="Edit" class="form-container">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IdTipoHabitacion" />
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Modifica los detalles del tipo de habitación</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" class="form-container">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="IdTipoHabitacion" />
 
-            <div class="form-group">
-                <label asp-for="Nombre" class="form-label">Nombre del Tipo de Habitación</label>
-                <input asp-for="Nombre" class="form-control" placeholder="Ingresa el nombre del tipo de habitación" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Nombre" class="form-label">Nombre del Tipo de Habitación</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ingresa el nombre del tipo de habitación" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="Descripcion" class="form-label">Descripción</label>
-                <input asp-for="Descripcion" class="form-control" placeholder="Ingresa una descripción para el tipo de habitación" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="form-label">Descripción</label>
+                    <input asp-for="Descripcion" class="form-control" placeholder="Ingresa una descripción para el tipo de habitación" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="Capacidad" class="form-label">Capacidad</label>
-                <input asp-for="Capacidad" class="form-control" placeholder="Ingresa la capacidad del tipo de habitación" />
-                <span asp-validation-for="Capacidad" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Capacidad" class="form-label">Capacidad</label>
+                    <input asp-for="Capacidad" class="form-control" placeholder="Ingresa la capacidad del tipo de habitación" />
+                    <span asp-validation-for="Capacidad" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-primary btn-lg w-100" />
-            </div>
-        </form>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<div class="mt-4 text-center">
-    <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left"></i> Volver a la lista
+        </a>
+    </div>
 </div>
 
 @section Scripts {

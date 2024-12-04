@@ -1,4 +1,3 @@
-
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +6,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Proyect.Models;
 using Proyect.Servicios;
-using Proyect.Validaciones.ValidacionesLuis; // Importar las validaciones
+using Proyect.ViewModel;
+using Proyect.Validaciones.ValidacionesLuis; 
 
 namespace Proyect.Controllers
 {
@@ -15,12 +15,13 @@ namespace Proyect.Controllers
     public class UsuariosController : Controller
     {
         private readonly ProyectContext _context;
-        private readonly IEmailService _emailService;
+        private readonly SendGridEmailService _emailcreateService;
 
-        public UsuariosController(ProyectContext context, IEmailService emailService)
+        public UsuariosController(ProyectContext context)
         {
             _context = context;
-            _emailService = emailService;
+             var apiKey = "Aca clave api"; // Obtén tu API Key de SendGrid
+            _emailcreateService = new SendGridEmailService(apiKey);
         }
 
     // GET: Usuarios
@@ -112,37 +113,35 @@ namespace Proyect.Controllers
                 }
                 else
                 {
+                    // Guardar al usuario en la base de datos
                     _context.Add(usuario);
                     await _context.SaveChangesAsync();
 
-                    // Verificar que el servicio de correo electrónico y la dirección de correo electrónico del usuario no sean nulos
-                    if (_emailService != null && !string.IsNullOrEmpty(usuario.CorreoElectronico))
-                    {
-                        // Enviar correo electrónico con la contraseña generada
-                        string resetPasswordUrl = Url.Action("ResetPassword", "Account", new { email = usuario.CorreoElectronico }, Request.Scheme);
-                        string emailBody = $"¡Bienvenido a Medellin Salvaje!<br>" +
-                                           $"Tu contraseña temporal es: <strong>{usuario.Contraseña}</strong><br>" +
-                                           $"Haz clic <a href='{resetPasswordUrl}'>aquí</a> para cambiar tu contraseña.";
+                    // Generar el código de restablecimiento
+                    string codigoRestablecimiento = GenerarCodigoRestablecimiento();
 
-                        try
-                        {
-                            await _emailService.SendEmailAsync(
-                                usuario.CorreoElectronico,
-                                "Bienvenido a Medellin Salvaje",
-                                emailBody
-                            );
-                        }
-                        catch (Exception ex)
-                        {
-                            ModelState.AddModelError("", $"Error al enviar el correo electrónico: {ex.Message}");
-                        }
-                    }
-                    else
-                    {
-                        // Manejar el caso en que _emailService o CorreoElectronico sea nulo
-                        ModelState.AddModelError("", "No se pudo enviar el correo electrónico. Verifica la configuración del servicio de correo y la dirección de correo electrónico del usuario.");
-                    }
+                    // Guardar el código en el usuario (puedes agregar una columna "CodigoRestablecimiento" en tu base de datos)
+                    usuario.CodigoRestablecimiento = codigoRestablecimiento;
+                    _context.Update(usuario);
+                    await _context.SaveChangesAsync();
 
+                    // Generar el enlace de restablecimiento de contraseña con el código
+                    string enlaceRestablecimiento = Url.Action("ResetPassword", "Account", new { code = codigoRestablecimiento }, protocol: Request.Scheme);
+
+                    // Contenido del correo
+                    var subject = "Restablecimiento de contraseña";
+                    var plainTextContent = $"Hola {usuario.Nombre},\n\nHaz clic en el siguiente enlace para restablecer tu contraseña:\n{enlaceRestablecimiento}\n\nSi no solicitaste este cambio, ignora este mensaje.";
+                    var htmlContent = $@"
+    <strong>Hola {usuario.Nombre}</strong>,<br><br>
+    Haz clic en el siguiente botón para restablecer tu contraseña:<br><br>
+    <a href='{enlaceRestablecimiento}' style='padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;'>Restablecer mi contraseña</a><br><br>
+    Si no solicitaste este cambio, por favor ignora este mensaje.
+";
+
+                    // Enviar el correo
+                    await _emailcreateService.SendEmailAsync(usuario.CorreoElectronico, subject, plainTextContent, htmlContent);
+
+                    // Redirigir al usuario a la página de lista o cualquier otra página
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -150,7 +149,6 @@ namespace Proyect.Controllers
             ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
-
 
         // GET: Usuarios/Edit/5
         public IActionResult Edit(int? id)
@@ -241,6 +239,41 @@ namespace Proyect.Controllers
                 return Ok(); // Responde con éxito
             }
             return BadRequest(); // En caso de error
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string code)
+        {
+            if (string.IsNullOrEmpty(code))
+            {
+                return BadRequest("Código de restablecimiento de contraseña no válido.");
+            }
+
+            var model = new ResetPasswordViewModel { Code = code };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _context.Usuarios.SingleOrDefaultAsync(u => u.CodigoRestablecimiento == model.Code);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Código de restablecimiento de contraseña no válido.");
+                return View();
+            }
+
+            user.Contraseña = model.Password; // Aquí puedes agregar lógica para encriptar la contraseña
+            user.CodigoRestablecimiento = null; // Opcional: limpiar el código de restablecimiento una vez utilizado
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Login", "Account");
         }
 
         // GET: Usuarios/Delete/5

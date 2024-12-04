@@ -5,12 +5,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="page-title">Crear Nuevo Tipo de Mueble</h1>
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Crear Nuevo Tipo de Mueble</h1>
 
-<div class="create-container">
-    <div class="card">
-        <div class="card-header text-white bg-primary">
-            <h4>Nuevo Tipo de Mueble</h4>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Nuevo Tipo de Mueble</h6>
         </div>
         <div class="card-body">
             <form asp-action="Create">
@@ -32,12 +32,17 @@
 
                 <!-- Botón de Enviar -->
                 <div class="form-group text-center">
-                    <input type="submit" value="Crear Tipo de Mueble" class="btn btn-primary btn-lg" />
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-couch"></i> Crear Tipo de Mueble
+                    </button>
                 </div>
             </form>
         </div>
+
         <div class="card-footer text-center">
-            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver a la lista
+            </a>
         </div>
     </div>
 </div>

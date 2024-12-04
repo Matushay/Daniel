@@ -5,83 +5,100 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="page-title">Editar Paquete</h1>
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Editar Paquete</h1>
 
-<h4 class="form-subtitle">Modifica los detalles del paquete</h4>
-<hr />
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <form asp-action="Edit" class="form-container">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IdPaquete" />
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Modifica los detalles del paquete</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <!-- Campo oculto para el Id del Paquete -->
+                <input type="hidden" asp-for="IdPaquete" />
 
-            <div class="form-group">
-                <label asp-for="Nombre" class="form-label">Nombre del Paquete</label>
-                <input asp-for="Nombre" class="form-control" placeholder="Ingresa el nombre del paquete" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
+                <!-- Nombre del Paquete -->
+                <div class="form-group">
+                    <label asp-for="Nombre" class="form-label">Nombre del Paquete</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ingresa el nombre del paquete" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="Descripcion" class="form-label">Descripción</label>
-                <input asp-for="Descripcion" class="form-control" placeholder="Ingresa una descripción para el paquete" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
+                <!-- Descripción del Paquete -->
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="form-label">Descripción</label>
+                    <input asp-for="Descripcion" class="form-control" placeholder="Ingresa una descripción para el paquete" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label class="form-label">Seleccione los Servicios</label>
-                @foreach (var servicio in ViewData["Servicios"] as IEnumerable<dynamic>)
-                {
-                    <div>
-                        <input type="checkbox"
-                               name="ServiciosSeleccionados"
-                               value="@servicio.IdServicio"
-                               class="servicioCheckbox"
-                               data-precio="@servicio.Precio"
-                               id="servicio_@servicio.IdServicio"
-                        @(servicio.Seleccionado ? "checked" : "") />
-                        <label for="servicio_@servicio.IdServicio">@servicio.Nombre (Precio: $@servicio.Precio)</label>
-                    </div>
-                }
-            </div>
+                <!-- Selección de Servicios -->
+                <div class="form-group">
+                    <label class="form-label">Seleccione los Servicios</label>
+                    @foreach (var servicio in ViewData["Servicios"] as IEnumerable<dynamic>)
+                    {
+                        <div>
+                            <input type="checkbox"
+                                   name="ServiciosSeleccionados"
+                                   value="@servicio.IdServicio"
+                                   class="servicioCheckbox"
+                                   data-precio="@servicio.Precio"
+                                   id="servicio_@servicio.IdServicio"
+                            @(servicio.Seleccionado ? "checked" : "") />
+                            <label for="servicio_@servicio.IdServicio">@servicio.Nombre (Precio: $@servicio.Precio)</label>
+                        </div>
+                    }
+                </div>
 
-            <div class="form-group">
-                <label class="form-label">Seleccione las Habitaciones</label>
-                @foreach (var habitacion in ViewData["Habitaciones"] as IEnumerable<dynamic>)
-                {
-                    <div>
-                        <input type="checkbox"
-                               name="HabitacionesSeleccionadas"
-                               value="@habitacion.IdHabitacion"
-                               class="habitacionCheckbox"
-                               data-precio="@habitacion.Precio"
-                               id="habitacion_@habitacion.IdHabitacion"
-                        @(habitacion.Seleccionado ? "checked" : "") />
-                        <label for="habitacion_@habitacion.IdHabitacion">@habitacion.Nombre (Precio: $@habitacion.Precio)</label>
-                    </div>
-                }
-            </div>
+                <!-- Selección de Habitaciones -->
+                <div class="form-group">
+                    <label class="form-label">Seleccione las Habitaciones</label>
+                    @foreach (var habitacion in ViewData["Habitaciones"] as IEnumerable<dynamic>)
+                    {
+                        <div>
+                            <input type="checkbox"
+                                   name="HabitacionesSeleccionadas"
+                                   value="@habitacion.IdHabitacion"
+                                   class="habitacionCheckbox"
+                                   data-precio="@habitacion.Precio"
+                                   id="habitacion_@habitacion.IdHabitacion"
+                            @(habitacion.Seleccionado ? "checked" : "") />
+                            <label for="habitacion_@habitacion.IdHabitacion">@habitacion.Nombre (Precio: $@habitacion.Precio)</label>
+                        </div>
+                    }
+                </div>
 
-            <div class="form-group">    
-                <label asp-for="Precio" class="form-label">Precio Total</label>
-                <input asp-for="Precio" id="total" name="PrecioTotal" value="@ViewData["PrecioTotal"]" class="form-control" readonly />
-                <span asp-validation-for="Precio" class="text-danger"></span>
-            </div>
+                <!-- Precio Total -->
+                <div class="form-group">
+                    <label asp-for="Precio" class="form-label">Precio Total</label>
+                    <input asp-for="Precio" id="total" name="PrecioTotal" value="@ViewData["PrecioTotal"]" class="form-control" readonly />
+                    <span asp-validation-for="Precio" class="text-danger"></span>
+                </div>
 
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
-                </label>
-            </div>
+                <!-- Estado del Paquete -->
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Estado" />
+                        @Html.DisplayNameFor(model => model.Estado)
+                    </label>
+                </div>
 
-            <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-primary btn-lg w-100" />
-            </div>
-        </form>
+                <!-- Botón de Guardar -->
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<div class="mt-4 text-center">
-    <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
+    <!-- Enlace para Volver a la Lista -->
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left"></i> Volver a la lista de Paquetes
+        </a>
+    </div>
 </div>
 
 @section Scripts {

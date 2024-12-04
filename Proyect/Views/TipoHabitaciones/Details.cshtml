@@ -5,33 +5,31 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="page-title">Detalles del Tipo de Habitación</h1>
-
-<div class="details-container">
-    <div class="card">
-        <div class="card-header">
-            <h4>Información del Tipo de Habitación</h4>
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800 text-center">Detalles del Tipo de Habitación</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Información del Tipo de Habitación</h6>
         </div>
         <div class="card-body">
             <dl class="row">
-                <dt class="col-sm-3">Nombre del Tipo de Habitación</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Nombre)
-                </dd>
-                <dt class="col-sm-3">Descripción</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Descripcion)
-                </dd>
-                <dt class="col-sm-3">Capacidad</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Capacidad)
-                </dd>
+                <dt class="col-sm-3 font-weight-bold">Nombre del Tipo de Habitación</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Nombre)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Descripción</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Descripcion)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Capacidad</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Capacidad)</dd>
             </dl>
         </div>
-        <div class="card-footer text-end">
-            <a asp-action="Edit" asp-route-id="@Model?.IdTipoHabitacion" class="btn btn-primary btn-sm">Editar</a>
-            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+        <div class="card-footer text-center">
+            <a asp-action="Edit" asp-route-id="@Model?.IdTipoHabitacion" class="btn btn-primary btn-sm">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver a la lista
+            </a>
         </div>
     </div>
 </div>
-

@@ -1,16 +1,16 @@
-﻿@model Proyect.Models.Habitacione
+@model Proyect.Models.Habitacione
 
 @{
     ViewData["Title"] = "Crear Habitación";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="page-title">Crear Nueva Habitación</h1>
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Crear Nueva Habitación</h1>
 
-<div class="create-container">
-    <div class="card">
-        <div class="card-header text-white bg-primary">
-            <h4>Detalles de la Habitación</h4>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Detalles de la Habitación</h6>
         </div>
         <div class="card-body">
             <form asp-action="Create">
@@ -18,35 +18,37 @@
 
                 <!-- Nombre -->
                 <div class="form-group">
-                    <label asp-for="Nombre" class="control-label"></label>
+                    <label asp-for="Nombre" class="control-label">Nombre de la Habitación</label>
                     <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre de la habitación" />
                     <span asp-validation-for="Nombre" class="text-danger"></span>
                 </div>
 
                 <!-- Tipo de Habitación -->
                 <div class="form-group">
-                    <label asp-for="IdTipoHabitacion" class="control-label">Tipo de Habitacion</label>
+                    <label asp-for="IdTipoHabitacion" class="control-label">Tipo de Habitación</label>
                     <select asp-for="IdTipoHabitacion" class="form-control" asp-items="ViewBag.IdTipoHabitacion">
                         <option value="">Seleccione el tipo de habitación</option>
                     </select>
+                    <span asp-validation-for="IdTipoHabitacion" class="text-danger"></span>
                 </div>
 
+                <!-- Capacidad -->
                 <div class="form-group">
-                    <label asp-for="Cantidad" class="control-label"></label>
+                    <label asp-for="Cantidad" class="control-label">Capacidad de personas</label>
                     <input asp-for="Cantidad" class="form-control" placeholder="Capacidad de personas" />
                     <span asp-validation-for="Cantidad" class="text-danger"></span>
                 </div>
 
                 <!-- Descripción -->
                 <div class="form-group">
-                    <label asp-for="Descripcion" class="control-label"></label>
+                    <label asp-for="Descripcion" class="control-label">Descripción</label>
                     <textarea asp-for="Descripcion" class="form-control" placeholder="Descripción breve de la habitación"></textarea>
                     <span asp-validation-for="Descripcion" class="text-danger"></span>
                 </div>
 
                 <!-- Precio -->
                 <div class="form-group">
-                    <label asp-for="Precio" class="control-label"></label>
+                    <label asp-for="Precio" class="control-label">Precio (COP)</label>
                     <input asp-for="Precio" class="form-control" placeholder="Precio en COP" />
                     <span asp-validation-for="Precio" class="text-danger"></span>
                 </div>
@@ -71,12 +73,17 @@
 
                 <!-- Botón para enviar el formulario -->
                 <div class="form-group text-center">
-                    <input type="submit" value="Crear Habitación" class="btn btn-primary btn-lg" />
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-bed"></i> Crear Habitación
+                    </button>
                 </div>
             </form>
         </div>
+
         <div class="card-footer text-center">
-            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver a la lista
+            </a>
         </div>
     </div>
 </div>
@@ -102,12 +109,12 @@
                     const row = document.createElement("tr");
                     row.setAttribute("data-id", muebleId);
                     row.innerHTML = `
-                                                    <td>${nombreMueble}</td>
-                                                    <td>${cantidad}</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-danger btn-sm" onclick="eliminarMuebleSeleccionado('${muebleId}')">Eliminar</button>
-                                                    </td>
-                                                `;
+                                <td>${nombreMueble}</td>
+                                <td>${cantidad}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="eliminarMuebleSeleccionado('${muebleId}')">Eliminar</button>
+                                </td>
+                            `;
                     mueblesTableBody.appendChild(row);
                 }
 
@@ -132,11 +139,10 @@
                 const muebleId = row.getAttribute("data-id");
                 const cantidad = row.cells[1].textContent;
 
-                mueblesInputs.push
-                (`
-                <input type="hidden" name="mueblesSeleccionados" value="${muebleId}" />
-                input type="hidden" name="cantidadMuebles" value="${cantidad}" />
-                `);
+                mueblesInputs.push(`
+                            <input type="hidden" name="mueblesSeleccionados" value="${muebleId}" />
+                            <input type="hidden" name="cantidadMuebles" value="${cantidad}" />
+                        `);
             });
 
             // Agregar los inputs ocultos al formulario

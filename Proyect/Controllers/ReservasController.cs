@@ -332,14 +332,15 @@ public async Task<IActionResult> DescargarPDF(int id)
             return Json(new { success = false, message = "Error al crear el cliente." });
         }
 
-
         [HttpGet]
         public IActionResult Edit(int id)
         {
+            // Obtener la reserva con relaciones
             var reserva = _context.Reservas
-                .Include(r => r.DetallePaquetes)
+                .Include(r => r.IdMetodoPagoNavigation)
+                .Include(r => r.IdEstadoReservaNavigation)
                 .Include(r => r.DetalleServicios)
-                .Include(r => r.IdClienteNavigation)
+                .Include(r => r.DetallePaquetes)
                 .FirstOrDefault(r => r.IdReserva == id);
 
             if (reserva == null)
@@ -347,85 +348,137 @@ public async Task<IActionResult> DescargarPDF(int id)
                 return NotFound();
             }
 
-            // Cargar los datos necesarios para la vista (paquetes, servicios, métodos de pago, etc.)
-            ViewBag.Paquetes = new SelectList(_context.Paquetes.Where(p => p.Estado), "IdPaquete", "Nombre");
-            ViewBag.Servicios = new SelectList(_context.Servicios.Where(s => s.Estado), "IdServicio", "Nombre");
-            ViewBag.MetodosPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre");
-            ViewBag.EstadosReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Estados");
+            // Calcular subtotal, IVA y total
+            decimal precioPaquete = reserva.DetallePaquetes.FirstOrDefault()?.Precio ?? 0m;
+            decimal subtotal = reserva.DetalleServicios.Sum(ds => ds.Precio * ds.Cantidad) + precioPaquete;
+            decimal iva = subtotal * 0.19m; // IVA del 19%
+            decimal total = subtotal + iva - reserva.Descuento;
+
+            // Pasar datos al ViewBag
+            ViewBag.PrecioPaquete = precioPaquete.ToString("C", new System.Globalization.CultureInfo("es-CO"));
+            ViewBag.Paquetes = new SelectList(_context.Paquetes, "IdPaquete", "Nombre", reserva.IdPaquete);
+            ViewBag.MetodoPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre", reserva.IdMetodoPago);
+            ViewBag.EstadoReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Descripcion", reserva.IdEstadoReserva);
+
+            // Servicios con precios
+            ViewBag.Servicios = _context.Servicios
+               .Select(s => new
+               {
+                   IdServicio = s.IdServicio,
+                   Nombre = s.Nombre,
+                   NombreConPrecio = $"{s.Nombre} - {s.Precio:C2}",
+                   Precio = s.Precio // Aseguramos que el precio está disponible
+               }).ToList();
+
+            // Servicios seleccionados
+            ViewBag.ServiciosSeleccionados = reserva.DetalleServicios.Select(ds => ds.IdServicio).ToList();
+
+            // Pasar el cálculo al modelo para la vista
+            reserva.Subtotal = subtotal;
+            reserva.Iva = iva;
+            reserva.Total = total;
 
             return View(reserva);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Reserva reserva, List<int> serviciosSeleccionados, List<int> paquetesSeleccionados)
+        public IActionResult Edit(int id, Reserva reserva, List<int> serviciosSeleccionados)
         {
             if (id != reserva.IdReserva)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Actualizar los datos de la reserva
-                var reservaDb = _context.Reservas.Include(r => r.DetallePaquetes).Include(r => r.DetalleServicios)
-                    .FirstOrDefault(r => r.IdReserva == id);
+                // Recargar datos para la vista
+                CargarDatosVistaEdit();
+                return View(reserva);
+            }
 
-                if (reservaDb == null)
-                {
-                    return NotFound();
-                }
+            var reservaDb = _context.Reservas
+                .Include(r => r.DetalleServicios)
+                .Include(r => r.DetallePaquetes)
+                .FirstOrDefault(r => r.IdReserva == id);
 
-                // Actualizamos la reserva
+            if (reservaDb == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                // Actualizar datos principales
                 reservaDb.FechaReserva = reserva.FechaReserva;
                 reservaDb.FechaInicio = reserva.FechaInicio;
                 reservaDb.FechaFin = reserva.FechaFin;
                 reservaDb.IdMetodoPago = reserva.IdMetodoPago;
                 reservaDb.IdEstadoReserva = reserva.IdEstadoReserva;
                 reservaDb.Descuento = reserva.Descuento;
-                reservaDb.Total = reserva.Total;
-                reservaDb.Subtotal = reserva.Subtotal;
-                reservaDb.Iva = reserva.Iva;
 
-                // Actualizar detalle de paquetes (eliminar los anteriores y agregar los nuevos)
-                _context.DetallePaquetes.RemoveRange(reservaDb.DetallePaquetes);
-                foreach (var paqueteId in paquetesSeleccionados)
-                {
-                    reservaDb.DetallePaquetes.Add(new DetallePaquete
-                    {
-                        IdPaquete = paqueteId,
-                        Precio = _context.Paquetes.Find(paqueteId)?.Precio ?? 0,
-                        Estado = true
-                    });
-                }
+                // Actualizar detalle de servicios
+                ActualizarDetalleServicios(reservaDb, serviciosSeleccionados);
 
-                // Actualizar detalle de servicios (eliminar los anteriores y agregar los nuevos)
-                _context.DetalleServicios.RemoveRange(reservaDb.DetalleServicios);
-                foreach (var servicioId in serviciosSeleccionados)
-                {
-                    reservaDb.DetalleServicios.Add(new DetalleServicio
-                    {
-                        IdServicio = servicioId,
-                        Precio = _context.Servicios.Find(servicioId)?.Precio ?? 0,
-                        Cantidad = 1, // Asumimos una cantidad de 1 por servicio, esto puede cambiar
-                        Estado = true
-                    });
-                }
+                // Calcular subtotal, IVA y total
+                reservaDb.Subtotal = reservaDb.DetalleServicios.Sum(ds => ds.Precio * ds.Cantidad) +
+                                     reservaDb.DetallePaquetes.Sum(dp => dp.Precio);
+                reservaDb.Iva = reservaDb.Subtotal * 0.19m;
+                reservaDb.Total = reservaDb.Subtotal + reservaDb.Iva - reservaDb.Descuento;
 
-                // Guardar cambios
                 _context.SaveChanges();
-
                 return RedirectToAction(nameof(Index));
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Ocurrió un error al actualizar la reserva: {ex.Message}");
+            }
 
-            // Si llegamos aquí es porque hubo un error de validación
-            ViewBag.Paquetes = new SelectList(_context.Paquetes.Where(p => p.Estado), "IdPaquete", "Nombre");
-            ViewBag.Servicios = new SelectList(_context.Servicios.Where(s => s.Estado), "IdServicio", "Nombre");
-            ViewBag.MetodosPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre");
-            ViewBag.EstadosReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Estados");
-
+            CargarDatosVistaEdit();
             return View(reserva);
         }
+
+        private void ActualizarDetalleServicios(Reserva reservaDb, List<int> serviciosSeleccionados)
+        {
+            // Eliminar servicios existentes
+            _context.DetalleServicios.RemoveRange(reservaDb.DetalleServicios);
+
+            if (serviciosSeleccionados != null && serviciosSeleccionados.Any())
+            {
+                foreach (var servicioId in serviciosSeleccionados)
+                {
+                    var servicio = _context.Servicios.Find(servicioId);
+                    if (servicio != null)
+                    {
+                        reservaDb.DetalleServicios.Add(new DetalleServicio
+                        {
+                            IdServicio = servicioId,
+                            Precio = servicio.Precio,
+                            Cantidad = 1,
+                            Estado = true
+                        });
+                    }
+                }
+            }
+        }
+
+        private void CargarDatosVistaEdit()
+        {
+            ViewBag.Paquetes = new SelectList(_context.Paquetes, "IdPaquete", "Nombre");
+            ViewBag.Servicios = _context.Servicios
+                .Select(s => new
+                {
+                    IdServicio = s.IdServicio,
+                    NombreConPrecio = $"{s.Nombre} - {s.Precio.ToString("C", new System.Globalization.CultureInfo("es-CO"))}"
+                }).ToList();
+
+            ViewBag.MetodosPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre");
+            ViewBag.EstadosReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Descripcion");
+        }
+
+
+
 
 
 

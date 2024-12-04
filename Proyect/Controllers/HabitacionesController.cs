@@ -53,7 +53,7 @@ namespace Proyect.Controllers
         public IActionResult Create()
         {
             ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitaciones, "IdTipoHabitacion", "Nombre");
-            var muebles = _context.Muebles.Where(s => s.Estado == false).Select(m => new MuebleViewModel
+            var muebles = _context.Muebles.Where(s => s.Estado == true).Select(m => new MuebleViewModel
             {
                 Value = m.IdMueble.ToString(),
                 Text = $"{m.Nombre} (Cantidad disponible: {m.Cantidad})",
@@ -79,7 +79,7 @@ namespace Proyect.Controllers
                 {
                     ModelState.AddModelError("Cantidad", "La cantidad debe ser mayor a 0.");
                     ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitaciones, "IdTipoHabitacion", "Nombre", habitacione.IdTipoHabitacion);
-                    var muebles = _context.Muebles.Where(s => s.Estado == false).Select(m => new MuebleViewModel
+                    var muebles = _context.Muebles.Where(s => s.Estado == true).Select(m => new MuebleViewModel
                     {
                         Value = m.IdMueble.ToString(),
                         Text = $"{m.Nombre} (Cantidad disponible: {m.Cantidad})",
@@ -128,7 +128,7 @@ namespace Proyect.Controllers
             }
 
             ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitaciones, "IdTipoHabitacion", "Nombre", habitacione.IdTipoHabitacion);
-            var remainingMuebles = _context.Muebles.Where(s => s.Estado == false).Select(m => new MuebleViewModel
+            var remainingMuebles = _context.Muebles.Where(s => s.Estado == true).Select(m => new MuebleViewModel
             {
                 Value = m.IdMueble.ToString(),
                 Text = $"{m.Nombre} (Cantidad disponible: {m.Cantidad})",

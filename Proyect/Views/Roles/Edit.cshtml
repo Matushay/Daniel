@@ -1,67 +1,75 @@
-    @model Proyect.Models.Role
+@model Proyect.Models.Role
 
 @{
-    ViewData["Title"] = "Edit Role";
+    ViewData["Title"] = "Editar Rol";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Editar Rol</h1>
-<hr />
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Editar Rol</h1>
 
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Modificar los detalles del rol</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <!-- Campo oculto para el Id del Rol -->
-            <input type="hidden" asp-for="IdRol" />
+                <!-- Campo oculto para el Id del Rol -->
+                <input type="hidden" asp-for="IdRol" />
 
             <!-- Nombre del Rol -->
             <div class="form-group">
                 <label asp-for="NombreRol" class="control-label"></label>
-                <input asp-for="NombreRol" class="form-control" readonly />
+                <input asp-for="NombreRol" class="form-control" placeholder="Ingresa el nombre del rol" readonly />
                 <span asp-validation-for="NombreRol" class="text-danger"></span>
             </div>
 
-            <!-- Descripción del Rol -->
+                <!-- Descripción del Rol -->
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="form-label">Descripción</label>
+                    <input asp-for="Descripcion" class="form-control" placeholder="Ingresa una descripción para el rol" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="Descripcion" class="form-label">Descripción</label>
-                <input asp-for="Descripcion" class="form-control" placeholder="Ingresa una descripción para el rol" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-
-            <!-- Permisos asociados al Rol (Checkboxes) -->
-            <div class="form-group">
-                <label class="control-label">Permisos:</label>
-                @if (ViewData["Permisos"] is List<Proyect.Models.Permiso> permisos && permisos.Any())
-                {
-                    foreach (var permiso in permisos)
+                <!-- Permisos asociados al Rol (Checkboxes) -->
+                <div class="form-group">
+                    <label class="form-label">Permisos:</label>
+                    @if (ViewData["Permisos"] is List<Proyect.Models.Permiso> permisos && permisos.Any())
                     {
-                        <div class="form-check">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   name="selectedPermisos"
-                                   value="@permiso.IdPermiso"
-                            @(ViewData["SelectedPermisos"] is List<int> selectedPermisos
-                                && selectedPermisos.Contains(permiso.IdPermiso) ? "checked" : "") />
-                            <label class="form-check-label">@permiso.NombrePermiso</label>
-                        </div>
+                        foreach (var permiso in permisos)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       name="selectedPermisos"
+                                       value="@permiso.IdPermiso"
+                                @(ViewData["SelectedPermisos"] is List<int> selectedPermisos
+                                    && selectedPermisos.Contains(permiso.IdPermiso) ? "checked" : "") />
+                                <label class="form-check-label">@permiso.NombrePermiso</label>
+                            </div>
+                        }
                     }
-                }
-                else
-                {
-                    <p>No hay permisos disponibles.</p>
-                }
+                    else
+                    {
+                        <p>No hay permisos disponibles.</p>
+                    }
+                </div>
 
-            </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button><br />
-            <div>
-                <a asp-action="Index">Volver a la lista de Roles</a>
-            </div>
-        </form>
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left"></i> Volver a la lista de Roles
+        </a>
     </div>
 </div>
 
@@ -71,6 +79,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-};
-
+}
