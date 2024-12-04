@@ -5,7 +5,7 @@ namespace Proyect.Validaciones
 {
     public class ValidacionUsuario : AbstractValidator<Usuario>
     {
-        public ValidacionUsuario() 
+        public ValidacionUsuario()
         {
             RuleFor(x => x.TipoDocumento)
                 .NotEmpty().WithMessage("El tipo de documento es obligatorio.");

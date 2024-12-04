@@ -7,11 +7,13 @@ namespace Proyect.Models
     public partial class Reserva
     {
         public int IdReserva { get; set; }
-
+        [Display(Name = "Fecha de Reserva")]
         public DateTime FechaReserva { get; set; } = DateTime.Now;
 
+        [Display(Name = "Fecha de Inicio")]
         public DateTime FechaInicio { get; set; }
 
+        [Display(Name = "Fecha de Fin")]
         public DateTime FechaFin { get; set; }
 
         public decimal Subtotal { get; set; }
@@ -26,6 +28,7 @@ namespace Proyect.Models
 
         public int IdPaquete { get; set; }
 
+        [Display(Name = "Estado de la Reserva")]
         public int IdEstadoReserva { get; set; }
 
         public int IdMetodoPago { get; set; }

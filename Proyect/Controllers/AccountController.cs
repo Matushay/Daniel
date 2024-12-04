@@ -54,7 +54,7 @@ namespace Proyect.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                ModelState.AddModelError("", "Correo Electronico o contraseña incorrectos.");
+                ModelState.AddModelError("", "Correo electronico o contraseña incorrectos.");
             }
 
             return View(model);
