@@ -369,6 +369,23 @@ namespace Proyect.Controllers
             return View(usuario);
         }
 
+        [Route("api/dashboard/usuariosPorRol")]
+        public IActionResult GetUsuariosPorRol(Usuario usuario)
+        {
+            var datos = _context.Usuarios
+                .Include(u => u.IdRolNavigation) // Incluye explícitamente la navegación
+                .GroupBy(u => u.IdRolNavigation.NombreRol)
+                .Select(grupo => new
+                {
+                   Rol = grupo.Key,
+                   Cantidad = grupo.Count()
+                })
+                .ToList();
+
+
+            return Ok(datos); // Devuelve un JSON con los roles y la cantidad de usuarios
+        }
+
         // POST: Usuarios/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
