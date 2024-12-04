@@ -38,6 +38,12 @@
                 </select>
             </div>
 
+            <!-- Precio Paquete -->
+            <div class="form-group">
+                <label for="PrecioPaquete">Precio del Paquete</label>
+                <input type="text" class="form-control" id="PrecioPaquete" name="PrecioPaquete" value="@ViewBag.PrecioPaquete" readonly />
+            </div>
+
             <!-- Metodo de Pago -->
             <div class="form-group">
                 <label asp-for="IdMetodoPago" class="control-label">Metodo de Pago</label>
@@ -55,18 +61,31 @@
                 <span asp-validation-for="IdEstadoReserva" class="text-danger"></span>
             </div>
 
-
             <!-- Servicios -->
             <div class="form-group">
-                <label>Servicios</label>
+                <label for="Servicios">Servicios</label>
                 <div>
-                    @foreach (var servicio in ViewBag.Servicios)
+                    @if (ViewBag.Servicios != null)
                     {
-                        <div>
-                            <input type="checkbox" name="serviciosSeleccionados" value="@servicio.IdServicio"
-                            @(ViewBag.ServiciosSeleccionados.Contains(servicio.IdServicio) ? "checked" : "") />
-                            @servicio.Nombre
-                        </div>
+                        foreach (var servicio in ViewBag.Servicios)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       id="servicio_@servicio.IdServicio"
+                                       name="serviciosSeleccionados"
+                                       value="@servicio.IdServicio"
+                                       data-precio="@servicio.Precio"
+                                @(ViewBag.ServiciosSeleccionados.Contains(servicio.IdServicio) ? "checked" : "") />
+                                <label class="form-check-label" for="servicio_@servicio.IdServicio">
+                                    @servicio.NombreConPrecio
+                                </label>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No hay servicios disponibles.</p>
                     }
                 </div>
             </div>
@@ -91,7 +110,6 @@
                 <input type="text" class="form-control" id="Total" name="Total" value="@Model.Total" readonly />
             </div>
 
-
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
@@ -99,15 +117,42 @@
         </form>
     </div>
 </div>
-<script>
-    document.getElementById('Descuento').addEventListener('input', function() {
-        var descuento = parseFloat(this.value) || 0;
-        var subtotal = parseFloat(document.getElementById('Subtotal').value) || 0;
-        var iva = parseFloat(document.getElementById('Iva').value) || 0;
 
+<script>
+    // Función para recalcular el total en base al subtotal, IVA y descuento
+    function actualizarTotal() {
+        var subtotal = 0;
+        var iva = 0;
+        var descuento = parseFloat(document.getElementById('Descuento').value) || 0;
+
+        // Calcular subtotal con los servicios seleccionados
+        var serviciosSeleccionados = document.querySelectorAll('input[name="serviciosSeleccionados"]:checked');
+        serviciosSeleccionados.forEach(function (servicio) {
+            var precioServicio = parseFloat(servicio.getAttribute('data-precio')) || 0;
+            subtotal += precioServicio;
+        });
+
+        // Calcular el IVA (19%)
+        iva = subtotal * 0.19;
+
+        // Calcular el total
         var total = subtotal + iva - descuento;
 
-        // Actualizar el total en el campo
+        // Actualizar los valores en los campos
+        document.getElementById('Subtotal').value = subtotal.toFixed(2);
+        document.getElementById('Iva').value = iva.toFixed(2);
         document.getElementById('Total').value = total.toFixed(2);
+    }
+
+    // Escuchar los cambios en los servicios seleccionados
+    var checkboxes = document.querySelectorAll('input[name="serviciosSeleccionados"]');
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', actualizarTotal);
     });
+
+    // Escuchar el cambio en el campo de descuento
+    document.getElementById('Descuento').addEventListener('input', actualizarTotal);
+
+    // Inicializar el total al cargar la página
+    window.onload = actualizarTotal;
 </script>
