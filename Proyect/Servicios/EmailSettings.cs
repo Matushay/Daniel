@@ -1,6 +1,7 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
 using Microsoft.Extensions.Options;
+using Proyect.Models;
 
 namespace Proyect.Servicios
 {
@@ -21,6 +22,7 @@ namespace Proyect.Servicios
     public class EmailService : IEmailService
     {
         private readonly EmailSettings _emailSettings;
+        private object usuario;
 
         public EmailService(IOptions<EmailSettings> emailSettings)
         {
@@ -104,6 +106,7 @@ namespace Proyect.Servicios
         </div>
         <div class='email-header'>Recuperación de contraseña</div>
         <div class='email-content'>
+            Hola <strong></strong>,<br><br>
             Por favor, restablezca su contraseña haciendo clic en el botón de abajo:
         </div>
         <a href='{body}' class='btn btn-primary text-white'>Restablecer Contraseña</a>

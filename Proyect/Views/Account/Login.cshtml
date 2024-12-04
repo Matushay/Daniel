@@ -13,6 +13,13 @@
             </h1>
             <h2 class="text-center mb-4">@ViewData["Title"]</h2>
             <form asp-action="Login" method="post">
+                @* Mostrar errores globales del ModelState *@
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState[""]?.Errors.Count > 0)
+                {
+                    <div class="alert alert-danger">
+                        @ViewData.ModelState[""]?.Errors[0].ErrorMessage
+                    </div>
+                }
                 <div class="mb-3">
                     <label asp-for="CorreoElectronico" class="form-label"></label>
                     <input asp-for="CorreoElectronico" class="form-control" placeholder="Correo Electrónico" />
@@ -29,10 +36,6 @@
                 <div class="text-center mt-3">
                     <a asp-controller="Account" asp-action="ForgotPassword" class="text-decoration-none">¿Olvidaste tu contraseña?</a>
                 </div>
-                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
-                {
-                    <div class="alert alert-danger mt-3">@ViewBag.ErrorMessage</div>
-                }
             </form>
         </div>
     </div>

@@ -8,7 +8,7 @@
 <h1>Gestión de Roles</h1>
 
 <p class="text-end">
-    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i>Crear </a>
+    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear </a>
 </p>
 
 <!-- Mostrar mensajes de error o éxito -->
@@ -84,41 +84,37 @@
 </div>
 
 @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#RolesTable').DataTable({
-                    scrollX: true,
-                    language: {
-                        "sLengthMenu": "Mostrar _MENU_ entradas",
-                        "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                        "sSearch": "Buscar:",
-                        "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA",
-                        "sInfo":"Mostrando START a END de TOTAL entradas"
-                    }
-                });
-            })
-        </script>
+    <script>
+        $(document).ready(function () {
+            $('#RolesTable').DataTable({
+                scrollX: true,
+                language: {
+                    "sLengthMenu": "Mostrar _MENU_ entradas",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "sSearch": "Buscar:",
+                    "emptyTable": "NO HAY NINGUN ELEMENTO EN LA TABLA",
+                    "sInfo": "Mostrando START a END de TOTAL entradas"
+                }
+            });
+        })
+    </script>
     <script>
         // Lógica para cargar la información del rol en el modal de eliminación
         $(document).on('click', '[data-bs-target="#deleteModal"]', function () {
             var roleId = $(this).data('id'); // Obtener el ID del rol
             var roleName = $(this).data('name'); // Obtener el nombre del rol
-
             // Mostrar el nombre del rol en el modal
             $('#roleName').text(roleName);
-
             // Configurar la acción del formulario para eliminar el rol
             var actionUrl = '@Url.Action("Delete", "Roles")' + '?id=' + roleId;
             $('#deleteForm').attr('action', actionUrl);
         });
-
         // Lógica para cambiar el estado de un rol usando AJAX
         $(document).on('click', '.changeState', function () {
             var button = $(this);
             var roleId = button.data('id');
             var currentState = button.data('estado');
             var newState = !currentState; // Cambiar el estado (activo <=> inactivo)
-
             // Hacer la llamada AJAX para actualizar el estado
             $.ajax({
                 url: '@Url.Action("ActualizarEstado", "Roles")',

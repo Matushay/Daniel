@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -74,27 +74,27 @@ namespace Proyect.Controllers
 
             return View(reserva);
         }
-public async Task<IActionResult> DescargarPDF(int id)
-    {
-        // Obtener los detalles de la reserva
-        var reserva = await _context.Reservas
-            .Include(r => r.IdClienteNavigation)
-            .Include(r => r.DetallePaquetes)
-            .ThenInclude(dp => dp.IdPaqueteNavigation)
-            .Include(r => r.DetalleServicios)
-            .ThenInclude(ds => ds.IdServicioNavigation)
-            .FirstOrDefaultAsync(r => r.IdReserva == id);
-
-        if (reserva == null)
+        public async Task<IActionResult> DescargarPDF(int id)
         {
-            return NotFound("Reserva no encontrada.");
-        }
+            // Obtener los detalles de la reserva
+            var reserva = await _context.Reservas
+                .Include(r => r.IdClienteNavigation)
+                .Include(r => r.DetallePaquetes)
+                .ThenInclude(dp => dp.IdPaqueteNavigation)
+                .Include(r => r.DetalleServicios)
+                .ThenInclude(ds => ds.IdServicioNavigation)
+                .FirstOrDefaultAsync(r => r.IdReserva == id);
 
-        // Crear un nuevo documento PDF
-        using (var document = new PdfDocument())
-        {
-            var page = document.AddPage();
-            var graphics = XGraphics.FromPdfPage(page);
+            if (reserva == null)
+            {
+                return NotFound("Reserva no encontrada.");
+            }
+
+            // Crear un nuevo documento PDF
+            using (var document = new PdfDocument())
+            {
+                var page = document.AddPage();
+                var graphics = XGraphics.FromPdfPage(page);
 
                 // Configurar estilos de fuente
                 var fontTitle = new XFont("Arial Bold", 14); // Negrita
@@ -107,7 +107,7 @@ public async Task<IActionResult> DescargarPDF(int id)
                 // Definir colores de la temática (Verde y blanco, inspirados en el Nacional)
                 var greenColor = XBrushes.Green; // Verde Nacional
                 var whiteColor = XBrushes.White; // Blanco para contraste
-                
+
 
                 // Títulos
                 var title = "Detalles de la Reserva";
@@ -153,12 +153,12 @@ public async Task<IActionResult> DescargarPDF(int id)
 
                 // Guardar PDF en memoria
                 using (var stream = new MemoryStream())
-            {
-                document.Save(stream, false);
-                return File(stream.ToArray(), "application/pdf", $"Reserva_{id}.pdf");
+                {
+                    document.Save(stream, false);
+                    return File(stream.ToArray(), "application/pdf", $"Reserva_{id}.pdf");
+                }
             }
         }
-    }
 
 
 
@@ -167,7 +167,7 @@ public async Task<IActionResult> DescargarPDF(int id)
 
 
 
-    public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create()
         {
             CargarDatosVista(); // Cargar clientes, métodos de pago y estados de reserva
 
@@ -341,6 +341,7 @@ public async Task<IActionResult> DescargarPDF(int id)
                 .Include(r => r.IdEstadoReservaNavigation)
                 .Include(r => r.DetalleServicios)
                 .Include(r => r.DetallePaquetes)
+                .Include(r => r.IdPaqueteNavigation)  // Aseguramos de incluir el paquete
                 .FirstOrDefault(r => r.IdReserva == id);
 
             if (reserva == null)
@@ -349,16 +350,21 @@ public async Task<IActionResult> DescargarPDF(int id)
             }
 
             // Calcular subtotal, IVA y total
-            decimal precioPaquete = reserva.DetallePaquetes.FirstOrDefault()?.Precio ?? 0m;
-            decimal subtotal = reserva.DetalleServicios.Sum(ds => ds.Precio * ds.Cantidad) + precioPaquete;
+            decimal subtotal = reserva.DetalleServicios.Sum(ds => ds.Precio * ds.Cantidad);
+
+            // Si existe paquete, sumarlo al subtotal
+            if (reserva.IdPaqueteNavigation != null)
+            {
+                subtotal += reserva.IdPaqueteNavigation.Precio;
+            }
+
             decimal iva = subtotal * 0.19m; // IVA del 19%
-            decimal total = subtotal + iva - reserva.Descuento;
+            decimal total = subtotal + iva - reserva.Descuento; // Restar descuento del total
 
             // Pasar datos al ViewBag
-            ViewBag.PrecioPaquete = precioPaquete.ToString("C", new System.Globalization.CultureInfo("es-CO"));
             ViewBag.Paquetes = new SelectList(_context.Paquetes, "IdPaquete", "Nombre", reserva.IdPaquete);
             ViewBag.MetodoPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre", reserva.IdMetodoPago);
-            ViewBag.EstadoReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Descripcion", reserva.IdEstadoReserva);
+            ViewBag.EstadoReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Estados", reserva.IdEstadoReserva);
 
             // Servicios con precios
             ViewBag.Servicios = _context.Servicios
@@ -373,6 +379,16 @@ public async Task<IActionResult> DescargarPDF(int id)
             // Servicios seleccionados
             ViewBag.ServiciosSeleccionados = reserva.DetalleServicios.Select(ds => ds.IdServicio).ToList();
 
+            // Asignar el precio del paquete si existe
+            if (reserva.IdPaqueteNavigation != null)
+            {
+                ViewBag.PrecioPaquete = reserva.IdPaqueteNavigation.Precio;
+            }
+            else
+            {
+                ViewBag.PrecioPaquete = 0; // O un valor predeterminado en caso de que no haya paquete
+            }
+
             // Pasar el cálculo al modelo para la vista
             reserva.Subtotal = subtotal;
             reserva.Iva = iva;
@@ -380,6 +396,7 @@ public async Task<IActionResult> DescargarPDF(int id)
 
             return View(reserva);
         }
+
 
 
         [HttpPost]
@@ -393,14 +410,14 @@ public async Task<IActionResult> DescargarPDF(int id)
 
             if (!ModelState.IsValid)
             {
-                // Recargar datos para la vista
                 CargarDatosVistaEdit();
                 return View(reserva);
             }
 
+            // Buscar la reserva existente en la base de datos
             var reservaDb = _context.Reservas
                 .Include(r => r.DetalleServicios)
-                .Include(r => r.DetallePaquetes)
+                .Include(r => r.IdPaqueteNavigation) // Incluir la relación del paquete
                 .FirstOrDefault(r => r.IdReserva == id);
 
             if (reservaDb == null)
@@ -410,7 +427,7 @@ public async Task<IActionResult> DescargarPDF(int id)
 
             try
             {
-                // Actualizar datos principales
+                // Actualizar los campos de la reserva
                 reservaDb.FechaReserva = reserva.FechaReserva;
                 reservaDb.FechaInicio = reserva.FechaInicio;
                 reservaDb.FechaFin = reserva.FechaFin;
@@ -418,16 +435,35 @@ public async Task<IActionResult> DescargarPDF(int id)
                 reservaDb.IdEstadoReserva = reserva.IdEstadoReserva;
                 reservaDb.Descuento = reserva.Descuento;
 
-                // Actualizar detalle de servicios
+                // Actualizar los servicios seleccionados
                 ActualizarDetalleServicios(reservaDb, serviciosSeleccionados);
 
-                // Calcular subtotal, IVA y total
-                reservaDb.Subtotal = reservaDb.DetalleServicios.Sum(ds => ds.Precio * ds.Cantidad) +
-                                     reservaDb.DetallePaquetes.Sum(dp => dp.Precio);
-                reservaDb.Iva = reservaDb.Subtotal * 0.19m;
-                reservaDb.Total = reservaDb.Subtotal + reservaDb.Iva - reservaDb.Descuento;
+                // Actualizar el paquete si se seleccionó uno
+                reservaDb.IdPaquete = reserva.IdPaquete;
 
+                // Recalcular los valores (igual que en la vista)
+                decimal subtotal = reservaDb.DetalleServicios.Sum(ds => ds.Precio * ds.Cantidad);
+
+                // Si se seleccionó un paquete, agregar su precio al subtotal
+                if (reservaDb.IdPaqueteNavigation != null)
+                {
+                    subtotal += reservaDb.IdPaqueteNavigation.Precio;
+                }
+
+                // Aplicar descuento y calcular IVA y total
+                decimal descuento = (subtotal * reserva.Descuento) / 100;
+                decimal subtotalConDescuento = subtotal - descuento;
+                decimal iva = subtotalConDescuento * 0.19m; // IVA del 19%
+                decimal total = subtotalConDescuento + iva;
+
+                // Guardar los cálculos en la base de datos
+                reservaDb.Subtotal = subtotal;
+                reservaDb.Iva = iva;
+                reservaDb.Total = total;
+
+                // Guardar cambios en la base de datos
                 _context.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -435,9 +471,12 @@ public async Task<IActionResult> DescargarPDF(int id)
                 ModelState.AddModelError(string.Empty, $"Ocurrió un error al actualizar la reserva: {ex.Message}");
             }
 
+            // Recargar datos para la vista en caso de error
             CargarDatosVistaEdit();
             return View(reserva);
         }
+
+
 
         private void ActualizarDetalleServicios(Reserva reservaDb, List<int> serviciosSeleccionados)
         {
@@ -475,6 +514,20 @@ public async Task<IActionResult> DescargarPDF(int id)
 
             ViewBag.MetodosPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre");
             ViewBag.EstadosReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Descripcion");
+        }
+        [HttpGet]
+        public IActionResult ObtenerPrecioPaquete(int id)
+        {
+            // Obtener el paquete por el ID
+            var paquete = _context.Paquetes.FirstOrDefault(p => p.IdPaquete == id);
+
+            if (paquete == null)
+            {
+                return Json(new { precio = 0 }); // Si no se encuentra el paquete, devolver precio 0
+            }
+
+            // Devolver el precio del paquete en formato JSON
+            return Json(new { precio = paquete.Precio.ToString("0") });
         }
 
 

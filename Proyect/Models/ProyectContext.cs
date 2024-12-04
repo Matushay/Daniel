@@ -462,7 +462,6 @@ public partial class ProyectContext : DbContext
                 .HasMaxLength(15)
                 .IsUnicode(false);
             entity.Property(e => e.Contraseña)
-               .IsRequired()
                .HasMaxLength(30)
                .IsUnicode(false);
             entity.Property(e => e.CorreoElectronico)

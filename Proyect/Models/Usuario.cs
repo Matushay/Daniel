@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Proyect.Models;
 
@@ -25,10 +26,14 @@ public partial class Usuario
     [EmailAddress(ErrorMessage = "El formato del correo no es válido.")]
     public string CorreoElectronico { get; set; }
 
+    [NotMapped]
+    public bool EsEdicion { get; set; } // Indicador de si es edición
+
+    // Validación condicional
+    public bool EsCorreoRequerido => !EsEdicion;
+
     public bool Estado { get; set; }
 
-    //[Required(ErrorMessage = "La contraseña es obligatoria.")]
-    //[RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$", ErrorMessage = "La contraseña debe comenzar con una letra mayúscula, contener al menos un número, un carácter especial y tener al menos 8 caracteres.")]
     public string Contraseña { get; set; }
 
     [Display(Name = "Fecha de Creación")]

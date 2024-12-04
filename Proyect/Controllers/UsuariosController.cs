@@ -20,7 +20,7 @@ namespace Proyect.Controllers
         public UsuariosController(ProyectContext context)
         {
             _context = context;
-             var apiKey = "Aca clave api"; // Obtén tu API Key de SendGrid
+             var apiKey = "Clave de api"; // Obtén tu API Key de SendGrid
             _emailcreateService = new SendGridEmailService(apiKey);
         }
 
@@ -131,12 +131,86 @@ namespace Proyect.Controllers
                     // Contenido del correo
                     var subject = "Restablecimiento de contraseña";
                     var plainTextContent = $"Hola {usuario.Nombre},\n\nHaz clic en el siguiente enlace para restablecer tu contraseña:\n{enlaceRestablecimiento}\n\nSi no solicitaste este cambio, ignora este mensaje.";
+                    // Contenido del correo HTML estilizado
                     var htmlContent = $@"
-    <strong>Hola {usuario.Nombre}</strong>,<br><br>
-    Haz clic en el siguiente botón para restablecer tu contraseña:<br><br>
-    <a href='{enlaceRestablecimiento}' style='padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;'>Restablecer mi contraseña</a><br><br>
-    Si no solicitaste este cambio, por favor ignora este mensaje.
-";
+<html>
+<head>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }}
+        .email-container {{
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }}
+        .logo-container {{
+            margin-bottom: 20px;
+        }}
+        .logo {{
+            max-width: 150px;
+        }}
+        .email-header {{
+            font-size: 24px;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 20px;
+        }}
+        .email-content {{
+            font-size: 16px;
+            color: #555555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }}
+        .btn {{
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+        }}
+        .btn:hover {{
+            background-color: #0056b3;
+        }}
+        .footer {{
+            font-size: 12px;
+            color: #888888;
+            margin-top: 20px;
+        }}
+    </style>
+</head>
+<body>
+    <div class='email-container'>
+        <div class='logo-container'>
+            <img src='https://imgur.com/a/FFbmozo' alt='Logo' class='logo'/>
+        </div>
+        <div class='email-header'>Recuperación de contraseña</div>
+        <div class='email-content'>
+            Hola <strong>{usuario.Nombre}</strong>,<br><br>
+            Por favor, restablezca su contraseña haciendo clic en el botón de abajo:
+        </div>
+        <a href='{enlaceRestablecimiento}' class='btn'>Restablecer Contraseña</a>
+        <div class='email-content' style='margin-top: 20px;'>
+            Si no solicitaste este cambio, por favor ignora este mensaje.
+        </div>
+        <div class='footer'>© 2024 Medellin Salvaje. Todos los derechos reservados.</div>
+    </div>
+</body>
+</html>";
+
+                    
 
                     // Enviar el correo
                     await _emailcreateService.SendEmailAsync(usuario.CorreoElectronico, subject, plainTextContent, htmlContent);
@@ -165,6 +239,7 @@ namespace Proyect.Controllers
                 return NotFound();
             }
 
+            usuario.EsEdicion = true;
             ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
@@ -293,6 +368,23 @@ namespace Proyect.Controllers
             }
 
             return View(usuario);
+        }
+
+        [Route("api/dashboard/usuariosPorRol")]
+        public IActionResult GetUsuariosPorRol(Usuario usuario)
+        {
+            var datos = _context.Usuarios
+                .Include(u => u.IdRolNavigation) // Incluye explícitamente la navegación
+                .GroupBy(u => u.IdRolNavigation.NombreRol)
+                .Select(grupo => new
+                {
+                   Rol = grupo.Key,
+                   Cantidad = grupo.Count()
+                })
+                .ToList();
+
+
+            return Ok(datos); // Devuelve un JSON con los roles y la cantidad de usuarios
         }
 
         // POST: Usuarios/Delete/5
