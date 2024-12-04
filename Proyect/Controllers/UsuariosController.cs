@@ -239,6 +239,7 @@ namespace Proyect.Controllers
                 return NotFound();
             }
 
+            usuario.EsEdicion = true;
             ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
