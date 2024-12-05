@@ -352,20 +352,26 @@ namespace Proyect.Controllers
         }
 
         // GET: Usuarios/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        public async Task<IActionResult> Delete(int? id) 
+        { 
+            if (id == null) 
+            { 
+                return NotFound(); 
+            } var usuario = await _context.Usuarios 
+                .Include(u => u.IdRolNavigation) 
+                .FirstOrDefaultAsync(m => m.IdUsuario == id); 
+            if (usuario == null) 
+            { 
+                return NotFound(); 
+            } 
 
-            var usuario = await _context.Usuarios
-                .Include(u => u.IdRolNavigation)
-                .FirstOrDefaultAsync(m => m.IdUsuario == id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
+            var superAdminRole = await _context.Roles
+                .FirstOrDefaultAsync(r => r.NombreRol == "SuperAdmin");
+
+            //if (superAdminRole != null && usuario.IdRol == superAdminRole.IdRol)
+            //{
+            //    TempData["ErrorMessage"] = "No se puede eliminar el usuario superadministrador.";
+            //} 
 
             return View(usuario);
         }
@@ -392,13 +398,26 @@ namespace Proyect.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario != null)
-            {
-                _context.Usuarios.Remove(usuario);
+            var usuario = await _context.Usuarios
+                .Include(u => u.IdRolNavigation)
+                .FirstOrDefaultAsync(u => u.IdUsuario == id);
+            if (usuario == null) 
+            { 
+                return NotFound(); 
             }
+            var superAdminRole = await _context.Roles.
+                FirstOrDefaultAsync(r => r.NombreRol == "SuperAdmin"); 
 
+            if (superAdminRole != null && usuario.IdRol == superAdminRole.IdRol)
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar el usuario superadministrador.";
+
+                return View(usuario); 
+            } 
+            _context.Usuarios.Remove(usuario); 
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Usuario eliminado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 

@@ -6,7 +6,12 @@
 }
 
 <h1>Usuarios</h1>
-
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
 <p class="text-end">
     <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i>Crear</a>
 </p>

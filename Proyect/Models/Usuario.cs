@@ -32,9 +32,10 @@ public partial class Usuario
     // Validación condicional
     public bool EsCorreoRequerido => !EsEdicion;
 
-    public bool Estado { get; set; }
+    public bool Estado { get; set; } = true;
 
     public string Contraseña { get; set; }
+
 
     [Display(Name = "Fecha de Creación")]
     public DateTime? FechaCreacion { get; set; }

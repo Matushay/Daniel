@@ -19,7 +19,7 @@ public partial class Mueble
     [Required(ErrorMessage ="La cantidad es requerida")]
     public int Cantidad { get; set; }
 
-    public bool Estado { get; set; }
+    public bool Estado { get; set; } = true;
 
     [Display(Name = "Fecha de Registro")]
     public DateTime FechaRegistro { get; set; } = DateTime.Now;

@@ -10,13 +10,13 @@ public partial class Servicio
 
     public string Nombre { get; set; }
 
-    public bool Estado { get; set; }
+    public bool Estado { get; set; } = true;
 
     [Required(ErrorMessage = "La descripción es requerida.")]
     public string Descripcion { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
-    public decimal Precio { get; set; }
+    public decimal Precio { get; set; } 
 
     public virtual ICollection<DetalleServicio> DetalleServicios { get; set; } = new List<DetalleServicio>();
 

@@ -16,7 +16,7 @@ public partial class Paquete
     [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
     public decimal Precio { get; set; }
 
-    public bool Estado { get; set; }
+    public bool Estado { get; set; } = true;
 
     public virtual ICollection<DetallePaquete> DetallePaquetes { get; set; } = new List<DetallePaquete>();
 

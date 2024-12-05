@@ -4,6 +4,7 @@ using MailKit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Proyect.Data;
 using Proyect.Models;
 using Proyect.Servicios;
 using Proyect.Validaciones;
@@ -52,6 +53,7 @@ namespace Proyect
 
             // Agregar servicios necesarios para la aplicaci�n, como los controladores con vistas
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
 
             var app = builder.Build();
 
@@ -66,31 +68,31 @@ namespace Proyect
                 app.UseHsts();  // Configuraci�n para entornos de producci�n
             }
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<ProyectContext>();
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<ProyectContext>();
 
-                // Verifica si el usuario ya existe
-                if (!context.Usuarios.Any(u => u.CorreoElectronico == "unknownmurder569@gmail.com"))
-                {
-                    var adminUser = new Usuario
-                    {
-                        TipoDocumento = "CC",
-                        Documento = "123456789",
-                        Nombre = "Administrador",
-                        Apellido = "Principal",
-                        Celular = "1234567890",
-                        Direccion = "Direccion Admin",
-                        CorreoElectronico = "unknownmurder569@gmail.com",
-                        Estado = true,
-                        Contraseña = "Admin123.", // Asegúrate de que esto se encripte si usas autenticación real.
-                        FechaCreacion = DateTime.Now,
-                        IdRol = 1
-                    };
-                    context.Usuarios.Add(adminUser);
-                    context.SaveChanges();
-                }
-            }
+            //    // Verifica si el usuario ya existe
+            //    if (!context.Usuarios.Any(u => u.CorreoElectronico == "unknownmurder569@gmail.com"))
+            //    {
+            //        var adminUser = new Usuario
+            //        {
+            //            TipoDocumento = "CC",
+            //            Documento = "123456789",
+            //            Nombre = "Administrador",
+            //            Apellido = "Principal",
+            //            Celular = "1234567890",
+            //            Direccion = "Direccion Admin",
+            //            CorreoElectronico = "unknownmurder569@gmail.com",
+            //            Estado = true,
+            //            Contraseña = "Admin123.", // Asegúrate de que esto se encripte si usas autenticación real.
+            //            FechaCreacion = DateTime.Now,
+            //            IdRol = 1
+            //        };
+            //        context.Usuarios.Add(adminUser);
+            //        context.SaveChanges();
+            //    }
+            //}
 
             app.UseStaticFiles();
             app.UseRouting();
@@ -102,6 +104,8 @@ namespace Proyect
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Account}/{action=Login}/{id?}");
+
+            SeedData.Initialize(app.Services);
 
             app.Run();
         }

@@ -14,7 +14,7 @@ public partial class Habitacione
     [Display(Name ="Tipo de Habitación")]
     public int IdTipoHabitacion { get; set; }
 
-    public bool Estado { get; set; }
+    public bool Estado { get; set; } = true;
 
     [Required(ErrorMessage = "La descripción es requerida.")]
     public string Descripcion { get; set; }

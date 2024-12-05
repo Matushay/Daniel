@@ -530,13 +530,41 @@ namespace Proyect.Controllers
             return Json(new { precio = paquete.Precio.ToString("0") });
         }
 
+        [HttpGet("api/dashboard/PaquetesMasReservados")]
+        public IActionResult GetPaquetesMasReservados()
+        {
+            var datos = _context.Reservas
+                .Include(r => r.DetallePaquetes) // Incluye la relación con la tabla paquetes
+                .GroupBy(r => r.IdPaqueteNavigation.Nombre) // Agrupa las reservas por nombre de paquete
+                .Select(grupo => new
+                {
+                    Paquete = grupo.Key, // Nombre de la Paquete
+                    CantidadReservas = grupo.Count() // Número de reservas para ese Paquete
+                })
+                .OrderByDescending(x => x.CantidadReservas) // Ordena de mayor a menor cantidad de reservas
+                .Take(5) // Devuelve los 5 paquetes más reservadas
+                .ToList();
 
+            return Ok(datos); // Devuelve un JSON con los paquetes y la cantidad de reservas
+        }
 
+        [HttpGet("api/dashboard/serviciosMasSolicitados")]
+        public IActionResult GetServiciosMasSolicitados()
+        {
+            // Agrupa los servicios solicitados en las reservas y cuenta las ocurrencias
+            var serviciosMasSolicitados = _context.Reservas
+                .SelectMany(r => r.DetalleServicios) // Accede a los detalles de servicios en las reservas
+                .GroupBy(ds => ds.IdServicioNavigation.Nombre) // Agrupa por el nombre del servicio
+                .Select(grupo => new
+                {
+                    Servicio = grupo.Key,
+                    Cantidad = grupo.Count()
+                })
+                .OrderByDescending(x => x.Cantidad) // Ordena por la cantidad en orden descendente
+                .ToList();
 
-
-
-
-
+            return Ok(serviciosMasSolicitados); // Devuelve un JSON con los servicios y las cantidades
+        }
 
 
         // GET: Reservas/Delete/5

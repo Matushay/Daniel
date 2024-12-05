@@ -42,3 +42,4 @@ input:checked + .slider {
     input:checked + .slider:before {
         transform: translateX(20px); /* Ajusta este valor para mover el círculo */
     }
+
