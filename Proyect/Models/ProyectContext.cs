@@ -27,8 +27,6 @@ public partial class ProyectContext : DbContext
 
     public virtual DbSet<EstadoReserva> EstadoReservas { get; set; }
 
-    public virtual DbSet<EstadosAbono> EstadosAbonos { get; set; }
-
     public virtual DbSet<HabitacionMueble> HabitacionMuebles { get; set; }
 
     public virtual DbSet<Habitacione> Habitaciones { get; set; }
@@ -76,11 +74,6 @@ public partial class ProyectContext : DbContext
             entity.Property(e => e.Porcentaje).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.ValorAbono).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Valordeuda).HasColumnType("decimal(10, 2)");
-
-            entity.HasOne(d => d.IdEstadoAbonoNavigation).WithMany(p => p.Abonos)
-                .HasForeignKey(d => d.IdEstadoAbono)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Abonos__IdEstado__778AC167");
 
             entity.HasOne(d => d.IdReservaNavigation).WithMany(p => p.Abonos)
                 .HasForeignKey(d => d.IdReserva)
@@ -190,18 +183,6 @@ public partial class ProyectContext : DbContext
             entity.Property(e => e.Estados)
                 .IsRequired()
                 .HasMaxLength(20)
-                .IsUnicode(false);
-        });
-
-        modelBuilder.Entity<EstadosAbono>(entity =>
-        {
-            entity.HasKey(e => e.IdEstadoAbono).HasName("PK__EstadosA__6956405AAAC400AF");
-
-            entity.Property(e => e.Descripcion)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.Nombre)
-                .HasMaxLength(50)
                 .IsUnicode(false);
         });
 

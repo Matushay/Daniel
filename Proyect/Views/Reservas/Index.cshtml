@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Proyect.Models.Reserva>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Reservas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -34,10 +34,26 @@
                 <td>@Html.DisplayFor(modelItem => item.Total)</td>
                 <td>@Html.DisplayFor(modelItem => item.IdEstadoReservaNavigation.Estados)</td>
                 <td class="action-icons">
-                    <a asp-action="Edit" asp-route-id="@item.IdReserva" class="btn btn-warning">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-list"></i></a> |
+                    @if (item.IdEstadoReservaNavigation != null && item.IdEstadoReservaNavigation.Estados == "Anulada")
+                    {
+                <button class="btn btn-secondary" disabled>Editar</button>
+                        <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-list"></i></a>
+                    <button class="btn btn-secondary" disabled>Abonos</button> 
+                    <button class="btn btn-secondary" disabled>Anular</button>
+    }
+                    else
+                    {
+                <a asp-action="Edit" asp-route-id="@item.IdReserva" class="btn btn-warning">Editar</a>
+ 
+                    <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-list"></i></a> 
                     <a asp-controller="Abonos" asp-action="Index" asp-route-idReserva="@item.IdReserva" class="btn btn-primary"><i class="bi bi-wallet2"></i></a>
-                </td>
+
+                    <!-- Botón para anular la reserva -->
+                    <form asp-action="Anular" method="post" style="display:inline;">
+                    <input type = "hidden" name="id" value="@item.IdReserva" />
+                    <button type = "submit" class="btn btn-danger">Anular</button>
+                    </form>
+                    }
             </tr>
         }
     </tbody>

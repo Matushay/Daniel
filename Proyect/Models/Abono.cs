@@ -26,11 +26,7 @@ public partial class Abono
 
     public byte[]? Comprobante { get; set; }
 
-    public int IdEstadoAbono { get; set; }
-
-
     public bool Anulado { get; set; }
 
-    public virtual EstadosAbono IdEstadoAbonoNavigation { get; set; } = null!;
     public virtual Reserva IdReservaNavigation { get; set; } = null!;
 }
