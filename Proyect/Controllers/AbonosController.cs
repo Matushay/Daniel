@@ -31,7 +31,6 @@ namespace Proyect.Controllers
 
             var abonos = await _context.Abonos
                 .Include(a => a.IdReservaNavigation)
-                .Include(a => a.IdEstadoAbonoNavigation)
                 .Where(a => a.IdReserva == idReserva)
                 .ToListAsync();
 
@@ -74,7 +73,6 @@ namespace Proyect.Controllers
             }
 
             var abono = await _context.Abonos
-                .Include(a => a.IdEstadoAbonoNavigation)
                 .Include(a => a.IdReservaNavigation)
                 .FirstOrDefaultAsync(m => m.IdAbono == id);
             if (abono == null)
@@ -111,31 +109,16 @@ namespace Proyect.Controllers
                 Pendiente = (decimal)pendiente // Convertimos pendiente a decimal
             };
 
-            // Crear el listado de EstadosAbono para el select
-            ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "Nombre");
 
             return View(abono);
         }
 
-
-        // POST: Abonos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             [Bind("IdAbono,IdReserva,ValorAbono,Porcentaje,Valordeuda,Pendiente,IdEstadoAbono")] Abono abono,
             IFormFile comprobanteFile)
         {
-            //var validator = new Validaciones.ValidacionAbono();
-            //var validationResult = validator.Validate(abono);
-
-            //if (!validationResult.IsValid)
-            //{
-            //    foreach (var error in validationResult.Errors)
-            //    {
-            //        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-            //    }
-            //}
-
             if (ModelState.IsValid)
             {
                 try
@@ -144,13 +127,26 @@ namespace Proyect.Controllers
                     var reserva = await _context.Reservas.FirstOrDefaultAsync(r => r.IdReserva == abono.IdReserva);
                     if (reserva == null) return NotFound();
 
+                    // Total abonado hasta el momento (excluyendo los anulados)
                     var totalAbonado = await _context.Abonos
                         .Where(a => a.IdReserva == abono.IdReserva && !a.Anulado)
                         .SumAsync(a => (decimal?)a.ValorAbono) ?? 0;
 
+                    // Actualizar valores de deuda y pendiente
                     abono.Valordeuda = reserva.Total;
                     abono.Pendiente = Math.Max(0, abono.Valordeuda - (totalAbonado + abono.ValorAbono));
 
+                    // Calcular el porcentaje de pago y guardarlo en el modelo
+                    if (abono.Valordeuda > 0)
+                    {
+                        abono.Porcentaje = (abono.ValorAbono / abono.Valordeuda) * 100;
+                    }
+                    else
+                    {
+                        abono.Porcentaje = 0;
+                    }
+
+                    // Guardar el comprobante si es proporcionado
                     if (comprobanteFile != null && comprobanteFile.Length > 0)
                     {
                         using var memoryStream = new MemoryStream();
@@ -158,7 +154,26 @@ namespace Proyect.Controllers
                         abono.Comprobante = memoryStream.ToArray();
                     }
 
+                    // Agregar el abono a la base de datos
                     _context.Add(abono);
+
+                    // Verificar el estado de la reserva
+                    var totalAbonoActualizado = totalAbonado + abono.ValorAbono;
+
+                    if (totalAbonoActualizado >= reserva.Total)
+                    {
+                        // Cambiar a "Confirmado" si el total abonado cubre la reserva
+                        reserva.IdEstadoReserva = 2; // Suponiendo que 2 es "Confirmado"
+                    }
+                    else if (totalAbonoActualizado > 0)
+                    {
+                        // Cambiar a "Por Confirmar" si hay algún abono pero no está completo
+                        reserva.IdEstadoReserva = 4; // Suponiendo que 4 es "Por Confirmar"
+                    }
+
+                    // Guardar cambios en la reserva
+                    _context.Update(reserva);
+
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Index", new { idReserva = abono.IdReserva });
                 }
@@ -168,10 +183,10 @@ namespace Proyect.Controllers
                     ModelState.AddModelError("", "Se produjo un error al crear el abono. Intenta nuevamente.");
                 }
             }
-
-            ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "Nombre", abono.IdEstadoAbono);
             return View(abono);
         }
+
+
 
 
 
@@ -213,101 +228,6 @@ namespace Proyect.Controllers
 
 
 
-
-
-        // GET: Abonos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var abono = await _context.Abonos.FindAsync(id);
-            if (abono == null)
-            {
-                return NotFound();
-            }
-            ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "IdEstadoAbono", abono.IdEstadoAbono);
-            ViewData["IdReserva"] = new SelectList(_context.Reservas, "IdReserva", "IdReserva", abono.IdReserva);
-            return View(abono);
-        }
-
-        // POST: Abonos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdAbono,IdReserva,FechaAbono,Valordeuda,Pendiente,ValorAbono,Porcentaje,Comprobante,IdEstadoAbono")] Abono abono)
-        {
-            if (id != abono.IdAbono)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(abono);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AbonoExists(abono.IdAbono))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdEstadoAbono"] = new SelectList(_context.EstadosAbonos, "IdEstadoAbono", "IdEstadoAbono", abono.IdEstadoAbono);
-            ViewData["IdReserva"] = new SelectList(_context.Reservas, "IdReserva", "IdReserva", abono.IdReserva);
-            return View(abono);
-        }
-
-        // GET: Abonos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var abono = await _context.Abonos
-                .Include(a => a.IdEstadoAbonoNavigation)
-                .Include(a => a.IdReservaNavigation)
-                .FirstOrDefaultAsync(m => m.IdAbono == id);
-            if (abono == null)
-            {
-                return NotFound();
-            }
-
-            return View(abono);
-        }
-
-        // POST: Abonos/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var abono = await _context.Abonos.FindAsync(id);
-            if (abono != null)
-            {
-                _context.Abonos.Remove(abono);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool AbonoExists(int id)
-        {
-            return _context.Abonos.Any(e => e.IdAbono == id);
-        }
+        
     }
 }

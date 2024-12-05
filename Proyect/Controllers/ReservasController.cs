@@ -34,6 +34,34 @@ namespace Proyect.Controllers
                 .Include(r => r.IdPaqueteNavigation);
             return View(await proyectContext.ToListAsync());
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Anular(int id)
+        {
+            var reserva = await _context.Reservas.FindAsync(id);
+            if (reserva == null)
+            {
+                return NotFound();
+            }
+
+            reserva.IdEstadoReserva = 3; // Asumiendo que el ID 3 corresponde a "Anulada"
+
+            try
+            {
+                _context.Update(reserva);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al anular la reserva: {ex.Message}");
+                ModelState.AddModelError("", "Se produjo un error al anular la reserva.");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
 
         // GET: Reservas/Details/5
         public IActionResult Details(int id)
@@ -197,10 +225,26 @@ namespace Proyect.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdReserva,FechaReserva,FechaInicio,FechaFin,Subtotal,Iva,Total,NoPersonas,IdCliente,IdUsuario,IdEstadoReserva,IdMetodoPago,Descuento")] Reserva reserva, int IdPaquete, List<int> ServiciosSeleccionados)
+        public async Task<IActionResult> Create([Bind("IdReserva,FechaReserva,FechaInicio,FechaFin,Subtotal,Iva,Total,NoPersonas,IdCliente,IdUsuario,IdMetodoPago,Descuento")] Reserva reserva, int IdPaquete, List<int> ServiciosSeleccionados)
         {
             if (ModelState.IsValid)
             {
+                // Asignar el estado "Pendiente" por defecto
+                var estadoPendiente = await _context.EstadoReservas
+                    .FirstOrDefaultAsync(e => e.Estados == "Pendiente");
+
+                if (estadoPendiente != null)
+                {
+                    reserva.IdEstadoReserva = estadoPendiente.IdEstadoReserva;
+                }
+                else
+                {
+                    // Si no se encuentra el estado "Pendiente", agregar error
+                    ModelState.AddModelError("IdEstadoReserva", "El estado 'Pendiente' no se encuentra en la base de datos.");
+                    CargarDatosVista();
+                    return View(reserva);
+                }
+
                 // Asignar el IdPaquete a la entidad Reserva
                 reserva.IdPaquete = IdPaquete;
 
@@ -398,7 +442,6 @@ namespace Proyect.Controllers
         }
 
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Reserva reserva, List<int> serviciosSeleccionados)
@@ -416,8 +459,8 @@ namespace Proyect.Controllers
 
             // Buscar la reserva existente en la base de datos
             var reservaDb = _context.Reservas
-                .Include(r => r.DetalleServicios)
-                .Include(r => r.IdPaqueteNavigation) // Incluir la relación del paquete
+                .Include(r => r.DetalleServicios) // Incluye los servicios asociados
+                .Include(r => r.IdPaqueteNavigation) // Incluye la relación con el paquete
                 .FirstOrDefault(r => r.IdReserva == id);
 
             if (reservaDb == null)
@@ -439,10 +482,21 @@ namespace Proyect.Controllers
                 ActualizarDetalleServicios(reservaDb, serviciosSeleccionados);
 
                 // Actualizar el paquete si se seleccionó uno
-                reservaDb.IdPaquete = reserva.IdPaquete;
+                ActualizarDetallePaquete(reservaDb, reserva.IdPaquete);
 
-                // Recalcular los valores (igual que en la vista)
-                decimal subtotal = reservaDb.DetalleServicios.Sum(ds => ds.Precio * ds.Cantidad);
+                // Calcular subtotal únicamente con los servicios seleccionados
+                decimal subtotal = 0;
+                if (serviciosSeleccionados != null && serviciosSeleccionados.Any())
+                {
+                    foreach (var servicioId in serviciosSeleccionados)
+                    {
+                        var servicio = _context.Servicios.FirstOrDefault(s => s.IdServicio == servicioId);
+                        if (servicio != null)
+                        {
+                            subtotal += servicio.Precio; // Suma el precio de los servicios seleccionados
+                        }
+                    }
+                }
 
                 // Si se seleccionó un paquete, agregar su precio al subtotal
                 if (reservaDb.IdPaqueteNavigation != null)
@@ -460,7 +514,6 @@ namespace Proyect.Controllers
                 reservaDb.Subtotal = subtotal;
                 reservaDb.Iva = iva;
                 reservaDb.Total = total;
-
                 // Guardar cambios en la base de datos
                 _context.SaveChanges();
 
@@ -478,9 +531,65 @@ namespace Proyect.Controllers
 
 
 
+        private void ActualizarDetallePaquete(Reserva reservaDb, int? idPaqueteSeleccionado)
+        {
+            // Si se seleccionó un paquete diferente o se deseleccionó un paquete (idPaqueteSeleccionado == null)
+            if (idPaqueteSeleccionado.HasValue)
+            {
+                // Verificar si el paquete ya está asociado con la reserva
+                var detallePaqueteExistente = _context.DetallePaquetes
+                    .FirstOrDefault(dp => dp.IdReserva == reservaDb.IdReserva);
+
+                if (detallePaqueteExistente != null)
+                {
+                    // Si ya existe un detalle de paquete, lo eliminamos
+                    _context.DetallePaquetes.Remove(detallePaqueteExistente);
+                }
+
+                // Obtener el precio del nuevo paquete
+                var precioPaquete = _context.Paquetes
+                    .Where(p => p.IdPaquete == idPaqueteSeleccionado.Value)
+                    .Select(p => p.Precio)
+                    .FirstOrDefault();
+
+                // Agregar el nuevo paquete
+                var nuevoDetallePaquete = new DetallePaquete
+                {
+                    IdReserva = reservaDb.IdReserva,
+                    IdPaquete = idPaqueteSeleccionado.Value,
+                    Precio = precioPaquete,
+                    Estado = true // Establecer estado como "activo"
+                };
+
+                _context.DetallePaquetes.Add(nuevoDetallePaquete);
+
+                // Actualizar el campo IdPaquete en la reserva
+                reservaDb.IdPaquete = idPaqueteSeleccionado.Value;
+
+                // Actualizar la relación de navegación
+                reservaDb.IdPaqueteNavigation = _context.Paquetes
+                    .FirstOrDefault(p => p.IdPaquete == idPaqueteSeleccionado.Value);
+            }
+            else
+            {
+                // Si no se seleccionó un paquete (o se deseleccionó), eliminar cualquier detalle de paquete existente
+                var detallePaqueteExistente = _context.DetallePaquetes
+                    .FirstOrDefault(dp => dp.IdReserva == reservaDb.IdReserva);
+
+                if (detallePaqueteExistente != null)
+                {
+                    _context.DetallePaquetes.Remove(detallePaqueteExistente);
+                }
+
+                // Limpiar el campo IdPaquete en la reserva
+                reservaDb.IdPaqueteNavigation = null;
+            }
+        }
+
+
         private void ActualizarDetalleServicios(Reserva reservaDb, List<int> serviciosSeleccionados)
         {
-            // Eliminar servicios existentes
+            // Eliminar los servicios existentes que no están en la nueva selección
             _context.DetalleServicios.RemoveRange(reservaDb.DetalleServicios);
 
             if (serviciosSeleccionados != null && serviciosSeleccionados.Any())
@@ -501,6 +610,7 @@ namespace Proyect.Controllers
                 }
             }
         }
+
 
         private void CargarDatosVistaEdit()
         {
