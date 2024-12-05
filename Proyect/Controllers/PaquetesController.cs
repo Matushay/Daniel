@@ -145,9 +145,13 @@ namespace Proyect.Controllers
 
 
         // GET: Paquetes/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            // Obtener el paquete y sus relaciones
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var paquete = await _context.Paquetes
                 .Include(p => p.PaquetesServicios)
                 .Include(p => p.PaquetesHabitaciones)
@@ -158,28 +162,25 @@ namespace Proyect.Controllers
                 return NotFound();
             }
 
-            // Obtener los servicios, incluyendo el estado de selección y precio
+            // Cargar servicios y habitaciones disponibles
             var servicios = _context.Servicios
-
                 .AsEnumerable()
                 .Select(s => new
                 {
-                    s.IdServicio,
-                    s.Nombre,
-                    s.Precio,
+                    IdServicio = s.IdServicio,
+                    Nombre = s.Nombre,
+                    Precio = s.Precio,
                     Seleccionado = paquete.PaquetesServicios.Any(ps => ps.IdServicio == s.IdServicio)
                 })
                 .ToList();
 
-            // Obtener las habitaciones, incluyendo el estado de selección y precio
             var habitaciones = _context.Habitaciones
-
                 .AsEnumerable()
                 .Select(h => new
                 {
-                    h.IdHabitacion,
-                    h.Nombre,
-                    h.Precio,
+                    IdHabitacion = h.IdHabitacion,
+                    Nombre = h.Nombre,
+                    Precio = h.Precio,
                     Seleccionado = paquete.PaquetesHabitaciones.Any(ph => ph.IdHabitacion == h.IdHabitacion)
                 })
                 .ToList();
@@ -192,11 +193,6 @@ namespace Proyect.Controllers
             return View(paquete);
         }
 
-
-
-        // POST: Paquetes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdPaquete,Nombre,Descripcion,Precio,Estado")] Paquete paquete, int[] HabitacionesSeleccionadas, int[] ServiciosSeleccionados, decimal PrecioTotal)
@@ -210,13 +206,14 @@ namespace Proyect.Controllers
             {
                 try
                 {
-                    // Obtener habitaciones previamente asociadas
+                    // Actualizar el paquete
+                    paquete.Precio = PrecioTotal;
+                    _context.Update(paquete);
+                    await _context.SaveChangesAsync();
+
+                    // Manejar las relaciones de habitaciones
                     var habitacionesExistentes = _context.PaquetesHabitaciones.Where(ph => ph.IdPaquete == id).ToList();
-
-                    // Eliminar relaciones actuales
                     _context.PaquetesHabitaciones.RemoveRange(habitacionesExistentes);
-
-                    // Validar y asociar nuevas habitaciones
                     foreach (var habitacionId in HabitacionesSeleccionadas)
                     {
                         var habitacion = await _context.Habitaciones.FindAsync(habitacionId);
@@ -239,14 +236,9 @@ namespace Proyect.Controllers
                         }
                     }
 
-                    // Actualizar el paquete
-                    paquete.Precio = PrecioTotal;
-                    _context.Update(paquete);
-
-                    // Manejar los servicios seleccionados
+                    // Manejar las relaciones de servicios
                     var serviciosExistentes = _context.PaquetesServicios.Where(ps => ps.IdPaquete == id).ToList();
                     _context.PaquetesServicios.RemoveRange(serviciosExistentes);
-
                     foreach (var servicioId in ServiciosSeleccionados)
                     {
                         _context.PaquetesServicios.Add(new PaquetesServicio
@@ -269,25 +261,24 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
-                TempData["SuccessMessage"] = "El servicio se edito correctamente";
+                TempData["SuccessMessage"] = "El paquete se editó correctamente";
                 return RedirectToAction(nameof(Index));
             }
 
             // Recargar datos en caso de error
-            ViewData["Servicios"] = _context.Servicios
-
-                .Select(s => new { s.IdServicio, s.Nombre, s.Precio, Seleccionado = false })
+            var servicios = _context.Servicios
+                .AsEnumerable()
+                .Select(s => new { IdServicio = s.IdServicio, Nombre = s.Nombre, Precio = s.Precio, Seleccionado = ServiciosSeleccionados.Contains(s.IdServicio) })
                 .ToList();
 
-            ViewData["Habitaciones"] = _context.Habitaciones
-
-                .Select(h => new { h.IdHabitacion, h.Nombre, h.Precio, Seleccionado = false })
+            var habitaciones = _context.Habitaciones
+                .AsEnumerable()
+                .Select(h => new { IdHabitacion = h.IdHabitacion, Nombre = h.Nombre, Precio = h.Precio, Seleccionado = HabitacionesSeleccionadas.Contains(h.IdHabitacion) })
                 .ToList();
 
-            ViewData["PrecioTotal"] = _context.Paquetes
-              .Where(p => p.IdPaquete == paquete.IdPaquete)
-              .Select(p => p.Precio)
-              .FirstOrDefault();
+            ViewData["Servicios"] = servicios;
+            ViewData["Habitaciones"] = habitaciones;
+            ViewData["PrecioTotal"] = paquete.Precio;
 
             return View(paquete);
         }

@@ -43,3 +43,6 @@ input:checked + .slider {
         transform: translateX(20px); /* Ajusta este valor para mover el c�rculo */
     }
 
+.Tituloscentro{
+    text-align: center;
+}

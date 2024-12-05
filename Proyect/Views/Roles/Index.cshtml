@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Roles</h1>
+<h1 class="Tituloscentro">Roles</h1>
 
 <p class="text-end">
     <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear</a>
@@ -59,14 +59,6 @@
                     <a asp-action="Delete" asp-route-id="@item.IdRol" class="btn btn-icon" data-toggle="tooltip" title="Eliminar">
                         <i class="bi bi-trash"></i>
                     </a>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdRol" class="btn btn-primary btn-sm">Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.IdRol" class="btn btn-info btn-sm">Detalles</a>
-                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                            data-id="@item.IdRol" data-name="@item.NombreRol">
-                        Eliminar
-                    </button>
                 </td>
             </tr>
         }

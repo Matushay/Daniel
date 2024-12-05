@@ -244,9 +244,7 @@ namespace Proyect.Controllers
             return View(usuario);
         }
 
-
         // POST: Usuarios/Edit/5
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,TipoDocumento,Documento,Nombre,Apellido,Celular,Direccion,CorreoElectronico,FechaCreacion,IdRol")] Usuario usuario)
@@ -269,7 +267,6 @@ namespace Proyect.Controllers
 
             if (!validationResult.IsValid)
             {
-
                 foreach (var error in validationResult.Errors)
                 {
                     ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
@@ -280,8 +277,26 @@ namespace Proyect.Controllers
             {
                 try
                 {
-                    _context.Update(usuario);
-                    _context.SaveChanges();
+                    var usuarioExistente = await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.IdUsuario == id);
+
+                    if (usuarioExistente == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Mantener la contraseña existente si no se proporciona una nueva
+                    if (string.IsNullOrEmpty(usuario.Contraseña))
+                    {
+                        usuario.Contraseña = usuarioExistente.Contraseña;
+                    }
+                    else
+                    {
+                        // Aquí puedes agregar la lógica para encriptar la contraseña si es necesario
+                        usuario.Contraseña = (usuario.Contraseña);  // Reemplaza esto por tu método de encriptación
+                    }
+
+                    _context.Entry(usuario).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -289,17 +304,17 @@ namespace Proyect.Controllers
                     {
                         return NotFound();
                     }
-                    throw;
+                    else
+                    {
+                        throw;
+                    }
                 }
-
                 return RedirectToAction(nameof(Index));
             }
-
 
             ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
-
 
         // POST: Usuarios/ActualizarEstado
         [HttpPost]
