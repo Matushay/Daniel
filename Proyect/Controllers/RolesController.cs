@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +11,7 @@ using Proyect.Validaciones.ValidacionesLuis;
 
 namespace Proyect.Controllers
 {
-    //[Authorize] // Restringimos el acceso a usuarios autenticados
+    [Authorize]
     public class RolesController : Controller
     {
         private readonly ProyectContext _context;
@@ -64,11 +64,11 @@ namespace Proyect.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Policy = "ManageRoles")]
-       
-        public IActionResult Create([Bind("IdRol,NombreRol,Descripcion")] Role role, List<int> selectedPermisos)
+        public IActionResult Create([Bind("IdRol,NombreRol,Descripcion,Activo")] Role role, List<int> selectedPermisos)
         {
-            // Obtener nombres existentes para pasar al validador
+
+
+
             var nombresExistentes = _context.Roles.Select(r => r.NombreRol).ToList();
             var validator = new RolValidator(nombresExistentes);
             var validationResult = validator.Validate(role);
@@ -80,12 +80,12 @@ namespace Proyect.Controllers
                     ModelState.AddModelError(string.Empty, error.ErrorMessage);
                 }
 
-                // Recargar permisos si hay errores
+
                 ViewData["Permisos"] = _context.Permisos.ToList();
                 return View(role);
             }
 
-            // Verificar permisos seleccionados
+
             if (selectedPermisos != null && selectedPermisos.Any())
             {
                 var permisosInvalidos = selectedPermisos
@@ -100,7 +100,7 @@ namespace Proyect.Controllers
                 }
             }
 
-            // Guardar rol y sus permisos en la base de datos
+
             _context.Add(role);
             _context.SaveChanges();
 
@@ -118,32 +118,53 @@ namespace Proyect.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        // Método para actualizar el estado de un rol (activo/inactivo)
+        [HttpPost]
+        public async Task<IActionResult> ActualizarEstado(int id, bool estado)
+        {
+            var rol = await _context.Roles.FindAsync(id);
+            if (rol != null)
+            {
+                rol.Estado = estado; // Actualizamos el estado (activo o inactivo)
+                _context.Update(rol);
+                await _context.SaveChangesAsync();
+                return Ok(); // Retornamos un 200 OK si la actualización fue exitosa
+            }
+            return BadRequest(); // Si no encontramos el rol, retornamos un error
+        }
+
         // GET: Roles/Edit/5
-        //[Authorize(Policy = "ManageRoles")]
+
         public async Task<IActionResult> Edit(int? id)
         {
+            // Si no se pasa un ID, devolver NotFound
             if (id == null)
             {
                 return NotFound();
             }
 
-            // Obtener el rol con sus permisos actuales
+            // Cargar el rol junto con sus permisos asociados
             var role = await _context.Roles
-                .Include(r => r.RolesPermisos)
-                .ThenInclude(rp => rp.IdPermisoNavigation)
-                .FirstOrDefaultAsync(m => m.IdRol == id);
+                .Include(r => r.RolesPermisos) // Incluir la relación RolesPermisos (los permisos asociados al rol)
+                .ThenInclude(rp => rp.IdPermisoNavigation) // Si tienes una navegación al modelo Permiso para obtener detalles sobre los permisos
+                .FirstOrDefaultAsync(r => r.IdRol == id); // Buscar el rol por ID
 
+            // Si no se encuentra el rol, devolver NotFound
             if (role == null)
             {
                 return NotFound();
             }
 
-            // Pasar la lista de permisos disponibles a ViewData
+            // Pasar todos los permisos disponibles a la vista
             ViewData["Permisos"] = await _context.Permisos.ToListAsync();
 
-            // Pasar los IDs de los permisos asociados al rol a ViewData
-            ViewData["SelectedPermisos"] = role.RolesPermisos.Select(rp => rp.IdPermiso).ToList();
+            // Pasar los permisos seleccionados (los permisos asociados al rol) a la vista
+            ViewData["SelectedPermisos"] = role.RolesPermisos
+                .Select(rp => rp.IdPermiso) // Obtener los IDs de los permisos asociados al rol
+                .ToList();
 
+            // Retornar la vista con el rol cargado y los permisos seleccionados
             return View(role);
         }
 
@@ -152,45 +173,58 @@ namespace Proyect.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Policy = "ManageRoles")]
-        public async Task<IActionResult> Edit(int id, [Bind("IdRol,NombreRol,Descripcion")] Role role, List<int> selectedPermisos)
+        public async Task<IActionResult> Edit(int id, [Bind("IdRol,Descripcion,Activo")] Role role, List<int> selectedPermisos)
         {
+            // Si el ID del rol no coincide con el ID en la URL, devolver NotFound
             if (id != role.IdRol)
             {
                 return NotFound();
             }
 
+            // Recuperar el rol original de la base de datos sin hacer un seguimiento (AsNoTracking)
+            var existingRole = await _context.Roles.AsNoTracking()
+                .Include(r => r.RolesPermisos) // Incluir los permisos asociados al rol
+                .FirstOrDefaultAsync(r => r.IdRol == id); // Buscar el rol por ID
+
+            // Si no se encuentra el rol, devolver NotFound
+            if (existingRole == null)
+            {
+                return NotFound();
+            }
+
+            // Bloquear cambios en el NombreRol para que no pueda ser modificado
+            role.NombreRol = existingRole.NombreRol;
+
+            // Verificar si el modelo es válido
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Actualizar los datos del rol
+                    // Actualizar el rol en la base de datos (solo los campos permitidos)
                     _context.Update(role);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(); // Guardar cambios en la base de datos
 
-                    // Actualizar los permisos asociados al rol
+                    // Eliminar los permisos asociados previamente al rol
                     var permisosExistentes = _context.RolesPermisos.Where(rp => rp.IdRol == id).ToList();
-                    _context.RolesPermisos.RemoveRange(permisosExistentes);
+                    _context.RolesPermisos.RemoveRange(permisosExistentes); // Eliminar los permisos antiguos
 
-
-                   //asignar permisos
+                    // Si se seleccionaron nuevos permisos, agregarlos
                     if (selectedPermisos != null && selectedPermisos.Count > 0)
                     {
-                        foreach (var permisoId in selectedPermisos)
+                        var nuevosRolesPermisos = selectedPermisos.Select(permisoId => new RolesPermiso
                         {
-                            var rolesPermiso = new RolesPermiso
-                            {
-                                IdRol = role.IdRol,
-                                IdPermiso = permisoId
-                            };
-                            _context.RolesPermisos.Add(rolesPermiso);
-                        }
+                            IdRol = role.IdRol,
+                            IdPermiso = permisoId
+                        });
+                        _context.RolesPermisos.AddRange(nuevosRolesPermisos); // Agregar los nuevos permisos
                     }
 
+                    // Guardar los cambios (tanto el rol como los permisos)
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    // Si hay un error de concurrencia, verificar si el rol aún existe
                     if (!RoleExists(role.IdRol))
                     {
                         return NotFound();
@@ -201,15 +235,18 @@ namespace Proyect.Controllers
                     }
                 }
 
+                // Redirigir a la lista de roles
                 return RedirectToAction(nameof(Index));
             }
 
-            // En caso de error, devolver los datos necesarios para la vista
+            // Si hay errores de validación, recargar la lista de permisos
             ViewData["Permisos"] = await _context.Permisos.ToListAsync();
-            ViewData["SelectedPermisos"] = selectedPermisos;
+            ViewData["SelectedPermisos"] = selectedPermisos; // Volver a pasar los permisos seleccionados en caso de error
 
             return View(role);
         }
+
+
 
         // GET: Roles/Delete/5
         //[Authorize(Policy = "ManageRoles")]
@@ -220,50 +257,82 @@ namespace Proyect.Controllers
                 return NotFound();
             }
 
-            var role = await _context.Roles.FindAsync(id);
+            var role = await _context.Roles
+                .Include(r => r.Usuarios)
+                .FirstOrDefaultAsync(m => m.IdRol == id);
+
             if (role == null)
             {
                 return NotFound();
             }
 
+
+            if (role.Usuarios.Any())
+            {
+                TempData["Error"] = "Este rol tiene usuarios asociados y no se puede eliminar.";
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(role);
         }
 
-        // POST: Roles/Delete/5
 
+
+        // POST: Roles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        //[Authorize(Policy = "ManageRoles")]
+
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var role = await _context.Roles.FindAsync(id);
-            if (role != null)
+            try
             {
-                // Verificar si el rol está protegido
-                //if (role.Protegido)
-                //{
-                //    // Agregar un mensaje de error y regresar a la vista de índice
-                //    TempData["Error"] = "Este rol está protegido y no se puede eliminar.";
-                //    return RedirectToAction(nameof(Index));
-                //}
+                var role = await _context.Roles
+                    .Include(r => r.Usuarios)
+                    .FirstOrDefaultAsync(r => r.IdRol == id);
 
-                // Eliminar las relaciones con RolesPermisos antes de eliminar el rol
+                if (role == null)
+                {
+                    return NotFound();
+                }
+
+
+                if (role.Usuarios.Any())
+                {
+                    TempData["Error"] = "Este rol tiene usuarios asociados y no se puede eliminar.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+
                 var rolesPermisosExistentes = _context.RolesPermisos.Where(rp => rp.IdRol == id);
-                _context.RolesPermisos.RemoveRange(rolesPermisosExistentes); // Eliminamos las relaciones
+                _context.RolesPermisos.RemoveRange(rolesPermisosExistentes);
 
-                // Ahora eliminamos el rol
+
                 _context.Roles.Remove(role);
-                await _context.SaveChangesAsync(); // Guardamos los cambios en la base de datos
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "Rol eliminado correctamente.";
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RoleExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
 
             return RedirectToAction(nameof(Index));
         }
 
+
         private bool RoleExists(int id)
         {
             return _context.Roles.Any(e => e.IdRol == id);
         }
-
     }
+
 }

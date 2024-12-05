@@ -1,7 +1,11 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MailKit;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Proyect.Models;
+using Proyect.Servicios;
 using Proyect.Validaciones;
 using Proyect.Validaciones.ValidacionesLuis;
 
@@ -17,21 +21,41 @@ namespace Proyect
             builder.Services.AddDbContext<ProyectContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ProyectConnection")));
 
-            // Registrar validadores de FluentValidation de toda la aplicación
-            builder.Services.AddControllers()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<UsuarioValidator>());
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
-            // Registrar validadores específicos si es necesario
+            builder.Services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+
+            // Configurar EmailSettings
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+            // Registrar el servicio de Email
+            builder.Services.AddTransient<Proyect.Servicios.IEmailService, Proyect.Servicios.EmailService>();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login"; // Redirige a la pï¿½gina de inicio de sesiï¿½n si no estï¿½ autenticado
+                    options.AccessDeniedPath = "/Account/AccessDenied";
+                });
+
+            // Add services to the container.
+
+            // Registrar validadores especï¿½ficos si es necesario
             builder.Services.AddScoped<IValidator<Usuario>, UsuarioValidator>();
             builder.Services.AddScoped<IValidator<Role>, RolValidator>();
             builder.Services.AddScoped<IValidator<Permiso>, PermisoValidator>();
 
-            // Agregar servicios necesarios para la aplicación, como los controladores con vistas
+            // Agregar servicios necesarios para la aplicaciï¿½n, como los controladores con vistas
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
-            // Configuración de la tubería de solicitudes HTTP
+            // Configuraciï¿½n de la tuberï¿½a de solicitudes HTTP
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -39,20 +63,45 @@ namespace Proyect
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();  // Configuración para entornos de producción
+                app.UseHsts();  // Configuraciï¿½n para entornos de producciï¿½n
             }
 
-            app.UseHttpsRedirection();
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ProyectContext>();
+
+                // Verifica si el usuario ya existe
+                if (!context.Usuarios.Any(u => u.CorreoElectronico == "unknownmurder569@gmail.com"))
+                {
+                    var adminUser = new Usuario
+                    {
+                        TipoDocumento = "CC",
+                        Documento = "123456789",
+                        Nombre = "Administrador",
+                        Apellido = "Principal",
+                        Celular = "1234567890",
+                        Direccion = "Direccion Admin",
+                        CorreoElectronico = "unknownmurder569@gmail.com",
+                        Estado = true,
+                        ContraseÃ±a = "Admin123.", // AsegÃºrate de que esto se encripte si usas autenticaciÃ³n real.
+                        FechaCreacion = DateTime.Now,
+                        IdRol = 1
+                    };
+                    context.Usuarios.Add(adminUser);
+                    context.SaveChanges();
+                }
+            }
+
             app.UseStaticFiles();
-
             app.UseRouting();
-
+            app.UseSession();
+            app.UseAuthentication();
             app.UseAuthorization();
 
-            // Configuración de rutas para controladores MVC
+            // Configuraciï¿½n de rutas para controladores MVC
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
 
             app.Run();
         }

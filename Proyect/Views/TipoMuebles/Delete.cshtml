@@ -1,39 +1,49 @@
 ﻿@model Proyect.Models.TipoMueble
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Tipo de Mueble";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3>¿Estas seguro de eliminar el tipo de mueble?</h3>
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["ErrorMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="delete-container">
+    <h1 class="h3 mb-4 text-gray-800 text-center">Eliminar Tipo de Mueble</h1>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    <div class="card shadow mb-4">
+        <div class="card-header text-white bg-danger">
+            <h6 class="m-0 font-weight-bold text-white">Confirmación de Eliminación</h6>
+        </div>
+        <div class="card-body">
+            <h3>¿Está seguro de que desea eliminar este tipo de mueble?</h3>
+            <p><strong>Nota:</strong> Esta acción no puede deshacerse.</p>
+
+            <dl class="row">
+                <dt class="col-sm-3">Nombre del Tipo de Mueble</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Nombre)
+                </dd>
+
+                <dt class="col-sm-3">Descripción</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+            </dl>
+        </div>
+
+        <div class="card-footer text-center">
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="IdTipoMueble" />
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash-fill"></i> Eliminar
+                </button>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </a>
+            </form>
+        </div>
     </div>
-}
-<div>
-    <h4>Tipo de Mueble</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descripcion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="IdTipoMueble" />
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver</a>
-    </form>
 </div>

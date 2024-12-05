@@ -16,11 +16,12 @@ public partial class Mueble
     [Required(ErrorMessage = "La descripción es requerida.")]
     public string Descripcion { get; set; }
 
-    [Required(ErrorMessage ="la cantidad es requerida")]
+    [Required(ErrorMessage ="La cantidad es requerida")]
     public int Cantidad { get; set; }
 
     public bool Estado { get; set; }
 
+    [Display(Name = "Fecha de Registro")]
     public DateTime FechaRegistro { get; set; } = DateTime.Now;
 
     public virtual ICollection<HabitacionMueble> HabitacionMuebles { get; set; } = new List<HabitacionMueble>();

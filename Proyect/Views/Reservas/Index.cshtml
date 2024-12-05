@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Proyect.Models.Reserva>
+@model IEnumerable<Proyect.Models.Reserva>
 
 @{
     ViewData["Title"] = "Index";
@@ -8,19 +8,19 @@
 <h1 class="page-title">Reservas</h1>
 
 <p class="text-end">
-    <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-square"></i> Crear Nueva Reserva</a>
+    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear</a>
 </p>
 
-<table class="table table-striped table-hover" id="ReservasTable">
+<table class="table" id="ReservasTable">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.FechaReserva)</th>
-            <th>@Html.DisplayNameFor(model => model.FechaInicio)</th>
-            <th>@Html.DisplayNameFor(model => model.FechaFin)</th>
-            <th>@Html.DisplayNameFor(model => model.IdClienteNavigation)</th>
+            <th>Fecha de Reserva</th>
+            <th>Fecha de Inicio</th>
+            <th>Fecha del Fin</th>
+            <th>Documento</th>
             <th>@Html.DisplayNameFor(model => model.Total)</th>
-            <th>@Html.DisplayNameFor(model => model.IdEstadoReservaNavigation)</th>
-            <th>Operaciones</th>
+            <th>Estado</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -34,9 +34,9 @@
                 <td>@Html.DisplayFor(modelItem => item.Total)</td>
                 <td>@Html.DisplayFor(modelItem => item.IdEstadoReservaNavigation.Estados)</td>
                 <td class="action-icons">
-                    <a asp-action="Edit" asp-route-id="@item.IdReserva" class="btn btn-warning">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-list"></i></a> |
-                    <a asp-controller="Abonos" asp-action="Index" asp-route-idReserva="@item.IdReserva" class="btn btn-primary"><i class="bi bi-wallet2"></i></a>
+                    <a asp-action="Edit" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-pencil-square"></i> </a> |
+                    <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-list"></i> </a> |
+                    <a asp-controller="Abonos" asp-action="Index" asp-route-idReserva="@item.IdReserva" class="btn btn-primary"><i class="bi bi-wallet2"></i> Abono</a>
                 </td>
             </tr>
         }
@@ -47,10 +47,13 @@
     <script>
         $(document).ready(function () {
             $('#ReservasTable').DataTable({
+                scrollX: true,
                 language: {
                     "sLengthMenu": "Mostrar _MENU_ entradas",
                     "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                    "sSearch": "Buscar:"
+                    "sSearch": "Buscar:",
+                    "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA",
+                    "sInfo":"Mostrando START a END de TOTAL entradas"
                 }
             });
         })

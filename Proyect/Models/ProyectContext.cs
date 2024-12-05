@@ -383,6 +383,8 @@ public partial class ProyectContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.Property(e => e.Estado).HasDefaultValue(true);       
         });
 
         modelBuilder.Entity<RolesPermiso>(entity =>
@@ -459,6 +461,10 @@ public partial class ProyectContext : DbContext
             entity.Property(e => e.Celular)
                 .HasMaxLength(15)
                 .IsUnicode(false);
+            entity.Property(e => e.Contraseña)
+               .IsRequired()
+               .HasMaxLength(30)
+               .IsUnicode(false);
             entity.Property(e => e.CorreoElectronico)
                 .IsRequired()
                 .HasMaxLength(150)
@@ -482,6 +488,11 @@ public partial class ProyectContext : DbContext
                 .IsRequired()
                 .HasMaxLength(10)
                 .IsUnicode(false);
+
+            entity.Property(e => e.CodigoRestablecimiento)
+            .HasMaxLength(200)
+            .IsUnicode(false)
+            .IsRequired(false);
 
             entity.HasOne(d => d.IdRolNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.IdRol)

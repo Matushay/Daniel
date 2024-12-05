@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Proyect.Models.Habitacione>
+@model IEnumerable<Proyect.Models.Habitacione>
 
 @{
     ViewData["Title"] = "Index";
@@ -8,7 +8,7 @@
 <h1 class="page-title">Habitaciones</h1>
 
 <p class="text-end">
-    <a asp-action="Create" class="btn btn-custom">Crear nueva habitación</a>
+    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i>Crear</a>
 </p>
 
 @if (TempData["SuccessMessage"] != null)
@@ -19,7 +19,7 @@
     </div>
 }
 
-<table class="table table-striped table-hover" id="HabitacionesTable">
+<table class="table" id="HabitacionesTable">
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(model => model.Nombre)</th>
@@ -47,9 +47,9 @@
                     </label>
                 </td>
                 <td class="action-icons">
-                    <a asp-action="Edit" asp-route-id="@item.IdHabitacion" class="btn btn-icon"><i class="bi bi-pencil-square"></i> Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.IdHabitacion" class="btn btn-icon"><i class="bi bi-info-lg"></i> Detalles</a>
-                    <a asp-action="Delete" asp-route-id="@item.IdHabitacion" class="btn btn-icon"><i class="bi bi-trash"></i> Eliminar</a>
+                    <a asp-action="Edit" asp-route-id="@item.IdHabitacion" class="btn btn-icon" data-toggle="tooltip" title="Editar"><i class="bi bi-pencil-square"></i> </a>|
+                    <a asp-action="Details" asp-route-id="@item.IdHabitacion" class="btn btn-icon" data-toggle="tooltip" title="Detalles"><i class="bi bi-info-lg"></i> </a>|
+                    <a asp-action="Delete" asp-route-id="@item.IdHabitacion" class="btn btn-icon" data-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i> </a>
                 </td>
             </tr>
         }
@@ -63,7 +63,8 @@
                 language: {
                     "sLengthMenu": "Mostrar _MENU_ entradas",
                     "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                    "sSearch": "Buscar:"
+                    "sSearch": "Buscar:",
+                    "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA"
                 }
             });
         });

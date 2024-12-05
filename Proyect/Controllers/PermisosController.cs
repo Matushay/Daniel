@@ -1,7 +1,7 @@
-﻿
+
 using System.Linq;
 using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ using Proyect.Models;
 
 namespace Proyect.Controllers
 {
-    //[Authorize] // Asegura que solo usuarios autenticados puedan acceder
+    [Authorize]
     public class PermisosController : Controller
     {
         private readonly ProyectContext _context;

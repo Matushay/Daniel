@@ -5,60 +5,55 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="page-title">Detalles del Usuario</h1>
-
-<div class="details-container">
-    <div class="card">
-        <div class="card-header">
-            <h4>Información del Usuario</h4>
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800 text-center">Detalles del Usuario</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Información del Usuario</h6>
         </div>
         <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">Tipo de Documento</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.TipoDocumento)
-                </dd>
-                <dt class="col-sm-3">Documento</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Documento)
-                </dd>
-                <dt class="col-sm-3">Nombre</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Nombre)
-                </dd>
-                <dt class="col-sm-3">Apellido</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Apellido)
-                </dd>
-                <dt class="col-sm-3">Celular</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Celular)
-                </dd>
-                <dt class="col-sm-3">Dirección</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Direccion)
-                </dd>
-                <dt class="col-sm-3">Correo Electrónico</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.CorreoElectronico)
-                </dd>
-                <dt class="col-sm-3">Estado</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Estado)
-                </dd>
-                <dt class="col-sm-3">Fecha de Creación</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.FechaCreacion)
-                </dd>
-                <dt class="col-sm-3">Rol</dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.IdRolNavigation.NombreRol)
-                </dd>
+            <dl class="row ">
+                <dt class="col-sm-3 font-weight-bold">Tipo de Documento</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.TipoDocumento)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Documento</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Documento)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Nombre</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Nombre)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Apellido</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Apellido)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Celular</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Celular)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Dirección</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Direccion)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Correo Electrónico</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.CorreoElectronico)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Contraseña</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Contraseña)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Estado</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Estado)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Fecha de Creación</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.FechaCreacion)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Rol</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.IdRolNavigation.NombreRol)</dd>
             </dl>
         </div>
-        <div class="card-footer text-end">
-            <a asp-action="Edit" asp-route-id="@Model?.IdUsuario" class="btn btn-primary btn-sm">Editar</a>
-            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+        <div class="card-footer text-center">
+            <a asp-action="Edit" asp-route-id="@Model?.IdUsuario" class="btn btn-primary btn-sm">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver a la lista
+            </a>
         </div>
     </div>
 </div>

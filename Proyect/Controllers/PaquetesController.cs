@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Proyect.Models;
 
 namespace Proyect.Controllers
 {
+    [Authorize]
     public class PaquetesController : Controller
     {
         private readonly ProyectContext _context;
@@ -51,8 +53,8 @@ namespace Proyect.Controllers
         // GET: Paquetes/Create
         public IActionResult Create()
         {
-            ViewData["Servicios"] = _context.Servicios.Where(s => s.Estado == false).Select(s => new { s.IdServicio, s.Nombre, s.Precio }).ToList();
-            ViewData["Habitaciones"] = _context.Habitaciones.Where(s => s.Estado == false).Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
+            ViewData["Servicios"] = _context.Servicios.Where(s => s.Estado == true).Select(s => new { s.IdServicio, s.Nombre, s.Precio }).ToList();
+            ViewData["Habitaciones"] = _context.Habitaciones.Where(s => s.Estado == true).Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
             return View();
         }
 
@@ -85,8 +87,8 @@ namespace Proyect.Controllers
                         {
                             ModelState.AddModelError("", $"La habitación '{habitacion.Nombre}' no está disponible.");
                             // Recargar datos para la vista
-                            ViewData["Servicios"] = _context.Servicios.Where(s => s.Estado == false).Select(s => new { s.IdServicio, s.Nombre, s.Precio }).ToList();
-                            ViewData["Habitaciones"] = _context.Habitaciones.Where(h => h.Estado == false).Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
+                            ViewData["Servicios"] = _context.Servicios.Where(s => s.Estado == true).Select(s => new { s.IdServicio, s.Nombre, s.Precio }).ToList();
+                            ViewData["Habitaciones"] = _context.Habitaciones.Where(h => h.Estado == true).Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
                             return View(paquete);
                         }
                     }
@@ -135,8 +137,8 @@ namespace Proyect.Controllers
             }
 
             // Recargar datos en caso de error
-            ViewData["Servicios"] = _context.Servicios.Where(s => s.Estado == false).Select(s => new { s.IdServicio, s.Nombre, s.Precio }).ToList();
-            ViewData["Habitaciones"] = _context.Habitaciones.Where(h => h.Estado == false).Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
+            ViewData["Servicios"] = _context.Servicios.Where(s => s.Estado == true).Select(s => new { s.IdServicio, s.Nombre, s.Precio }).ToList();
+            ViewData["Habitaciones"] = _context.Habitaciones.Where(h => h.Estado == true).Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
             TempData["SuccessMessage"] = "El Paquete se creo correctamente";
             return View(paquete);
         }
@@ -158,7 +160,7 @@ namespace Proyect.Controllers
 
             // Obtener los servicios, incluyendo el estado de selección y precio
             var servicios = _context.Servicios
-                .Where(s => s.Estado == false)
+
                 .AsEnumerable()
                 .Select(s => new
                 {
@@ -171,7 +173,7 @@ namespace Proyect.Controllers
 
             // Obtener las habitaciones, incluyendo el estado de selección y precio
             var habitaciones = _context.Habitaciones
-                .Where(s => s.Estado == false)
+
                 .AsEnumerable()
                 .Select(h => new
                 {
@@ -273,12 +275,12 @@ namespace Proyect.Controllers
 
             // Recargar datos en caso de error
             ViewData["Servicios"] = _context.Servicios
-                .Where(s => s.Estado == false)
+
                 .Select(s => new { s.IdServicio, s.Nombre, s.Precio, Seleccionado = false })
                 .ToList();
 
             ViewData["Habitaciones"] = _context.Habitaciones
-                .Where(h => h.Estado == false)
+
                 .Select(h => new { h.IdHabitacion, h.Nombre, h.Precio, Seleccionado = false })
                 .ToList();
 

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Proyect.Models;
 
 public partial class Cliente
 {
+    [Display(Name = "Id Cliente")]
     public int IdCliente { get; set; }
 
+    [Display(Name = "Tipo Documento")]
     public string TipoDocumento { get; set; }
 
     public string Documento { get; set; }
@@ -19,6 +22,8 @@ public partial class Cliente
 
     public string Celular { get; set; }
 
+    [Display(Name = "Correo Electronico")]
+    [EmailAddress(ErrorMessage = "El formato del correo no es válido.")]
     public string CorreoElectronico { get; set; }
 
     public bool Estado { get; set; }

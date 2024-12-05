@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ using Proyect.Models;
 
 namespace Proyect.Controllers
 {
-    //[Authorize] // Restringimos el acceso a usuarios autenticados
+    [Authorize]
     public class RolesPermisosController : Controller
     {
         private readonly ProyectContext _context;
