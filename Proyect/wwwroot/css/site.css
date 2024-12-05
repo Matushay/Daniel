@@ -1,7 +1,7 @@
 .switch {
     position: relative;
     display: inline-block;
-    width: 40px; /* Cambia este valor para hacer el toggle más pequeño */
+    width: 40px; /* Cambia este valor para hacer el toggle mï¿½s pequeï¿½o */
     height: 20px; /* Cambia este valor para ajustar la altura del toggle */
 }
 
@@ -26,20 +26,20 @@
     .slider:before {
         position: absolute;
         content: "";
-        height: 16px; /* Ajusta la altura del círculo aquí */
-        width: 16px; /* Ajusta el ancho del círculo aquí */
-        left: 2px; /* Ajusta la posición del círculo */
-        bottom: 2px; /* Ajusta la posición del círculo */
+        height: 16px; /* Ajusta la altura del cï¿½rculo aquï¿½ */
+        width: 16px; /* Ajusta el ancho del cï¿½rculo aquï¿½ */
+        left: 2px; /* Ajusta la posiciï¿½n del cï¿½rculo */
+        bottom: 2px; /* Ajusta la posiciï¿½n del cï¿½rculo */
         background-color: white;
         transition: .4s;
-        border-radius: 50%; /* Mantiene el círculo redondeado */
+        border-radius: 50%; /* Mantiene el cï¿½rculo redondeado */
     }
 
 input:checked + .slider {
-    background-color: #2196F3; /* Color cuando está activo */
+    background-color: #2196F3; /* Color cuando estï¿½ activo */
 }
 
     input:checked + .slider:before {
-        transform: translateX(20px); /* Ajusta este valor para mover el círculo */
+        transform: translateX(20px); /* Ajusta este valor para mover el cï¿½rculo */
     }
 

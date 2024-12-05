@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Gestión de Roles</h1>
+<h1>Roles</h1>
 
 <p class="text-end">
-    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear </a>
+    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear</a>
 </p>
 
 <!-- Mostrar mensajes de error o éxito -->
@@ -47,6 +47,18 @@
                             data-id="@item.IdRol" data-estado="@item.Estado">
                         @(item.Estado ? "Activo" : "Inactivo")
                     </button>
+                </td>
+                <td class="action-icons">
+                    <!-- Reemplazo de botones con las nuevas acciones -->
+                    <a asp-action="Edit" asp-route-id="@item.IdRol" class="btn btn-icon" data-toggle="tooltip" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a> |
+                    <a asp-action="Details" asp-route-id="@item.IdRol" class="btn btn-icon" data-toggle="tooltip" title="Detalles">
+                        <i class="bi bi-info-lg"></i>
+                    </a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdRol" class="btn btn-icon" data-toggle="tooltip" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                    </a>
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdRol" class="btn btn-primary btn-sm">Editar</a>

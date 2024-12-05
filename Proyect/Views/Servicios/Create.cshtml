@@ -1,4 +1,4 @@
-﻿@model Proyect.Models.Servicio
+@model Proyect.Models.Servicio
 
 @{
     ViewData["Title"] = "Crear Servicio";
@@ -36,21 +36,19 @@
                     <input asp-for="Precio" class="form-control" placeholder="Ingrese el precio del servicio" />
                     <span asp-validation-for="Precio" class="text-danger"></span>
                 </div>
-
-                <!-- Botón de enviar -->
-                <div class="form-group text-center mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg">
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-primary btn-sm">
                         <i class="fas fa-save"></i> Crear Servicio
                     </button>
+                    <a asp-action="Index" class="btn btn-secondary btn-sm ml-3">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
                 </div>
+                
             </form>
         </div>
 
-        <div class="card-footer text-center">
-            <a asp-action="Index" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left"></i> Volver a la lista
-            </a>
-        </div>
+
     </div>
 </div>
 

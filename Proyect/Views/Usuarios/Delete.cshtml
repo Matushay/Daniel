@@ -1,4 +1,4 @@
-﻿@model Proyect.Models.Usuario
+@model Proyect.Models.Usuario
 
 @{
     ViewData["Title"] = "Eliminar Usuario";
@@ -76,6 +76,14 @@
                 </dt>
                 <dd class="col-sm-9">
                     @Html.DisplayFor(model => model.CorreoElectronico)
+                </dd>
+
+                <!-- Contraseña -->
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Contraseña)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Contraseña)
                 </dd>
 
                 <!-- Estado -->

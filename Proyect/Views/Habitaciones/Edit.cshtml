@@ -6,7 +6,7 @@
 }
 
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">Editar Habitacion</h1>
+    <h1 class="h3 mb-4 text-gray-800 text-center">Editar Habitacion</h1>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -113,21 +113,18 @@
                         });
                     });
                 </script>
-
-                <div class="form-group text-center">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="fas fa-save"></i> Guardar
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="fas fa-save"></i> Guardar Cambios
                     </button>
+                    <a asp-action="Index" class="btn btn-secondary btn-sm ml-3">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="text-center mt-4">
-        <a asp-action="Index" class="btn btn-secondary btn-sm">
-            <i class="fas fa-arrow-left"></i> Volver a la lista
-        </a>
-    </div>
 </div>
 
 @section Scripts {
