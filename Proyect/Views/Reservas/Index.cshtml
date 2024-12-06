@@ -34,24 +34,41 @@
                 <td>@Html.DisplayFor(modelItem => item.Total)</td>
                 <td>@Html.DisplayFor(modelItem => item.IdEstadoReservaNavigation.Estados)</td>
                 <td class="action-icons">
-                    @if (item.IdEstadoReservaNavigation != null && item.IdEstadoReservaNavigation.Estados == "Anulada")
+                    @if (item.IdEstadoReservaNavigation != null && item.IdEstadoReservaNavigation.Estados == "Anulado")
                     {
-                        <button class="btn btn-secondary" disabled>Editar</button>
-                        <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-list"></i></a>
-                        <button class="btn btn-secondary" disabled>Abonos</button>
-                        <button class="btn btn-secondary" disabled>Anular</button>
+                        <!-- Botón de Editar -->
+                        <button class="btn btn-icon" style="background-color: #ccc;" disabled>
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon" data-toggle="tooltip" title="Detalles"><i class="bi bi-info-lg"></i> </a>
+                        <!-- Botón de Abonos -->
+                        <button class="btn btn-icon" style="background-color: #ccc;" disabled>
+                            <i class="bi bi-wallet2"></i>
+                        </button>
+
+                        <!-- Botón de Anular -->
+                        <button class="btn btn-icon" style="background-color: #ccc;" disabled>
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+
+
                     }
                     else
                     {
-                        <a asp-action="Edit" asp-route-id="@item.IdReserva" class="btn btn-warning">Editar</a>
+                        <a asp-action="Edit" asp-route-id="@item.IdReserva" class="btn btn-icon" data-toggle="tooltip" title="Editar"><i class="bi bi-pencil-square"></i> </a>
 
-                        <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-list"></i></a>
-                        <a asp-controller="Abonos" asp-action="Index" asp-route-idReserva="@item.IdReserva" class="btn btn-primary"><i class="bi bi-wallet2"></i></a>
+                        <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon" data-toggle="tooltip" title="Detalles"><i class="bi bi-info-lg"></i> </a>
+                        <!-- Botón para abono -->
+                        <a asp-controller="Abonos" asp-action="Index" asp-route-idReserva="@item.IdReserva" class="btn btn-icon" data-toggle="tooltip" title="Abono">
+                            <i class="bi bi-wallet2"></i>
+                        </a>
 
                         <!-- Botón para anular la reserva -->
                         <form asp-action="Anular" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="@item.IdReserva" />
-                            <button type="submit" class="btn btn-danger">Anular</button>
+                            <button type="submit" class="btn btn-icon" data-toggle="tooltip" title="Anular">
+                                <i class="bi bi-x-circle"></i>
+                            </button>
                         </form>
                     }
                 </td>

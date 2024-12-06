@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Crear Reserva";
 
+
+
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -74,16 +76,26 @@
                 <div class="form-group">
                     <label>Servicios</label>
                     <div id="servicios">
-                        @foreach (var servicio in ViewBag.Servicios)
+                        @if (ViewBag.Servicios != null && ViewBag.Servicios.Count > 0)
+                        {
+                            @foreach (var servicio in ViewBag.Servicios)
+
+                            {
+                                <div>
+                                    <input type="checkbox" name="ServiciosSeleccionados" value="@servicio.IdServicio" />
+                                    <label>@servicio.Nombre - @servicio.Precio</label>
+                                </div>
+                            }
+                        }
+
+                        else
 
                         {
-                            <div>
-                                <input type="checkbox" name="ServiciosSeleccionados" value="@servicio.IdServicio" />
-                                @servicio.Nombre - @servicio.Precio.ToString("C2", new System.Globalization.CultureInfo("es-CO"))
-                            </div>
+                            <p>No hay servicios disponibles.</p>
                         }
                     </div>
                 </div>
+
 
                 <!-- Método de Pago y Estado de Reserva -->
                 <div class="form-group">

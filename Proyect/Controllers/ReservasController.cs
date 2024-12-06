@@ -265,19 +265,22 @@ namespace Proyect.Controllers
 
                 // Obtener los servicios seleccionados y sumar sus precios
                 decimal totalServicios = 0;
-                foreach (var servicioId in ServiciosSeleccionados)
+                if (ServiciosSeleccionados != null && ServiciosSeleccionados.Count > 0)
                 {
-                    var servicio = await _context.Servicios.FindAsync(servicioId);
-                    if (servicio != null)
+                    foreach (var servicioId in ServiciosSeleccionados)
                     {
-                        reserva.DetalleServicios.Add(new DetalleServicio
+                        var servicio = await _context.Servicios.FindAsync(servicioId);
+                        if (servicio != null)
                         {
-                            IdServicio = servicio.IdServicio,
-                            Precio = servicio.Precio,
-                            Estado = true,
-                            Cantidad = 1 // Ajustar según tus necesidades
-                        });
-                        totalServicios += servicio.Precio;
+                            reserva.DetalleServicios.Add(new DetalleServicio
+                            {
+                                IdServicio = servicio.IdServicio,
+                                Precio = servicio.Precio,
+                                Estado = true,
+                                Cantidad = 1 // Ajustar según tus necesidades
+                            });
+                            totalServicios += servicio.Precio;
+                        }
                     }
                 }
 
@@ -302,10 +305,6 @@ namespace Proyect.Controllers
             return View(reserva);
         }
 
-
-
-
-
         public void CargarDatosVista()
         {
             // Cargar clientes disponibles
@@ -316,8 +315,8 @@ namespace Proyect.Controllers
 
             // Cargar estados de reserva
             ViewData["IdEstadoReserva"] = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Estados");
-
         }
+
         public async Task<IActionResult> AgregarAbono(int id)
         {
             var reserva = await _context.Reservas.FindAsync(id);
@@ -643,7 +642,7 @@ namespace Proyect.Controllers
 
 
 
-[HttpGet("api/dashboard/PaquetesMasReservados")]
+        [HttpGet("api/dashboard/PaquetesMasReservados")]
         public IActionResult GetPaquetesMasReservados()
         {
             var datos = _context.Reservas
@@ -679,6 +678,6 @@ namespace Proyect.Controllers
             return Ok(serviciosMasSolicitados); // Devuelve un JSON con los servicios y las cantidades
         }
 
-        
+
     }
 }
