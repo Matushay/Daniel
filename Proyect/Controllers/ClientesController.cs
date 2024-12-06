@@ -76,6 +76,9 @@ namespace Proyect.Controllers
             {
                 try
                 {
+                    // Registrar los datos del cliente para depuración
+                    Console.WriteLine($"Datos del cliente: {cliente.Nombre}, {cliente.Documento}, {cliente.CorreoElectronico}");
+
                     // Agregar el cliente al contexto de la base de datos
                     _context.Add(cliente);
                     await _context.SaveChangesAsync();
@@ -85,9 +88,11 @@ namespace Proyect.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Si ocurre algún error, devolver un mensaje detallado
-                    return Json(new { success = false, message = $"Error al crear el cliente: {ex.Message}" });
+                    // Registrar la excepción interna
+                    var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return Json(new { success = false, message = $"Error al crear el cliente: {innerMessage}" });
                 }
+
             }
             // Si el modelo no es válido, devolver un mensaje detallado
             return Json(new { success = false, message = "Datos inválidos, por favor revise los campos del formulario." });
