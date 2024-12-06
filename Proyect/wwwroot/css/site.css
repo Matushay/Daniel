@@ -1,0 +1,48 @@
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px; /* Cambia este valor para hacer el toggle m�s peque�o */
+    height: 20px; /* Cambia este valor para ajustar la altura del toggle */
+}
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 20px; /* Mantiene el estilo redondeado */
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px; /* Ajusta la altura del c�rculo aqu� */
+        width: 16px; /* Ajusta el ancho del c�rculo aqu� */
+        left: 2px; /* Ajusta la posici�n del c�rculo */
+        bottom: 2px; /* Ajusta la posici�n del c�rculo */
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%; /* Mantiene el c�rculo redondeado */
+    }
+
+input:checked + .slider {
+    background-color: #2196F3; /* Color cuando est� activo */
+}
+
+    input:checked + .slider:before {
+        transform: translateX(20px); /* Ajusta este valor para mover el c�rculo */
+    }
+
+.Tituloscentro{
+    text-align: center;
+}

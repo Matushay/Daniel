@@ -1,0 +1,46 @@
+@model IEnumerable<Proyect.Models.Permiso>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="Tituloscentro">Permisos</h1>
+
+<p class="text-end">
+    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear</a>
+</p>
+<table class="table table-striped table-hover" id="PermisosTable">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.NombrePermiso)</th>
+            <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.NombrePermiso)</td>
+                <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+
+     <script>
+
+        $(document).ready(function () {
+            $('#PermisosTable').DataTable({
+                language: {
+                    "sLengthMenu": "Mostrar _MENU_ entradas",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "sSearch": "Buscar:",
+                    "emptyTable": "NO HAY NINGUN ELEMENTO EN LA TABLA"
+                }
+            });
+        })
+    </script>
+}

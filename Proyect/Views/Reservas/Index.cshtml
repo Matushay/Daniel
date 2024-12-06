@@ -1,0 +1,78 @@
+@model IEnumerable<Proyect.Models.Reserva>
+
+@{
+    ViewData["Title"] = "Reservas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="Tituloscentro">Reservas</h1>
+
+<p class="text-end">
+    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear</a>
+</p>
+
+<table class="table" id="ReservasTable">
+    <thead>
+        <tr>
+            <th>Fecha de Reserva</th>
+            <th>Fecha de Inicio</th>
+            <th>Fecha del Fin</th>
+            <th>Documento</th>
+            <th>@Html.DisplayNameFor(model => model.Total)</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.FechaReserva)</td>
+                <td>@Html.DisplayFor(modelItem => item.FechaInicio)</td>
+                <td>@Html.DisplayFor(modelItem => item.FechaFin)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdClienteNavigation.Documento)</td>
+                <td>@Html.DisplayFor(modelItem => item.Total)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdEstadoReservaNavigation.Estados)</td>
+                <td class="action-icons">
+                    @if (item.IdEstadoReservaNavigation != null && item.IdEstadoReservaNavigation.Estados == "Anulada")
+                    {
+                        <button class="btn btn-secondary" disabled>Editar</button>
+                        <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-list"></i></a>
+                        <button class="btn btn-secondary" disabled>Abonos</button>
+                        <button class="btn btn-secondary" disabled>Anular</button>
+                    }
+                    else
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.IdReserva" class="btn btn-warning">Editar</a>
+
+                        <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon"><i class="bi bi-list"></i></a>
+                        <a asp-controller="Abonos" asp-action="Index" asp-route-idReserva="@item.IdReserva" class="btn btn-primary"><i class="bi bi-wallet2"></i></a>
+
+                        <!-- Botón para anular la reserva -->
+                        <form asp-action="Anular" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@item.IdReserva" />
+                            <button type="submit" class="btn btn-danger">Anular</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#ReservasTable').DataTable({
+                scrollX: true,
+                language: {
+                    "sLengthMenu": "Mostrar _MENU_ entradas",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "sSearch": "Buscar:",
+                    "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA",
+                    "sInfo":"Mostrando START a END de TOTAL entradas"
+                }
+            });
+        })
+    </script>
+}

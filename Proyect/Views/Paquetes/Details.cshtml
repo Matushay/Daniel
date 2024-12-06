@@ -1,0 +1,80 @@
+﻿@model Proyect.Models.Paquete
+
+@{
+    ViewData["Title"] = "Detalles del Paquete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800 text-center">Detalles del Paquete</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Información del Paquete</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 font-weight-bold">Nombre del Paquete</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Nombre)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Descripción</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Descripcion)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Precio</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Precio)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Estado</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Estado)</dd>
+            </dl>
+        </div>
+        <div class="card-footer text-center">
+            <a asp-action="Edit" asp-route-id="@Model?.IdPaquete" class="btn btn-primary btn-sm">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver a la lista
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <h4>Servicios y Habitaciones incluidos</h4>
+
+    <h5>Servicios</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre del Servicio</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var servicio in Model.PaquetesServicios)
+            {
+                <tr>
+                    <td>@servicio.IdServicioNavigation.Nombre</td>
+                    <td>@servicio.IdServicioNavigation.Precio</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h5>Habitaciones</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre de la Habitación</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var habitacion in Model.PaquetesHabitaciones)
+            {
+                <tr>
+                    <td>@habitacion.IdHabitacionNavigation.Nombre</td>
+                    <td>@habitacion.IdHabitacionNavigation.Precio</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,47 @@
+@model Proyect.Models.Permiso
+
+@{
+    ViewData["Title"] = "Crear Permiso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="page-title">Crear Nuevo Permiso</h1>
+
+<h4>Permisos</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Nombre del Permiso -->
+                <div class="form-group">
+                    <label asp-for="NombrePermiso" class="control-label">Nombre del Permiso</label>
+                    <input asp-for="NombrePermiso" class="form-control" placeholder="Ingrese el nombre del permiso" />
+                    <span asp-validation-for="NombrePermiso" class="text-danger"></span>
+                </div>
+
+            <!-- Descripción del Permiso -->
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+
+   
+                <div class="form-group text-center">
+                    <input type="submit" value="Crear Permiso" class="btn btn-primary btn-lg" />
+                </div>
+            </form>
+        </div>
+        <div class="card-footer text-center">
+            <a asp-action="Index" class="btn btn-secondary btn-sm">Volver a la lista</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
