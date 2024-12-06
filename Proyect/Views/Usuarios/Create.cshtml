@@ -6,7 +6,7 @@
 }
 
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800 text-center">Crear Nuevo Usuario</h1>
+    <h1 class="Tituloscentro">Crear Nuevo Usuario</h1>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -18,13 +18,20 @@
 
                 <div class="form-group">
                     <label asp-for="TipoDocumento" class="control-label">Tipo de Documento</label>
-                    <select asp-for="TipoDocumento" class="form-control">
+                    <select asp-for="TipoDocumento" class="form-control" id="tipoDocumentoSelect">
                         <option value="CC">Cédula de Ciudadanía</option>
                         <option value="Pasaporte">Pasaporte</option>
                         <option value="Otro">Otro</option>
                     </select>
                     <span asp-validation-for="TipoDocumento" class="text-danger"></span>
                 </div>
+
+                <!-- Campo adicional para "Otro" -->
+                <div class="form-group" id="otroTipoDocumentoDiv" style="display: none;">
+                    <label for="otroTipoDocumento" class="control-label">Especifique el Tipo de Documento</label>
+                    <input type="text" id="otroTipoDocumento" name="OtroTipoDocumento" class="form-control" />
+                </div>
+
 
                 <div class="form-group">
                     <label asp-for="Documento" class="control-label">Documento</label>
@@ -89,5 +96,20 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Detectar cambios en el select
+        document.getElementById("tipoDocumentoSelect").addEventListener("change", function () {
+            var selectedValue = this.value; // Valor seleccionado
+            var otroTipoDocumentoDiv = document.getElementById("otroTipoDocumentoDiv");
+
+            if (selectedValue === "Otro") {
+                // Mostrar el campo si selecciona "Otro"
+                otroTipoDocumentoDiv.style.display = "block";
+            } else {
+                // Ocultar el campo si selecciona cualquier otra opción
+                otroTipoDocumentoDiv.style.display = "none";
+            }
+        });
+    </script>
 }
 

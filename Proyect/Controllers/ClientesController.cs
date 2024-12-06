@@ -61,10 +61,12 @@ namespace Proyect.Controllers
             {
                 _context.Add(cliente);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "El cliente se creó correctamente";
                 return RedirectToAction(nameof(Index));
             }
             return View(cliente);
         }
+
         // POST: Clientes/Create from modal (partial)
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -138,6 +140,7 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "El cliente editado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(cliente);
@@ -173,7 +176,21 @@ namespace Proyect.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "El cliente se elimino correctamente.";
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarEstado(int id, bool estado)
+        {
+            var cliente  = _context.Clientes.Find(id);
+            if (cliente != null)
+            {
+                cliente.Estado = estado;
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false, message = "Cliente no encontrada." });
         }
 
         private bool ClienteExists(int id)

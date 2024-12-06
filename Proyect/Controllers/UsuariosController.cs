@@ -216,6 +216,7 @@ namespace Proyect.Controllers
                     await _emailcreateService.SendEmailAsync(usuario.CorreoElectronico, subject, plainTextContent, htmlContent);
 
                     // Redirigir al usuario a la página de lista o cualquier otra página
+                    TempData["SuccessMessage"] = "El usuario se creó correctamente";
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -309,6 +310,7 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "El usuario se editó correctamente";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -316,19 +318,17 @@ namespace Proyect.Controllers
             return View(usuario);
         }
 
-        // POST: Usuarios/ActualizarEstado
         [HttpPost]
-        public async Task<IActionResult> ActualizarEstado(int id, bool estado)
+        public IActionResult ActualizarEstado(int id, bool estado)
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
+            var usuario = _context.Usuarios.Find(id);
             if (usuario != null)
             {
                 usuario.Estado = estado;
-                _context.Update(usuario);
-                await _context.SaveChangesAsync();
-                return Ok(); // Responde con éxito
+                _context.SaveChanges();
+                return Json(new { success = true });
             }
-            return BadRequest(); // En caso de error
+            return Json(new { success = false, message = "Usuario no encontrada." });
         }
 
         [HttpGet]
@@ -432,7 +432,7 @@ namespace Proyect.Controllers
             _context.Usuarios.Remove(usuario); 
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Usuario eliminado correctamente.";
+            TempData["SuccessMessage"] = "El usuario eliminado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 

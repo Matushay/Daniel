@@ -6,7 +6,9 @@
 }
 
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800 text-center">Detalles del Paquete</h1>
+    <h1 class="Tituloscentro">Detalles del Paquete</h1>
+
+    <!-- Información del Paquete -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Información del Paquete</h6>
@@ -26,6 +28,58 @@
                 <dd class="col-sm-9">@Html.DisplayFor(model => model.Estado)</dd>
             </dl>
         </div>
+    </div>
+
+    <!-- Servicios incluidos -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Servicios Incluidos</h6>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre del Servicio</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var servicio in Model.PaquetesServicios)
+                    {
+                        <tr>
+                            <td>@servicio.IdServicioNavigation.Nombre</td>
+                            <td>@servicio.IdServicioNavigation.Precio</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Habitaciones incluidas -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Habitaciones Incluidas</h6>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre de la Habitación</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var habitacion in Model.PaquetesHabitaciones)
+                    {
+                        <tr>
+                            <td>@habitacion.IdHabitacionNavigation.Nombre</td>
+                            <td>@habitacion.IdHabitacionNavigation.Precio</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
         <div class="card-footer text-center">
             <a asp-action="Edit" asp-route-id="@Model?.IdPaquete" class="btn btn-primary btn-sm">
                 <i class="fas fa-edit"></i> Editar
@@ -35,46 +89,4 @@
             </a>
         </div>
     </div>
-</div>
-
-<div class="mt-4">
-    <h4>Servicios y Habitaciones incluidos</h4>
-
-    <h5>Servicios</h5>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre del Servicio</th>
-                <th>Precio</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var servicio in Model.PaquetesServicios)
-            {
-                <tr>
-                    <td>@servicio.IdServicioNavigation.Nombre</td>
-                    <td>@servicio.IdServicioNavigation.Precio</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <h5>Habitaciones</h5>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre de la Habitación</th>
-                <th>Precio</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var habitacion in Model.PaquetesHabitaciones)
-            {
-                <tr>
-                    <td>@habitacion.IdHabitacionNavigation.Nombre</td>
-                    <td>@habitacion.IdHabitacionNavigation.Precio</td>
-                </tr>
-            }
-        </tbody>
-    </table>
 </div>

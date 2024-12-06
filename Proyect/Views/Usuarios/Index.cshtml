@@ -68,26 +68,30 @@
             
                 }
             });
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.status-toggle').change(function () {
+                const estado = $(this).is(':checked') ? true : false;
+                const idUsuario = $(this).data('id');
 
-            // Actualizar estado del usuario al hacer clic en el checkbox
-            $('.status-toggle').on('change', function () 
-            {
-            var usuarioId = $(this).data('id');
-            var estado = $(this).prop('checked'); // true si está marcado, false si no
-
-            // Llamada AJAX para actualizar el estado
-            $.ajax({
-            url: '@Url.Action("ActualizarEstado", "Usuarios")',
-            type: 'POST',
-            data: { id: usuarioId, estado: estado },
-            success: function (data) {
-                console.log("Estado actualizado correctamente");
-                alert('Estado actualizado correctamente');
-            },
-            error: function () {
-                console.log("Error al actualizar el estado");
-                alert('Error al actualizar el estado');
-            }
+                // Aquí puedes realizar una llamada AJAX para actualizar el estado en el servidor
+                $.ajax({
+                    url: '/Usuarios/ActualizarEstado', // Cambia esto a la ruta de tu controlador
+                    type: 'POST',
+                    data: {
+                        id: idUsuario,
+                        estado: estado
+                    },
+                    success: function (response) {
+                        console.log('Estado actualizado con éxito:', response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar el estado:', error);
+                    }
+                });
+            });
         });
     </script>
 }

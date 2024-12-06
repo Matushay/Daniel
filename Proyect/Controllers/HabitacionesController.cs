@@ -182,10 +182,10 @@ namespace Proyect.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
-            int id,
-            [Bind("IdHabitacion,Nombre,IdTipoHabitacion,Estado,Descripcion,Precio,Cantidad")] Habitacione habitacione,
-            int[] mueblesSeleccionados,
-            int[] cantidadMuebles)
+     int id,
+     [Bind("IdHabitacion,Nombre,IdTipoHabitacion,Estado,Descripcion,Precio,Cantidad")] Habitacione habitacione,
+     int[] mueblesSeleccionados,
+     int[] cantidadMuebles)
         {
             if (id != habitacione.IdHabitacion)
             {
@@ -202,6 +202,14 @@ namespace Proyect.Controllers
 
                 try
                 {
+                    // Verificar que ambos arreglos tienen la misma longitud
+                    if (mueblesSeleccionados.Length != cantidadMuebles.Length)
+                    {
+                        ModelState.AddModelError("", "La cantidad de muebles seleccionados no coincide con las cantidades especificadas.");
+                        ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitaciones, "IdTipoHabitacion", "Nombre", habitacione.IdTipoHabitacion);
+                        return View(habitacione);
+                    }
+
                     // Actualizar la habitación
                     _context.Update(habitacione);
                     await _context.SaveChangesAsync();
@@ -262,7 +270,7 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
-                TempData["SuccessMessage"] = "La habitación se edito correctamente";
+                TempData["SuccessMessage"] = "La habitación se editó correctamente";
                 return RedirectToAction(nameof(Index));
             }
 

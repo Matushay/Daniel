@@ -6,7 +6,7 @@
 }
 
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800 text-center">Editar Usuario</h1>
+    <h1 class="Tituloscentro">Editar Usuario</h1>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -62,9 +62,12 @@
                     }
                 </div>
 
-                <div class="form-check form-switch mb-3">
-                    <input class="form-check-input" type="checkbox" asp-for="Estado" id="Estado" />
-                    <label class="form-check-label" for="Estado">Estado activo</label>
+                <!-- Estado del Servicio (Checkbox) -->
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Estado" />
+                        @Html.DisplayNameFor(model => model.Estado)
+                    </label>
                 </div>
 
                 <div class="form-group">
