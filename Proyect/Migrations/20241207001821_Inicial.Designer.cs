@@ -12,8 +12,8 @@ using Proyect.Models;
 namespace Proyect.Migrations
 {
     [DbContext(typeof(ProyectContext))]
-    [Migration("20241205182551_ActualizarBaseDeDatosGre")]
-    partial class ActualizarBaseDeDatosGre
+    [Migration("20241207001821_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

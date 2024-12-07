@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Proyect.Migrations
 {
     /// <inheritdoc />
-    public partial class inicial : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,20 +43,6 @@ namespace Proyect.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__EstadoRe__3E654CA85050FB3E", x => x.IdEstadoReserva);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EstadosAbonos",
-                columns: table => new
-                {
-                    IdEstadoAbono = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__EstadosA__6956405AAAC400AF", x => x.IdEstadoAbono);
                 });
 
             migrationBuilder.CreateTable(
@@ -201,7 +187,7 @@ namespace Proyect.Migrations
                     Direccion = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: true),
                     CorreoElectronico = table.Column<string>(type: "varchar(150)", unicode: false, maxLength: 150, nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    Contraseña = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: false),
+                    Contraseña = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: true),
                     FechaCreacion = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
                     IdRol = table.Column<int>(type: "int", nullable: false),
                     CodigoRestablecimiento = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true)
@@ -399,17 +385,11 @@ namespace Proyect.Migrations
                     ValorAbono = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Porcentaje = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     Comprobante = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    IdEstadoAbono = table.Column<int>(type: "int", nullable: false),
                     Anulado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__Abonos__A4693DA7FFF9E5A1", x => x.IdAbono);
-                    table.ForeignKey(
-                        name: "FK__Abonos__IdEstado__778AC167",
-                        column: x => x.IdEstadoAbono,
-                        principalTable: "EstadosAbonos",
-                        principalColumn: "IdEstadoAbono");
                     table.ForeignKey(
                         name: "FK__Abonos__IdReserv__76969D2E",
                         column: x => x.IdReserva,
@@ -495,11 +475,6 @@ namespace Proyect.Migrations
                         principalTable: "Servicios",
                         principalColumn: "IdServicio");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Abonos_IdEstadoAbono",
-                table: "Abonos",
-                column: "IdEstadoAbono");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Abonos_IdReserva",
@@ -655,9 +630,6 @@ namespace Proyect.Migrations
 
             migrationBuilder.DropTable(
                 name: "RolesPermisos");
-
-            migrationBuilder.DropTable(
-                name: "EstadosAbonos");
 
             migrationBuilder.DropTable(
                 name: "Reservas");

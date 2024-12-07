@@ -5,132 +5,129 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="Tituloscentro">Detalles de la Reserva</h1>
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Detalles de la Reserva</h1>
 
-<div>
-    <h4>Datos del Cliente</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            <strong>Nombre:</strong>
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdClienteNavigation.Nombre)
-        </dd>
-        <dt class="col-sm-2">
-            <strong>Apellido:</strong>
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdClienteNavigation.Apellido)
-        </dd>
-        <dt class="col-sm-2">
-            <strong>Documento:</strong>
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdClienteNavigation.Documento)
-        </dd>
-        <dt class="col-sm-2">
-            <strong>Celular:</strong>
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdClienteNavigation.Celular)
-        </dd>
+    <!-- Datos del Cliente -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Datos del Cliente</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 font-weight-bold">Nombre</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.IdClienteNavigation.Nombre)</dd>
 
-        <dt class="col-sm-2">
-            <strong>Correo:</strong>
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdClienteNavigation.CorreoElectronico)
-        </dd>
-    </dl>
-</div>
+                <dt class="col-sm-3 font-weight-bold">Apellido</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.IdClienteNavigation.Apellido)</dd>
 
-<h4>Reserva</h4>
-<hr />
-<dl class="row">
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.FechaReserva)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.FechaReserva)
-    </dd>
+                <dt class="col-sm-3 font-weight-bold">Documento</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.IdClienteNavigation.Documento)</dd>
 
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.FechaInicio)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.FechaInicio)
-    </dd>
+                <dt class="col-sm-3 font-weight-bold">Celular</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.IdClienteNavigation.Celular)</dd>
 
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.FechaFin)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.FechaFin)
-    </dd>
+                <dt class="col-sm-3 font-weight-bold">Correo</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.IdClienteNavigation.CorreoElectronico)</dd>
+            </dl>
+        </div>
+    </div>
 
+    <!-- Reserva -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Detalles de la Reserva</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 font-weight-bold">Fecha de Reserva</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.FechaReserva)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Fecha de Inicio</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.FechaInicio)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Fecha de Fin</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.FechaFin)</dd>
+            </dl>
+        </div>
+    </div>
 
     <!-- Paquetes seleccionados -->
-    <dt class="col-sm-2">Paquetes Seleccionados</dt>
-    <dd class="col-sm-10">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nombre del Paquete</th>
-                    <th>Precio</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var paquete in ViewBag.DetallePaquetes)
-                {
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Paquetes Seleccionados</h6>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
                     <tr>
-                        <td>@paquete.Paquete</td>
-                        <td>@paquete.Precio.ToString("C2", new System.Globalization.CultureInfo("es-CO"))</td>
+                        <th>Nombre del Paquete</th>
+                        <th>Precio</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </dd>
+                </thead>
+                <tbody>
+                    @foreach (var paquete in ViewBag.DetallePaquetes)
+                    {
+                        <tr>
+                            <td>@paquete.Paquete</td>
+                            <td>@paquete.Precio.ToString("C2", new System.Globalization.CultureInfo("es-CO"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <!-- Servicios seleccionados -->
-    <dt class="col-sm-2">Servicios Seleccionados</dt>
-    <dd class="col-sm-10">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nombre del Servicio</th>
-                    <th>Cantidad</th>
-                    <th>Precio</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var servicio in ViewBag.DetalleServicios)
-                {
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Servicios Seleccionados</h6>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
                     <tr>
-                        <td>@servicio.Servicio</td>
-                        <td>@servicio.Cantidad</td>
-                        <td>@servicio.Precio.ToString("C2", new System.Globalization.CultureInfo("es-CO"))</td>
+                        <th>Nombre del Servicio</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </dd>
+                </thead>
+                <tbody>
+                    @foreach (var servicio in ViewBag.DetalleServicios)
+                    {
+                        <tr>
+                            <td>@servicio.Servicio</td>
+                            <td>@servicio.Cantidad</td>
+                            <td>@servicio.Precio.ToString("C2", new System.Globalization.CultureInfo("es-CO"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <!-- Mostrar el Total -->
-    <dt class="col-sm-2">
-        <strong>Total</strong>
-    </dt>
-    <dd class="col-sm-10">
-        <strong>@Model.Total.ToString("C2", new System.Globalization.CultureInfo("es-CO"))</strong>
-    </dd>
-</dl>
+    <!-- Total -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Total</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 font-weight-bold">Total</dt>
+                <dd class="col-sm-9">
+                    <strong>@Model.Total.ToString("C2", new System.Globalization.CultureInfo("es-CO"))</strong>
+                </dd>
+            </dl>
+        </div>
+    </div>
 
-<div>
-    <a asp-action="Index">Volver a la lista</a>
+    <!-- Acciones -->
+    <div class="text-center">
+        <a asp-action="Index" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left"></i> Volver a la lista
+        </a>
+        <a asp-action="DescargarPDF" asp-route-id="@Model.IdReserva" class="btn btn-primary btn-sm">
+            <i class="fas fa-download"></i> Descargar PDF
+        </a>
+    </div>
 </div>
-
-<div>
-    <a asp-action="DescargarPDF" asp-route-id="@Model.IdReserva" class="btn btn-primary">Descargar PDF</a>
-</div>
-
-
