@@ -26,7 +26,7 @@ public partial class Cliente
     [EmailAddress(ErrorMessage = "El formato del correo no es válido.")]
     public string CorreoElectronico { get; set; }
 
-    public bool Estado { get; set; }
-
+    public bool Estado { get; set; } = true;
+     
     public virtual ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
 }

@@ -62,8 +62,14 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
+                <!-- Botón de Crear -->
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="fas fa-save"></i> Crear Reserva
+                    </button>
+                    <a asp-action="Index" asp-route-idReserva="@Model.IdReserva" class="btn btn-secondary btn-sm ml-3">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
                 </div>
             </form>
         </div>

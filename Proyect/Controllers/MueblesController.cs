@@ -11,6 +11,8 @@ using Proyect.Models;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederMuebles")]
+
     public class MueblesController : Controller
     {
         private readonly ProyectContext _context;

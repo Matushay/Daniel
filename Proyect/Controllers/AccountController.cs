@@ -33,30 +33,49 @@ namespace Proyect.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Buscar al usuario con el correo electrónico y contraseña
                 var usuario = await _context.Usuarios
                     .FirstOrDefaultAsync(u => u.CorreoElectronico == model.CorreoElectronico && u.Contraseña == model.Contraseña);
 
                 if (usuario != null)
                 {
+                    // Crear la lista de claims básicos del usuario
                     var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, usuario.Nombre),
-                        new Claim(ClaimTypes.Email, usuario.CorreoElectronico)
-                    };
+            {
+                new Claim(ClaimTypes.Name, usuario.Nombre),
+                new Claim(ClaimTypes.Email, usuario.CorreoElectronico)
+            };
 
+                    // Obtener los permisos asociados al rol del usuario
+                    var permisos = await _context.RolesPermisos
+                        .Where(rp => rp.IdRol == usuario.IdRol)
+                        .Select(rp => rp.IdPermisoNavigation.NombrePermiso)
+                        .ToListAsync();
+
+                    // Agregar los permisos como claims
+                    foreach (var permiso in permisos)
+                    {
+                        claims.Add(new Claim("Permission", permiso));
+                    }
+
+                    // Crear una identidad con los claims obtenidos
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
+                    // Iniciar sesión con los claims
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity));
 
                     Console.WriteLine("Usuario autenticado: " + usuario.Nombre);
 
+                    // Redirigir a la página principal o a la vista correspondiente
                     return RedirectToAction("Index", "Home");
                 }
 
+                // Si no se encuentra el usuario, mostrar un mensaje de error
                 ModelState.AddModelError("", "Correo electronico o contraseña incorrectos.");
             }
 
+            // Si la validación falla, retornar la vista de login
             return View(model);
         }
 
@@ -127,6 +146,7 @@ namespace Proyect.Controllers
             user.CodigoRestablecimiento = null; // Opcional: limpiar el código de restablecimiento una vez utilizado
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "La contraseña se ha restablecido con éxito.";
             return RedirectToAction("Login", "Account");
         }
 
@@ -138,5 +158,9 @@ namespace Proyect.Controllers
             return RedirectToAction("Login");
         }
 
+        public IActionResult AccessDenied() 
+        { 
+            return View(); 
+        }
     }
 }

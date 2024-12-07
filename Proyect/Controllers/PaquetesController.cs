@@ -11,6 +11,8 @@ using Proyect.Models;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederPaquetes")]
+
     public class PaquetesController : Controller
     {
         private readonly ProyectContext _context;

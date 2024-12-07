@@ -43,10 +43,10 @@
                 <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
                 <td>
                     <!-- Aquí usamos un botón que cambia el estado -->
-                    <button class="btn @((item.Estado) ? "btn-success" : "btn-secondary") btn-sm changeState"
-                            data-id="@item.IdRol" data-estado="@item.Estado">
-                        @(item.Estado ? "Activo" : "Inactivo")
-                    </button>
+                    <label class="switch">
+                        <input type="checkbox" class="status-toggle" data-id="@item.IdRol" @(item.Estado ? "checked" : "")>
+                        <span class="slider"></span>
+                    </label>
                 </td>
                 <td class="action-icons">
                     <!-- Reemplazo de botones con las nuevas acciones -->
@@ -103,40 +103,27 @@
         })
     </script>
     <script>
-        // Lógica para cargar la información del rol en el modal de eliminación
-        $(document).on('click', '[data-bs-target="#deleteModal"]', function () {
-            var roleId = $(this).data('id'); // Obtener el ID del rol
-            var roleName = $(this).data('name'); // Obtener el nombre del rol
-            // Mostrar el nombre del rol en el modal
-            $('#roleName').text(roleName);
-            // Configurar la acción del formulario para eliminar el rol
-            var actionUrl = '@Url.Action("Delete", "Roles")' + '?id=' + roleId;
-            $('#deleteForm').attr('action', actionUrl);
-        });
-        // Lógica para cambiar el estado de un rol usando AJAX
-        $(document).on('click', '.changeState', function () {
-            var button = $(this);
-            var roleId = button.data('id');
-            var currentState = button.data('estado');
-            var newState = !currentState; // Cambiar el estado (activo <=> inactivo)
-            // Hacer la llamada AJAX para actualizar el estado
-            $.ajax({
-                url: '@Url.Action("ActualizarEstado", "Roles")',
-                type: 'POST',
-                data: {
-                    id: roleId,
-                    estado: newState
-                },
-                success: function (response) {
-                    // Actualizar el botón en la UI
-                    button.data('estado', newState);
-                    button.text(newState ? "Activo" : "Inactivo");
-                    button.removeClass(newState ? "btn-secondary" : "btn-success");
-                    button.addClass(newState ? "btn-success" : "btn-secondary");
-                },
-                error: function () {
-                    alert("Error al cambiar el estado del rol.");
-                }
+        $(document).ready(function() {
+            $(".status-toggle").change(function() {
+                var idRol = $(this).data("id");
+                var estado = $(this).prop("checked"); // true si está marcado, false si está desmarcado
+
+                // Aquí puedes realizar la lógica para cambiar el estado en el servidor
+                // Por ejemplo, enviando una solicitud AJAX para actualizar el estado del Rol
+                $.ajax({
+                    url: '/Roles/ActualizarEstado', // La URL de la acción que cambia el estado
+                    method: 'POST',
+                    data: {
+                        idRol: idRol,
+                        estado: estado
+                    },
+                    success: function(response) {
+                        // Aquí puedes hacer algo cuando la actualización haya sido exitosa
+                    },
+                    error: function(error) {
+                        // Manejo de errores en caso de que la actualización falle
+                    }
+                });
             });
         });
     </script>

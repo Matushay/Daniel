@@ -12,6 +12,12 @@
                 <img src="~/img/logo.png" alt="Logo" class="img-fluid rounded-circle" style="max-width: 100px; height: 100px; object-fit: cover;" />
             </h1>
             <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
             <form asp-action="Login" method="post">
                 @* Mostrar errores globales del ModelState *@
                 @if (!ViewData.ModelState.IsValid && ViewData.ModelState[""]?.Errors.Count > 0)

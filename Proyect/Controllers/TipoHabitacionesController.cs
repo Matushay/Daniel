@@ -11,6 +11,8 @@ using Proyect.Models;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederTipoHabitaciones")]
+
     public class TipoHabitacionesController : Controller
     {
         private readonly ProyectContext _context;

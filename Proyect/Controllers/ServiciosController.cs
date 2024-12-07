@@ -11,6 +11,8 @@ using Proyect.Models;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederServicios")]
+
     public class ServiciosController : Controller
     {
         private readonly ProyectContext _context;

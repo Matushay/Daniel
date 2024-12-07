@@ -12,6 +12,7 @@ using Proyect.Validaciones.ValidacionesLuis;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederUsuarios")]
     public class UsuariosController : Controller
     {
         private readonly ProyectContext _context;
@@ -20,14 +21,18 @@ namespace Proyect.Controllers
         public UsuariosController(ProyectContext context)
         {
             _context = context;
-             var apiKey = "Clave de api"; // Obtén tu API Key de SendGrid
+             var apiKey = "Aqui va el appi"; // API Key de SendGrid
             _emailcreateService = new SendGridEmailService(apiKey);
         }
 
-    // GET: Usuarios
-    public async Task<IActionResult> Index()
+        // GET: Usuarios
+        public async Task<IActionResult> Index()
         {
-            var proyectContext = _context.Usuarios.Include(u => u.IdRolNavigation);
+            // Filtrar los usuarios para excluir al superadministrador
+            var proyectContext = _context.Usuarios
+                .Include(u => u.IdRolNavigation)
+                .Where(u => !u.IdRolNavigation.NombreRol.Equals("SuperAdmin"));
+
             return View(await proyectContext.ToListAsync());
         }
 
@@ -245,7 +250,6 @@ namespace Proyect.Controllers
             return View(usuario);
         }
 
-        // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,TipoDocumento,Documento,Nombre,Apellido,Celular,Direccion,CorreoElectronico,FechaCreacion,IdRol")] Usuario usuario)
@@ -279,10 +283,14 @@ namespace Proyect.Controllers
                 try
                 {
                     var usuarioExistente = await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.IdUsuario == id);
+                    var rolSuperAdmin = await _context.Roles.FirstOrDefaultAsync(r => r.NombreRol == "SuperAdmin");
 
-                    if (usuarioExistente == null)
+                    if (usuarioExistente != null && usuarioExistente.IdRol == rolSuperAdmin?.IdRol)
                     {
-                        return NotFound();
+                        // No permitir editar el superadministrador
+                        ModelState.AddModelError("", "No se puede editar el usuario superadministrador.");
+                        ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
+                        return View(usuario);
                     }
 
                     // Mantener la contraseña existente si no se proporciona una nueva
@@ -317,6 +325,7 @@ namespace Proyect.Controllers
             ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
+
 
         [HttpPost]
         public IActionResult ActualizarEstado(int id, bool estado)

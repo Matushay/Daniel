@@ -47,53 +47,81 @@
                     <div class="nav">
                         <!-- Core Section -->
                         <div class="sb-sidenav-menu-heading"></div>
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Dashboard
-                        </a>
-                        <!-- Usuarios -->
-                        <a class="nav-link" asp-area="" asp-controller="Usuarios" asp-action="Index">
-                            <i class="bi bi-people-fill"></i><span class="ms-2">Usuarios</span>
-                        </a>
-                        <!-- clientes -->
-                        <a class="nav-link" asp-area="" asp-controller="Clientes" asp-action="Index">
-                            <i class="bi bi-people-fill"></i><span class="ms-2">Clientes</span>
-                        </a>
-                        <a class="nav-link" asp-area="" asp-controller="Roles" asp-action="Index">
-                            <i class="bi bi-person-fill-gear"></i><span class="ms-2">Roles</span>
-                        </a>
-                        <!-- Muebles -->
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                            <i class="bi bi-lamp-fill"></i><span class="ms-2">Muebles</span>
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="/Muebles/Index">Muebles</a>
-                                <a class="nav-link" href="/TipoMuebles/Index">Tipo de Muebles</a>
-                            </nav>
-                        </div>
-                        <!-- Habitacion -->
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                            <i class="bi bi-door-closed"></i><span class="ms-2">Habitaciones</span>
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                                <a class="nav-link" href="/Habitaciones/Index">Habitaciones</a>
-                                <a class="nav-link" href="/TipoHabitaciones/Index">Tipo de Habitaciones</a>
-                            </nav>
-                        </div>
-                        <a class="nav-link" asp-area="" asp-controller="Servicios" asp-action="Index">
-                            <i class="bi bi-database-fill-gear"></i><span class="ms-2">Servicios</span>
-                        </a>
-                        <a class="nav-link" asp-area="" asp-controller="Paquetes" asp-action="Index">
-                            <i class="bi bi-archive-fill"></i><span class="ms-2">Paquetes</span>
-                        </a>
-                        <a class="nav-link" asp-area="" asp-controller="Reservas" asp-action="Index">
-                            <i class="bi bi-coin"></i><span class="ms-2">Reservas</span>
-                        </a>
+                        @if (User.HasClaim("Permission", "Acceder Dashboard"))
+                        {
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard
+                            </a>
+                        }
+                        @if (User.HasClaim("Permission", "Acceder Usuarios"))
+                        {
+                            <!-- Usuarios -->
+                            <a class="nav-link" asp-area="" asp-controller="Usuarios" asp-action="Index">
+                                <i class="bi bi-people-fill"></i><span class="ms-2">Usuarios</span>
+                            </a>
+                        }
+                        @if (User.HasClaim("Permission", "Acceder Clientes"))
+                        {
+                            <!-- Clientes -->
+                            <a class="nav-link" asp-area="" asp-controller="Clientes" asp-action="Index">
+                                <i class="bi bi-people-fill"></i><span class="ms-2">Clientes</span>
+                            </a>
+                        }
+                        @if (User.HasClaim("Permission", "Acceder Roles"))
+                        {
+                            <a class="nav-link" asp-area="" asp-controller="Roles" asp-action="Index">
+                                <i class="bi bi-person-fill-gear"></i><span class="ms-2">Roles</span>
+                            </a>
+                        }
+                        @if (User.HasClaim("Permission", "Acceder Muebles"))
+                        {
+                            <!-- Muebles -->
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <i class="bi bi-lamp-fill"></i><span class="ms-2">Muebles</span>
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="/Muebles/Index">Muebles</a>
+                                    <a class="nav-link" href="/TipoMuebles/Index">Tipo de Muebles</a>
+                                </nav>
+                            </div>
+                        }
+                        @if (User.HasClaim("Permission", "Acceder Habitaciones"))
+                        {
+                            <!-- Habitaciones -->
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                                <i class="bi bi-door-closed"></i><span class="ms-2">Habitaciones</span>
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                    <a class="nav-link" href="/Habitaciones/Index">Habitaciones</a>
+                                    <a class="nav-link" href="/TipoHabitaciones/Index">Tipo de Habitaciones</a>
+                                </nav>
+                            </div>
+                        }
+                        @if (User.HasClaim("Permission", "Acceder Servicios"))
+                        {
+                            <a class="nav-link" asp-area="" asp-controller="Servicios" asp-action="Index">
+                                <i class="bi bi-database-fill-gear"></i><span class="ms-2">Servicios</span>
+                            </a>
+                        }
+                        @if (User.HasClaim("Permission", "Acceder Paquetes"))
+                        {
+                            <a class="nav-link" asp-area="" asp-controller="Paquetes" asp-action="Index">
+                                <i class="bi bi-archive-fill"></i><span class="ms-2">Paquetes</span>
+                            </a>
+                        }
+                        @if (User.HasClaim("Permission", "Acceder Reservas"))
+                        {
+                            <a class="nav-link" asp-area="" asp-controller="Reservas" asp-action="Index">
+                                <i class="bi bi-coin"></i><span class="ms-2">Reservas</span>
+                            </a>
+                        }
                     </div>
+                </div>
             </nav>
         </div>
         <div id="layoutSidenav_content">
@@ -136,10 +164,8 @@
     </div>
 
 
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script defer src="https://cdn.datatables.net/v/dt/dt-2.1.8/datatables.min.js"></script>
     <script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

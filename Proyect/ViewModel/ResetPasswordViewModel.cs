@@ -7,7 +7,7 @@ namespace Proyect.ViewModel
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Nueva Contraseña")]
-        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$", ErrorMessage = "La contraseña debe comenzar con una letra mayúscula, contener al menos un número, un carácter especial y tener al menos 8 caracteres.")]
+        [RegularExpression(@"(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$", ErrorMessage = "La contraseña debe contener al menos una letra mayúscula, un número, un carácter especial y tener al menos 8 caracteres.")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]

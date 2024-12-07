@@ -6,48 +6,74 @@
 }
 
 <div class="container-fluid">
-    <h1 class="Tituloscentro">Crear Nuevo Rol</h1>
-
+    <h1 class="Tituloscentro">Crear Rol</h1>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Formulario para Crear Rol</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Completa los detalles del nuevo rol</h6>
         </div>
         <div class="card-body">
-            <form asp-action="Create">
+            <form asp-action="Create" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <!-- Nombre del Rol -->
                 <div class="form-group">
-                    <label asp-for="NombreRol" class="control-label">Nombre del Rol</label>
-                    <input asp-for="NombreRol" class="form-control" placeholder="Ingrese el nombre del rol" />
+                    <label asp-for="NombreRol" class="form-label">Nombre del Rol</label>
+                    <input asp-for="NombreRol" class="form-control" placeholder="Ingresa el nombre del rol" />
                     <span asp-validation-for="NombreRol" class="text-danger"></span>
                 </div>
 
                 <!-- Descripción del Rol -->
                 <div class="form-group">
-                    <label asp-for="Descripcion" class="control-label">Descripción del Rol</label>
-                    <input asp-for="Descripcion" class="form-control" placeholder="Ingrese la descripción del rol" />
+                    <label asp-for="Descripcion" class="form-label">Descripción</label>
+                    <input asp-for="Descripcion" class="form-control" placeholder="Ingresa una descripción para el rol" />
                     <span asp-validation-for="Descripcion" class="text-danger"></span>
                 </div>
 
-                <!-- Permisos disponibles (Checkboxes) -->
+                <!-- Permisos asociados al Rol (Checkboxes) -->
                 <div class="form-group">
-                    <label class="control-label">Permisos:</label>
-                    <button type="button" class="btn btn-secondary mb-2" id="select-all-btn">Seleccionar todos</button>
+                    <label class="form-label">Permisos:</label>
+                    <input type="text" id="searchPermisos" class="form-control mb-2" placeholder="Buscar permisos...">
 
-                    <div class="permissions-container mt-3">
-                        @foreach (var permiso in ViewData["Permisos"] as List<Proyect.Models.Permiso>)
-                        {
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input permiso-checkbox" name="selectedPermisos" value="@permiso.IdPermiso" />
-                                <label class="form-check-label">@permiso.NombrePermiso</label>
-                            </div>
-                        }
+                    <button type="button" class="btn btn-secondary btn-sm ml-3 mb-2" onclick="selectAllPermisos(true)">Seleccionar Todos</button>
+                    <button type="button" class="btn btn-secondary btn-sm ml-3 mb-2" onclick="selectAllPermisos(false)">Deseleccionar Todos</button>
+
+                    <div class="table-responsive" style="max-width: 500px;">
+                        <table class="table table-bordered table-sm" id="permisosTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 60%;">Permiso</th>
+                                    <th style="width: 40%;">Seleccionar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewData["Permisos"] is List<Proyect.Models.Permiso> permisos && permisos.Any())
+                                {
+                                    foreach (var permiso in permisos)
+                                    {
+                                        <tr>
+                                            <td>@permiso.NombrePermiso</td>
+                                            <td class="text-center">
+                                                <input type="checkbox"
+                                                       class="form-check-input"
+                                                       name="selectedPermisos"
+                                                       value="@permiso.IdPermiso" />
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="2">No hay permisos disponibles.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="card-footer text-center">
                     <button type="submit" class="btn btn-primary btn-sm">
-                        <i class="fas fa-save"></i> Crear Rol
+                        <i class="fas fa-save"></i> Guardar Cambios
                     </button>
                     <a asp-action="Index" class="btn btn-secondary btn-sm ml-3">
                         <i class="fas fa-arrow-left"></i> Volver a la lista
@@ -55,7 +81,6 @@
                 </div>
             </form>
         </div>
-
     </div>
 </div>
 
@@ -65,10 +90,20 @@
     }
 
     <script>
-        // Función para seleccionar todos los permisos al hacer click en el botón "Seleccionar todos"
-        document.getElementById('select-all-btn').addEventListener('click', function () {
-            const checkboxes = document.querySelectorAll('.permiso-checkbox');
-            checkboxes.forEach(checkbox => checkbox.checked = true);
+        document.getElementById('searchPermisos').addEventListener('keyup', function () {
+            var searchTerm = this.value.toLowerCase();
+            var permisos = document.querySelectorAll('#permisosTable tbody tr');
+            permisos.forEach(function (permiso) {
+                var permisoText = permiso.querySelector('td').textContent.toLowerCase();
+                permiso.style.display = permisoText.includes(searchTerm) ? '' : 'none';
+            });
         });
+
+        function selectAllPermisos(select) {
+            var checkboxes = document.querySelectorAll('#permisosTable tbody input[type="checkbox"]');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = select;
+            });
+        }
     </script>
 }
