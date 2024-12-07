@@ -370,5 +370,10 @@ namespace Proyect.Controllers
         {
             return _context.Paquetes.Any(e => e.IdPaquete == id);
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }

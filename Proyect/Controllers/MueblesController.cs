@@ -185,5 +185,9 @@ namespace Proyect.Controllers
         {
             return _context.Muebles.Any(e => e.IdMueble == id);
         }
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }

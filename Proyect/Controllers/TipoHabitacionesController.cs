@@ -166,5 +166,10 @@ namespace Proyect.Controllers
         {
             return _context.TipoHabitaciones.Any(e => e.IdTipoHabitacion == id);
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }

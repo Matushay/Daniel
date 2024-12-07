@@ -161,5 +161,10 @@ namespace Proyect.Controllers
         {
             return _context.RolesPermisos.Any(e => e.IdRolPermiso == id);
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }

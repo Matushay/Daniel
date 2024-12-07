@@ -271,11 +271,14 @@ namespace Proyect.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
         private bool RoleExists(int id)
         {
             return _context.Roles.Any(e => e.IdRol == id);
         }
-    }
 
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
+    }
 }

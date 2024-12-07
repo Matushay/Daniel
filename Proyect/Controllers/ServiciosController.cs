@@ -178,5 +178,10 @@ namespace Proyect.Controllers
         {
             return _context.Servicios.Any(e => e.IdServicio == id);
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }

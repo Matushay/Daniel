@@ -203,5 +203,9 @@ namespace Proyect.Controllers
         {
             return _context.Clientes.Any(e => e.IdCliente == id);
         }
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }

@@ -220,16 +220,9 @@ namespace Proyect.Controllers
 
             return RedirectToAction("Index", new { idReserva = abono.IdReserva });
         }
-
-
-
-
-
-
-
-
-
-
-        
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }

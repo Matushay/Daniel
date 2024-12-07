@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Proyect.Models;
 using Proyect.Servicios;
 using Proyect.ViewModel;
-using Proyect.Validaciones.ValidacionesLuis; 
+using Proyect.Validaciones.ValidacionesLuis;
 
 namespace Proyect.Controllers
 {
@@ -21,7 +21,7 @@ namespace Proyect.Controllers
         public UsuariosController(ProyectContext context)
         {
             _context = context;
-             var apiKey = "Aqui va el appi"; // API Key de SendGrid
+            var apiKey = "Aqui va el appi"; // API Key de SendGrid
             _emailcreateService = new SendGridEmailService(apiKey);
         }
 
@@ -215,7 +215,7 @@ namespace Proyect.Controllers
 </body>
 </html>";
 
-                    
+
 
                     // Enviar el correo
                     await _emailcreateService.SendEmailAsync(usuario.CorreoElectronico, subject, plainTextContent, htmlContent);
@@ -376,18 +376,19 @@ namespace Proyect.Controllers
         }
 
         // GET: Usuarios/Delete/5
-        public async Task<IActionResult> Delete(int? id) 
-        { 
-            if (id == null) 
-            { 
-                return NotFound(); 
-            } var usuario = await _context.Usuarios 
-                .Include(u => u.IdRolNavigation) 
-                .FirstOrDefaultAsync(m => m.IdUsuario == id); 
-            if (usuario == null) 
-            { 
-                return NotFound(); 
-            } 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var usuario = await _context.Usuarios
+                .Include(u => u.IdRolNavigation)
+                .FirstOrDefaultAsync(m => m.IdUsuario == id);
+            if (usuario == null)
+            {
+                return NotFound();
+            }
 
             var superAdminRole = await _context.Roles
                 .FirstOrDefaultAsync(r => r.NombreRol == "SuperAdmin");
@@ -408,8 +409,8 @@ namespace Proyect.Controllers
                 .GroupBy(u => u.IdRolNavigation.NombreRol)
                 .Select(grupo => new
                 {
-                   Rol = grupo.Key,
-                   Cantidad = grupo.Count()
+                    Rol = grupo.Key,
+                    Cantidad = grupo.Count()
                 })
                 .ToList();
 
@@ -425,20 +426,20 @@ namespace Proyect.Controllers
             var usuario = await _context.Usuarios
                 .Include(u => u.IdRolNavigation)
                 .FirstOrDefaultAsync(u => u.IdUsuario == id);
-            if (usuario == null) 
-            { 
-                return NotFound(); 
+            if (usuario == null)
+            {
+                return NotFound();
             }
             var superAdminRole = await _context.Roles.
-                FirstOrDefaultAsync(r => r.NombreRol == "SuperAdmin"); 
+                FirstOrDefaultAsync(r => r.NombreRol == "SuperAdmin");
 
             if (superAdminRole != null && usuario.IdRol == superAdminRole.IdRol)
             {
                 TempData["ErrorMessage"] = "No se puede eliminar el usuario superadministrador.";
 
-                return View(usuario); 
-            } 
-            _context.Usuarios.Remove(usuario); 
+                return View(usuario);
+            }
+            _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "El usuario eliminado correctamente.";
@@ -448,6 +449,11 @@ namespace Proyect.Controllers
         private bool UsuarioExists(int id)
         {
             return _context.Usuarios.Any(e => e.IdUsuario == id);
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
         }
     }
 }

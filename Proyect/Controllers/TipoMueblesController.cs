@@ -165,5 +165,10 @@ namespace Proyect.Controllers
         {
             return _context.TipoMuebles.Any(e => e.IdTipoMueble == id);
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }

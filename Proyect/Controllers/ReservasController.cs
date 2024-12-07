@@ -768,5 +768,10 @@ namespace Proyect.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }

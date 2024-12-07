@@ -158,9 +158,9 @@ namespace Proyect.Controllers
             return RedirectToAction("Login");
         }
 
-        public IActionResult AccessDenied() 
-        { 
-            return View(); 
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
         }
     }
 }
