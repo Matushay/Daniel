@@ -46,3 +46,206 @@ input:checked + .slider {
 .Tituloscentro{
     text-align: center;
 }
+/*** ESTILOS BOTÓN SLIDE RIGHT ***/
+.ov-btn-slide-right {
+    background: #fff; /* color de fondo */
+    color: black; /* color de fuente */
+    border: 1px solid black; /* tamaño y color de borde */
+    padding: 4px 8px; /* reducir el padding para hacerlo más pequeño */
+    border-radius: 3px; /* redondear bordes */
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    font-size: 14px; /* reducir tamaño de la fuente */
+}
+
+    .ov-btn-slide-right:hover {
+        color: white; /* color de fuente hover */
+    }
+
+    .ov-btn-slide-right::after {
+        content: "";
+        background: red; /* color de fondo hover */
+        position: absolute;
+        z-index: -1;
+        padding: 6px 8px; /* ajustar padding */
+        display: block;
+        top: 0;
+        bottom: 0;
+        left: 100%;
+        right: -100%;
+        -webkit-transition: all 0.35s;
+        transition: all 0.35s;
+    }
+
+    .ov-btn-slide-right:hover::after {
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        -webkit-transition: all 0.35s;
+        transition: all 0.35s;
+    }
+
+.ov-btn-slide-blue {
+    background: #fff; /* color de fondo */
+    color: black; /* color de fuente */
+    border: 1px solid black; /* tamaño y color de borde */
+    padding: 4px 8px; /* reducir el padding para hacerlo más pequeño */
+    border-radius: 3px; /* redondear bordes */
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    font-size: 14px; /* reducir tamaño de la fuente */
+}
+
+    .ov-btn-slide-blue:hover {
+        color: #fff;
+        background-color: #3498db; /* Azul */
+    }
+
+    .ov-btn-slide-blue::after {
+        content: "";
+        background: #3498db; /* Azul */
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 100%;
+        right: -100%;
+        bottom: 0;
+        transition: left 0.35s, right 0.35s;
+    }
+
+    .ov-btn-slide-blue:hover::after {
+        left: 0;
+        right: 0;
+    }
+.ov-btn-slide-yellow {
+    background: #fff; /* color de fondo */
+    color: black; /* color de fuente */
+    border: 1px solid black; /* tamaño y color de borde */
+    padding: 4px 8px; /* reducir el padding para hacerlo más pequeño */
+    border-radius: 3px; /* redondear bordes */
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    font-size: 14px; /* reducir tamaño de la fuente */
+}
+
+.ov-btn-slide-yellow:hover {
+    color: #fff;
+    background-color: #f39c12; /* Amarillo */
+}
+
+.ov-btn-slide-yellow::after {
+    content: "";
+    background: #f39c12; /* Amarillo */
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 100%;
+    right: -100%;
+    bottom: 0;
+    transition: left 0.35s, right 0.35s;
+}
+
+.ov-btn-slide-yellow:hover::after {
+    left: 0;
+    right: 0;
+}
+/* Estilos para el interruptor (checkbox) */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+}
+
+    .switch input {
+        display: none;
+    }
+
+    .switch .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #e74c3c; /* Rojo cuando está desactivado */
+        transition: 0.4s;
+        border-radius: 50px;
+    }
+
+        /* El círculo dentro del interruptor */
+        .switch .slider:before {
+            content: "";
+            position: absolute;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background-color: white;
+            transition: 0.4s;
+            left: 4px;
+            bottom: 4px;
+        }
+
+    /* Cuando el checkbox está activado */
+    .switch input:checked + .slider {
+        background-color: #2ecc71; /* Verde claro cuando está activado */
+    }
+
+        .switch input:checked + .slider:before {
+            transform: translateX(14px); /* Mover el círculo cuando se activa */
+        }
+
+    /* Hover sobre el interruptor para mayor visibilidad */
+    .switch:hover .slider {
+        background-color: #f39c12; /* Color intermedio cuando el mouse está sobre el interruptor */
+    }
+/* Efecto 3D en los botones */
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+    /* Efecto cuando el mouse pasa sobre los botones */
+    .btn:hover {
+        transform: translateY(-4px) scale(1.1); /* Elevar el botón y agrandarlo ligeramente */
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2); /* Sombra para dar el efecto de profundidad */
+        z-index: 1; /* Asegura que el botón se superponga sobre otros elementos */
+    }
+
+    /* Efecto de sombra al pasar el mouse por encima */
+    .btn:active {
+        transform: translateY(2px) scale(1); /* Efecto de presionar el botón */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+/* Efecto en el botón Volver a la lista */
+.btn-secondary:hover {
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto en el botón Guardar Cambios */
+.btn-primary:hover {
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+}
+/* Estilo para la tabla con sombra más oscura */
+#UsuariosTable {
+    border-radius: 8px; /* Opcional: Redondea las esquinas de la tabla */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Sombra más oscura y pronunciada */
+    border: 1px solid #ddd; /* Borde suave alrededor de la tabla */
+    transition: box-shadow 0.3s ease; /* Suaviza el cambio de sombra */
+}
+
+    /* Efecto de sombra cuando se pasa el mouse por encima de la tabla */
+    #UsuariosTable:hover {
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4); /* Sombra más pronunciada al pasar el mouse */
+    }
