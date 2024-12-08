@@ -10,7 +10,7 @@
         <div class="row g-0">
             <!-- Sección izquierda con imagen -->
             <div class="col-md-6 d-none d-md-block bg-image">
-                <img src="/img/ffffff.jpeg" alt="Imagen de fondo" class="img-fluid"style="max-width: 480px; height: 563px;"  />
+                <img src="/img/ffffff.jpeg" alt="Imagen de fondo" class="img-fluid" style="max-width: 480px; height: 563px;" />
             </div>
 
             <!-- Sección derecha con formulario -->
@@ -18,12 +18,6 @@
                 <div class="text-center mb-4">
                     <img src="~/img/logo.png" alt="Logo" class="img-fluid rounded-circle mb-3" style="max-width: 80px; height: 80px;" />
                     <h2 class="text-primary fw-bold">@ViewData["Title"]</h2>
-                    @if (TempData["SuccessMessage"] != null)
-                    {
-                        <div class="alert alert-success">
-                            @TempData["SuccessMessage"]
-                        </div>
-                    }
                 </div>
                 <form asp-action="Login" method="post">
                     <!-- Errores globales -->
