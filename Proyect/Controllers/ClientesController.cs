@@ -202,5 +202,6 @@ namespace Proyect.Controllers
         {
             return _context.Clientes.Any(e => e.IdCliente == id);
         }
+
     }
 }

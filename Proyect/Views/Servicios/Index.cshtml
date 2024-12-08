@@ -1,25 +1,26 @@
 ﻿@model IEnumerable<Proyect.Models.Servicio>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Servicios";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1 class="Tituloscentro">Servicios</h1>
 
-<p class="text-end">
-    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear</a>
-</p>
-
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-success" role="alert">
         @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
-<table class="table" id="ServiciosTable">
+<p class="text-end">
+    <a asp-action="Create" class="btn btn-modern">
+        <i class="bi bi-plus-square"></i> Crear
+    </a>
+</p>
+
+<table class="table records_list table-striped table-bordered table-hover" id="ServiciosTable">
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(model => model.Nombre)</th>
@@ -43,13 +44,13 @@
                     </label>
                 </td>
                 <td class="action-icons">
-                    <a asp-action="Edit" asp-route-id="@item.IdServicio" class="btn btn-icon" data-toggle="tooltip" title="Editar">
+                    <a asp-action="Edit" asp-route-id="@item.IdServicio" class="btn btn-icon ov-btn-slide-yellow" data-toggle="tooltip" title="Editar">
                         <i class="bi bi-pencil-square"></i>
                     </a> |
-                    <a asp-action="Details" asp-route-id="@item.IdServicio" class="btn btn-icon" data-toggle="tooltip" title="Detalles">
+                    <a asp-action="Details" asp-route-id="@item.IdServicio" class="btn btn-icon ov-btn-slide-blue" data-toggle="tooltip" title="Detalles">
                         <i class="bi bi-info-lg"></i>
                     </a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdServicio" class="btn btn-icon" data-toggle="tooltip" title="Eliminar">
+                    <a asp-action="Delete" asp-route-id="@item.IdServicio" class="btn btn-icon ov-btn-slide-right" data-toggle="tooltip" title="Eliminar">
                         <i class="bi bi-trash"></i>
                     </a>
                 </td>
@@ -66,10 +67,10 @@
                     "sLengthMenu": "Mostrar _MENU_ entradas",
                     "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
                     "sSearch": "Buscar:",
-                    "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA"
+                    "emptyTable": "NO HAY NINGUN ELEMENTO EN LA TABLA"
                 }
             });
-        })
+        });
     </script>
 
     <script>
@@ -78,9 +79,9 @@
                 const estado = $(this).is(':checked') ? true : false;
                 const idServicio = $(this).data('id');
 
-                // Aquí puedes realizar una llamada AJAX para actualizar el estado en el servidor
+                // Llamada AJAX para actualizar el estado del servicio
                 $.ajax({
-                    url: '/Servicios/ActualizarEstado', // Cambia esto a la ruta de tu controlador
+                    url: '/Servicios/ActualizarEstado', // Ruta al controlador de Servicios
                     type: 'POST',
                     data: {
                         id: idServicio,

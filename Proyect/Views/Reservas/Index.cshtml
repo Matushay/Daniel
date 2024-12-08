@@ -8,10 +8,18 @@
 <h1 class="Tituloscentro">Reservas</h1>
 
 <p class="text-end">
-    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear</a>
+    <a asp-action="Create" class="btn btn-modern"><i class="bi bi-plus-square"></i> Crear</a>
 </p>
 
-<table class="table" id="ReservasTable">
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<table class="table table-striped table-bordered table-hover" id="ReservasTable">
     <thead>
         <tr>
             <th>Fecha de Reserva</th>
@@ -36,37 +44,38 @@
                 <td class="action-icons">
                     @if (item.IdEstadoReservaNavigation != null && item.IdEstadoReservaNavigation.Estados == "Anulado")
                     {
-                        <!-- Botón de Editar -->
+                        <!-- Botón de Editar deshabilitado -->
                         <button class="btn btn-icon" style="background-color: #ccc;" disabled>
                             <i class="bi bi-pencil-square"></i>
                         </button>
-                        <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon" data-toggle="tooltip" title="Detalles"><i class="bi bi-info-lg"></i> </a>
-                        <!-- Botón de Abonos -->
+                        <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon" data-toggle="tooltip" title="Detalles">
+                            <i class="bi bi-info-lg"></i>
+                        </a>
+                        <!-- Botón de Abonos deshabilitado -->
                         <button class="btn btn-icon" style="background-color: #ccc;" disabled>
                             <i class="bi bi-wallet2"></i>
                         </button>
-
-                        <!-- Botón de Anular -->
+                        <!-- Botón de Anular deshabilitado -->
                         <button class="btn btn-icon" style="background-color: #ccc;" disabled>
                             <i class="bi bi-x-circle"></i>
                         </button>
-
-
                     }
                     else
                     {
-                        <a asp-action="Edit" asp-route-id="@item.IdReserva" class="btn btn-icon" data-toggle="tooltip" title="Editar"><i class="bi bi-pencil-square"></i> </a>
-
-                        <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon" data-toggle="tooltip" title="Detalles"><i class="bi bi-info-lg"></i> </a>
+                        <a asp-action="Edit" asp-route-id="@item.IdReserva" class="btn btn-icon ov-btn-slide-yellow" data-toggle="tooltip" title="Editar">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.IdReserva" class="btn btn-icon ov-btn-slide-blue" data-toggle="tooltip" title="Detalles">
+                            <i class="bi bi-info-lg"></i>
+                        </a>
                         <!-- Botón para abono -->
-                        <a asp-controller="Abonos" asp-action="Index" asp-route-idReserva="@item.IdReserva" class="btn btn-icon" data-toggle="tooltip" title="Abono">
+                        <a asp-controller="Abonos" asp-action="Index" asp-route-idReserva="@item.IdReserva" class="btn btn-icon ov-btn-slide-green" data-toggle="tooltip" title="Abono">
                             <i class="bi bi-wallet2"></i>
                         </a>
-
                         <!-- Botón para anular la reserva -->
                         <form asp-action="Anular" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="@item.IdReserva" />
-                            <button type="submit" class="btn btn-icon" data-toggle="tooltip" title="Anular">
+                            <button type="submit" class="btn btn-icon ov-btn-slide-red" data-toggle="tooltip" title="Anular">
                                 <i class="bi bi-x-circle"></i>
                             </button>
                         </form>
@@ -86,8 +95,8 @@
                     "sLengthMenu": "Mostrar _MENU_ entradas",
                     "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
                     "sSearch": "Buscar:",
-                    "emptyTable":"NO HAY NINGUN ELEMENTO EN LA TABLA",
-                    "sInfo":"Mostrando START a END de TOTAL entradas"
+                    "emptyTable": "NO HAY NINGUN ELEMENTO EN LA TABLA",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas"
                 }
             });
         })
