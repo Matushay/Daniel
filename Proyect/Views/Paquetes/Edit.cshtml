@@ -87,7 +87,7 @@
         $(document).ready(function () {
             // Función para formatear el precio con puntos cada 3 dígitos y 2 decimales
             function formatPrice(value) {
-                return value.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                return value.toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
             }
 
             function calcularTotal() {

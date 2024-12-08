@@ -21,7 +21,7 @@ namespace Proyect.Controllers
         public UsuariosController(ProyectContext context)
         {
             _context = context;
-            var apiKey = "Aqui va el appi"; // API Key de SendGrid
+            var apiKey = "Aqui va el api"; // API Key de SendGrid
             _emailcreateService = new SendGridEmailService(apiKey);
         }
 
