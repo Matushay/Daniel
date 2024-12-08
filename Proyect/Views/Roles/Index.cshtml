@@ -8,13 +8,13 @@
 <h1 class="Tituloscentro">Roles</h1>
 
 <p class="text-end">
-    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear</a>
+    <a asp-action="Create" class="btn btn-modern"><i class="bi bi-plus-square"></i> Crear</a>
 </p>
 
 <!-- Mostrar mensajes de error o éxito -->
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger">
+    <div class="alert alert-danger" role="alert">
         @TempData["Error"]
     </div>
 }
@@ -26,12 +26,12 @@
     </div>
 }
 
-<table class="table" id="RolesTable">
+<table class="table records_list table table-striped table-bordered table-hover" id="RolesTable">
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(model => model.NombreRol)</th>
             <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
-            <th>@Html.DisplayNameFor(model => model.Estado)</th> <!-- Nueva columna para el estado -->
+            <th>@Html.DisplayNameFor(model => model.Estado)</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -49,14 +49,14 @@
                     </label>
                 </td>
                 <td class="action-icons">
-                    <!-- Reemplazo de botones con las nuevas acciones -->
-                    <a asp-action="Edit" asp-route-id="@item.IdRol" class="btn btn-icon" data-toggle="tooltip" title="Editar">
+                    <!-- Acciones: Editar, Detalles, Eliminar -->
+                    <a asp-action="Edit" asp-route-id="@item.IdRol" class="btn btn-icon ov-btn-slide-yellow" data-toggle="tooltip" title="Editar">
                         <i class="bi bi-pencil-square"></i>
-                    </a> 
-                    <a asp-action="Details" asp-route-id="@item.IdRol" class="btn btn-icon" data-toggle="tooltip" title="Detalles">
+                    </a> |
+                    <a asp-action="Details" asp-route-id="@item.IdRol" class="btn btn-icon ov-btn-slide-blue" data-toggle="tooltip" title="Detalles">
                         <i class="bi bi-info-lg"></i>
-                    </a> 
-                    <a asp-action="Delete" asp-route-id="@item.IdRol" class="btn btn-icon" data-toggle="tooltip" title="Eliminar">
+                    </a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdRol" class="btn btn-icon ov-btn-slide-right" data-bs-toggle="tooltip" data-bs-target="#deleteModal" data-id="@item.IdRol" data-name="@item.NombreRol" data-toggle="tooltip" title="Eliminar">
                         <i class="bi bi-trash"></i>
                     </a>
                 </td>
@@ -65,27 +65,6 @@
     </tbody>
 </table>
 
-<!-- Modal de eliminación -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirmar eliminación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>¿Está seguro de que desea eliminar el rol <strong id="roleName"></strong>?</p>
-                <p class="text-danger">Esta acción no se puede deshacer.</p>
-            </div>
-            <div class="modal-footer">
-                <form id="deleteForm" method="post">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 @section Scripts {
     <script>
@@ -97,7 +76,7 @@
                     "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
                     "sSearch": "Buscar:",
                     "emptyTable": "NO HAY NINGUN ELEMENTO EN LA TABLA",
-                    "sInfo": "Mostrando START a END de TOTAL entradas"
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas"
                 }
             });
         })
@@ -127,4 +106,4 @@
             });
         });
     </script>
-}
+    }
