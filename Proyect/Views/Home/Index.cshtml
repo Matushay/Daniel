@@ -1,0 +1,340 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="Tituloscentro">Dashboard</h1>
+        <br />
+        <div class="row">
+            <!-- Primer gráfico -->
+            <div class="col-lg-6 col-md-6 mb-4">
+                <div class="card" style="padding: 10px;">
+                @*     <div class="card-header text-center p-2">
+                        <i class="fas fa-chart-bar me-1"></i>
+                        <h4>Usuarios por Rol</h4>
+                    </div>
+                    <div class="card-body" style="padding: 10px;">
+                        <canvas id="usuariosPorRolChart" style="max-width: 100%; height: 200px;"></canvas>
+                    </div> *@
+                    <div class="card-header text-center p-2">
+                        <i class="fas fa-chart-line me-1"></i>
+                        <h4>Cantidad de Reservas por Día</h4>
+                    </div>
+                    <div class="card-body" style="padding: 10px;">
+                        <canvas id="reservasPorDiaChart" style="max-width: 100%; height: 200px;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Segundo gráfico -->
+            <div class="col-lg-6 col-md-6 mb-4">
+                <div class="card" style="padding: 10px;">
+                    <div class="card-header text-center p-2">
+                        <i class="fas fa-chart-pie me-1"></i>
+                        <h4>Paquetes Más Reservados</h4>
+                    </div>
+                    <div class="card-body" style="padding: 10px;">
+                        <canvas id="PaquetesMasReservadosChart" style="max-width: 100%; height: 200px;"></canvas>
+                    </div>
+@*                     <div class="card-header text-center p-2">
+                        <i class="fas fa-chart-bar me-1"></i>
+                        <h4>Reservas Más Vendidas</h4>
+                    </div>
+                    <div class="card-body" style="padding: 10px;">
+                        <canvas id="reservasMasVendidasChart" style="max-width: 100%; height: 200px;"></canvas>
+                    </div> *@
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Gráfico más grande -->
+            <div class="col-lg-12 mb-4">
+                <div class="card" style="padding: 10px;">
+                    <div class="card-header text-center p-2">
+                        <i class="fas fa-chart-area me-1"></i>
+                        <h4>Servicios Más Solicitados</h4>
+                    </div>
+                    <div class="card-body" style="padding: 10px;">
+                        <canvas id="serviciosMasSolicitadosChart" style="max-width: 100%; height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts 
+{
+@*     <script>
+                document.addEventListener("DOMContentLoaded", function () {
+            fetch('/api/dashboard/usuariosPorRol') // Cambia la URL si es necesario
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al cargar los datos: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Procesa los datos
+                    const roles = data.map(item => item.rol); // Extrae los nombres de los roles
+                    const cantidades = data.map(item => item.cantidad); // Extrae las cantidades
+
+                    // Renderiza el gráfico
+                    renderChart(roles, cantidades);
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        function renderChart(labels, data) {
+            const ctx = document.getElementById('usuariosPorRolChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar', // Puedes usar 'bar', 'pie', 'line', etc.
+                data: {
+                    labels: labels, // Etiquetas (nombres de los roles)
+                    datasets: [{
+                        label: 'Usuarios por Rol',
+                        data: data, // Cantidades de usuarios
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.2)', // Cambia los colores según tu diseño
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(255, 99, 132, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true // Asegura que el eje Y comience en 0
+                        }
+                    }
+                }
+            });
+        }
+    </script> *@
+    <script>
+                document.addEventListener("DOMContentLoaded", function () {
+            fetch('/api/dashboard/PaquetesMasReservados')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al cargar los datos: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data || data.length === 0) {
+                        console.error('No se encontraron datos en la respuesta.');
+                        return;
+                    }
+                    console.log(data); // Imprime los datos para depuración
+                    const Paquetes = data.map(item => item.paquete || 'Sin Nombre'); // Asigna "Sin Nombre" si el campo no existe
+                    const cantidades = data.map(item => item.cantidadReservas || 0); // Asigna 0 si el campo no existe
+
+                    const ctx = document.getElementById('PaquetesMasReservadosChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: Paquetes,
+                            datasets: [{
+                                data: cantidades,
+                                backgroundColor: [
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(153, 102, 255, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+    <script>
+        // Cargar datos para Servicios Más Solicitados
+        fetch('/api/dashboard/serviciosMasSolicitados')
+            .then(response => response.json())
+            .then(data => {
+                const labels = data.map(item => item.servicio); // Nombres de los servicios
+                const valores = data.map(item => item.cantidad); // Cantidades de los servicios
+
+                // Crear el gráfico
+                const ctx = document.getElementById('serviciosMasSolicitadosChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar', // Cambiado a gráfico de barras
+                    data: {
+                        labels: labels, // Etiquetas del gráfico
+                        datasets: [{
+                            label: 'Servicios Más Solicitados', // Etiqueta de la serie de datos
+                            data: valores, // Datos de las cantidades
+                            backgroundColor: 'rgba(0, 123, 255, 0.6)', // Color de fondo de las barras
+                            borderColor: '#007bff', // Color del borde de las barras
+                            borderWidth: 1, // Grosor del borde
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top', // Posición de la leyenda
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        return tooltipItem.label + ': ' + tooltipItem.raw; // Mostrar datos en el tooltip
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true, // Asegura que el gráfico comience desde cero en el eje Y
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error al cargar los datos:', error));
+    </script>
+ @*    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Llama al endpoint para obtener datos
+            fetch('/api/dashboard/ReservasMasVendidas')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al cargar los datos: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Procesa los datos del API
+                    const paquetes = data.map(item => item.paquete); // Nombres de los paquetes
+                    const cantidades = data.map(item => item.cantidad); // Cantidades de reservas
+
+                    // Renderiza el gráfico de tipo Pie
+                    const ctx = document.getElementById('reservasMasVendidasChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: paquetes, // Etiquetas: nombres de los paquetes
+                            datasets: [{
+                                data: cantidades, // Datos: cantidad de reservas
+                                backgroundColor: [
+                                    'rgba(75, 192, 192, 0.6)',
+                                    'rgba(54, 162, 235, 0.6)',
+                                    'rgba(255, 206, 86, 0.6)',
+                                    'rgba(255, 99, 132, 0.6)',
+                                    'rgba(153, 102, 255, 0.6)'
+                                ],
+                                borderColor: [
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(153, 102, 255, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top', // Posición de la leyenda
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Reservas Más Vendidas' // Título del gráfico
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script> *@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Llama al endpoint para obtener datos
+            fetch('/api/dashboard/ReservasPorDia')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al cargar los datos: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Procesa los datos del API
+                    const fechas = data.map(item => item.fecha); // Fechas
+                    const cantidades = data.map(item => item.cantidad); // Cantidades de reservas
+
+                    // Renderiza el gráfico de tipo Line
+                    const ctx = document.getElementById('reservasPorDiaChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: fechas, // Etiquetas: fechas
+                            datasets: [{
+                                label: 'Cantidad de Reservas',
+                                data: cantidades, // Datos: cantidad de reservas
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderWidth: 2,
+                                tension: 0.3, // Suavizar la línea
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Cantidad de Reservas por Día'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true // Inicia el eje Y desde cero
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+
+}

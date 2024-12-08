@@ -1,0 +1,68 @@
+@model Proyect.Models.Habitacione
+
+@{
+    ViewData["Title"] = "Detalles de la Habitación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Detalles de la Habitación</h1>
+
+    <!-- Información de la Habitación -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Información de la Habitación</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 font-weight-bold">Nombre de la Habitación</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Nombre)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Descripción</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Descripcion)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Precio</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Precio)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Tipo de Habitación</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.IdTipoHabitacionNavigation.Nombre)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Muebles en esta Habitación -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Muebles en esta Habitación</h6>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre del Mueble</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var mueble in Model.HabitacionMuebles)
+                    {
+                        <tr>
+                            <td>@mueble.IdMuebleNavigation.Nombre</td>
+                            <td>@mueble.Cantidad</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- Botones de acción -->
+        <div class="card-footer text-center">
+            <a asp-action="Edit" asp-route-id="@Model.IdHabitacion" class="btn ov-btn-slide-left btn-sm">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver a la lista
+            </a>
+        </div>
+    </div>
+
+</div>

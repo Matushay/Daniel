@@ -1,0 +1,343 @@
+@model Proyect.Models.Reserva
+
+@{
+    ViewData["Title"] = "Crear Reserva";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Crear Nueva Reserva</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Formulario de Reserva</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" id="createReservaForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (TempData["SuccessMessage"] != null)
+
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+
+                <!-- Documento del Cliente -->
+                <div class="form-group">
+                    <label for="DocumentoCliente" class="control-label">Documento del Cliente</label>
+                    <input type="text" id="DocumentoCliente" class="form-control" placeholder="Ingrese el documento del cliente" />
+
+                    <!-- Botones buscar y crear -->
+                    <div class="d-flex gap-3 mt-2">
+                        <button type="button" class="btn btn-secondary btn-sm ml-3" id="buscarCliente">Buscar Cliente</button>
+                        <button type="button" class="btn btn-primary btn-sm ml-3" data-toggle="modal" data-target="#createClienteModal">
+                            Crear Cliente
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Información del Cliente -->
+                <div id="clienteInfo" style="display:none;">
+                    <h5>Datos del Cliente:</h5>
+                    <p><strong>Nombre:</strong> <span id="clienteNombre"></span></p>
+                    <p><strong>Apellido:</strong> <span id="clienteApellido"></span></p>
+                    <p><strong>Celular:</strong> <span id="clienteCelular"></span></p>
+                    <p><strong>Correo:</strong> <span id="clienteCorreo"></span></p>
+                    <!-- Asignar el cliente encontrado a la reserva -->
+                    <input type="hidden" id="IdCliente" name="IdCliente" />
+                </div>
+
+              
+                <!-- Fecha de Inicio y Fin -->
+                <div class="form-group">
+                    <label asp-for="FechaInicio" class="control-label">Fecha de Inicio</label>
+                    <input asp-for="FechaInicio" class="form-control" type="date" id="fechaInicio" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FechaFin" class="control-label">Fecha de Fin</label>
+                    <input asp-for="FechaFin" class="form-control" type="date" id="fechaFin" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="FechaFin" class="text-danger"></span>
+                </div>
+                <!-- Dropdown de Paquete -->
+                <div class="form-group">
+                    <label asp-for="IdPaquete" class="control-label">Paquete</label>
+                    <select asp-for="IdPaquete" class="form-control" id="IdPaquete">
+                        <option value="">-- Seleccionar Paquete --</option>
+                        @foreach (var paquete in ViewBag.Paquetes)
+                        {
+                            <option value="@paquete.IdPaquete">
+                                @paquete.Nombre
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="IdPaquete" class="text-danger"></span>
+                </div>
+
+                <!-- Precio del Paquete -->
+                <div class="form-group">
+                    <label for="PrecioPaquete">Precio del Paquete</label>
+                    <input type="text" id="PrecioPaquete" class="form-control" readonly />
+                </div>
+
+                <!-- Servicios disponibles -->
+                <div class="form-group">
+                    <label>Servicios Adicionales</label>
+                    <div id="servicios">
+                        @if (ViewBag.Servicios != null && ViewBag.Servicios.Count > 0)
+                        {
+                            @foreach (var servicio in ViewBag.Servicios)
+                            {
+                                <div>
+                                    <input type="checkbox" name="ServiciosSeleccionados"
+                                           value="@servicio.IdServicio"
+                                           data-precio="@servicio.Precio" />
+                                    <label>@servicio.Nombre - $@servicio.Precio</label>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>No hay servicios disponibles.</p>
+                        }
+                    </div>
+                </div>
+                
+                <!-- Métodos de Pago y Estado de Reserva -->
+                <div class="form-group">
+                    <label asp-for="IdMetodoPago" class="control-label">Método de Pago</label>
+                    <select asp-for="IdMetodoPago" class="form-control" asp-items="ViewBag.IdMetodoPago"></select>
+                    <span asp-validation-for="IdMetodoPago" class="text-danger"></span>
+                </div>
+
+                <!-- Descuento -->
+                <div class="form-group">
+                    <label asp-for="Descuento" class="control-label">Descuento (%)</label>
+                    <input asp-for="Descuento" class="form-control" />
+                    <span asp-validation-for="Descuento" class="text-danger"></span>
+                </div>
+
+                <!-- Subtotal, IVA y Total -->
+                <div class="form-group">
+                    <label>Subtotal</label>
+                    <input type="text" id="subtotal" class="form-control" readonly />
+                    <input type="hidden" name="Subtotal" id="hiddenSubtotal" />
+                </div>
+
+                <!-- IVA (19%) -->
+                <div class="form-group">
+                    <label>IVA (19%)</label>
+                    <input type="text" id="iva" class="form-control" readonly />
+                    <input type="hidden" name="Iva" id="hiddenIva" />
+                </div>
+
+                <!-- Total -->
+                <div class="form-group">
+                    <label>Total</label>
+                    <input asp-for="Total" class="form-control" id="total" readonly />
+                    <input type="hidden" name="Total" id="hiddenTotal" />
+                    <span asp-validation-for="Total" class="text-danger"></span>
+                </div>
+
+                <!-- Botón de Crear -->
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn ov-btn-slide-left btn-sm">
+                        <i class="fas fa-save"></i> Crear Reserva
+                    </button>
+                    <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm ml-3">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal para Crear Cliente -->
+<div class="modal fade" id="createClienteModal" tabindex="-1" role="dialog" aria-labelledby="createClienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createClienteModalLabel">Crear Cliente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("~/Views/Clientes/_CreateClienteForm.cshtml", new Proyect.Models.Cliente())
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial");
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Configuración de restricciones de fecha
+        function setupDateConstraints() {
+            var today = new Date().toISOString().split("T")[0];
+            document.getElementById("fechaInicio").setAttribute("min", today);
+            document.getElementById("fechaFin").setAttribute("min", today);
+        }
+
+        document.getElementById("fechaInicio").addEventListener("change", function () {
+            document.getElementById("fechaFin").setAttribute("min", this.value);
+        });
+
+        setupDateConstraints();
+
+        // Convertir ViewBag.Paquetes y ViewBag.Servicios a JSON
+        var paquetes = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Paquetes));
+        var servicios = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Servicios));
+
+        // Actualizar precio del paquete y subtotal
+        document.getElementById("IdPaquete").addEventListener("change", function () {
+            var paqueteId = parseInt(this.value);
+            var precioPaqueteField = document.getElementById("PrecioPaquete");
+            var subtotalField = document.getElementById("subtotal");
+
+            var selectedPaquete = paquetes.find(p => p.IdPaquete === paqueteId);
+
+            if (selectedPaquete) {
+                precioPaqueteField.value = selectedPaquete.Precio.toFixed(2);
+                subtotalField.value = selectedPaquete.Precio.toFixed(2);
+            } else {
+                precioPaqueteField.value = "";
+                subtotalField.value = "";
+            }
+
+            updateTotals();
+        });
+
+        // Actualizar el subtotal, IVA y total al aplicar un descuento
+        document.getElementById("Descuento").addEventListener("input", updateTotals);
+
+        // Agregar lógica para los servicios seleccionados
+        var servicioPrecios = {};
+        servicios.forEach(function (servicio) {
+            servicioPrecios[servicio.IdServicio] = servicio.Precio;
+        });
+
+        function updateTotals() {
+            var precioPaquete = parseFloat(document.getElementById("PrecioPaquete").value) || 0;
+            var descuento = parseFloat(document.getElementById("Descuento").value) || 0;
+            var totalServicios = 0;
+
+            var serviciosSeleccionados = document.querySelectorAll('input[name="ServiciosSeleccionados"]:checked');
+            serviciosSeleccionados.forEach(function (checkbox) {
+                var idServicio = parseInt(checkbox.value);
+                if (servicioPrecios[idServicio]) {
+                    totalServicios += servicioPrecios[idServicio];
+                }
+            });
+
+            var subtotalConDescuento = (precioPaquete + totalServicios) * (1 - descuento / 100);
+            var iva = subtotalConDescuento * 0.19;
+            var total = subtotalConDescuento + iva;
+
+            document.getElementById("subtotal").value = subtotalConDescuento.toFixed(2);
+            document.getElementById("iva").value = iva.toFixed(2);
+            document.getElementById("total").value = total.toFixed(2);
+
+            document.getElementById("hiddenSubtotal").value = subtotalConDescuento.toFixed(2);
+            document.getElementById("hiddenIva").value = iva.toFixed(2);
+            document.getElementById("hiddenTotal").value = total.toFixed(2);
+        }
+
+        document.querySelectorAll('input[name="ServiciosSeleccionados"]').forEach(function (checkbox) {
+            checkbox.addEventListener('change', updateTotals);
+        });
+
+        // Buscar cliente por documento
+        document.getElementById('buscarCliente').addEventListener('click', function () {
+            var documento = document.getElementById('DocumentoCliente').value;
+
+            if (!documento) {
+                alert("Por favor ingrese un número de documento.");
+                return;
+            }
+
+            // Limpiar cualquier mensaje de error anterior
+            $('#DocumentoClienteError').remove();
+
+            fetch('/Reservas/BuscarClientePorDocumento?documento=' + documento)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        document.getElementById('clienteNombre').textContent = data.nombre;
+                        document.getElementById('clienteApellido').textContent = data.apellido;
+                        document.getElementById('clienteCelular').textContent = data.celular;
+                        document.getElementById('clienteCorreo').textContent = data.correoElectronico;
+                        document.getElementById('IdCliente').value = data.idCliente;
+                        document.getElementById('clienteInfo').style.display = 'block';
+                    } else {
+                        // Si el cliente no se encuentra, mostrar mensaje de error debajo del campo documento
+                        $('<span id="DocumentoClienteError" class="text-danger">No se encontró un cliente con este documento.</span>')
+                            .insertAfter('#DocumentoCliente');
+                        $('#createClienteModal').modal('hide'); // Cerrar el modal
+                    }
+                })
+                .catch(error => {
+                    alert("Error al buscar el cliente: " + error);
+                });
+        });
+
+        $(document).ready(function () {
+            // Mostrar el mensaje de éxito si existe TempData["SuccessMessage"]
+            var successMessage = '@TempData["SuccessMessage"]';
+            if (successMessage) {
+                // Mostrar el mensaje de éxito solo después de recargar
+                alert(successMessage);
+                $('#createClienteModal').modal('hide');
+            }
+
+            $('#createClienteForm').submit(function (event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+
+                // Limpiar cualquier mensaje de error anterior
+                $('#CorreoElectronicoError').remove();
+                $('#DocumentoError').remove(); // Limpiar cualquier mensaje de error del documento
+
+                $.ajax({
+                    url: '@Url.Action("CreateFromModal", "Clientes")',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            // Si la creación es exitosa, cerramos el modal y recargamos la página
+                            $('#createClienteModal').modal('hide');
+                            window.location.reload(); // Recargar la página para mostrar el mensaje con TempData
+                        } else {
+                            // Si el error es por el correo electrónico duplicado, mostramos el mensaje de error debajo del campo
+                            if (response.field === "CorreoElectronico") {
+                                // Agregar un mensaje de error debajo del campo de correo
+                                $('<span id="CorreoElectronicoError" class="text-danger">' + response.message + '</span>')
+                                    .insertAfter('#CorreoElectronico');
+                            }
+                            // Si el error es por el documento duplicado, mostramos el mensaje de error debajo del campo
+                            else if (response.field === "Documento") {
+                                $('<span id="DocumentoError" class="text-danger">' + response.message + '</span>')
+                                    .insertAfter('#Documento');
+                            } else {
+                                alert(response.message);
+                            }
+                        }
+                    },
+                    error: function () {
+                        alert('Ocurrió un error al crear el cliente.');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+}

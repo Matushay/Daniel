@@ -1,0 +1,103 @@
+@model Proyect.Models.Cliente
+
+@{
+    ViewData["Title"] = "Crear Cliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Crear Nuevo Cliente</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Formulario de Registro</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="TipoDocumento" class="control-label">Tipo de Documento</label>
+                    <select asp-for="TipoDocumento" class="form-control" id="tipoDocumentoSelect">
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="Pasaporte">Pasaporte</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <span asp-validation-for="TipoDocumento" class="text-danger"></span>
+                </div>
+
+                <!-- Campo adicional para "Otro" -->
+                <div class="form-group" id="otroTipoDocumentoDiv" style="display: none;">
+                    <label for="otroTipoDocumento" class="control-label">Especifique el Tipo de Documento</label>
+                    <input type="text" id="otroTipoDocumento" name="OtroTipoDocumento" class="form-control" placeholder="Especificar otro tipo de documento" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Documento" class="control-label">Documento</label>
+                    <input asp-for="Documento" class="form-control" placeholder="Ingrese el número de documento" />
+                    <span asp-validation-for="Documento" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Nombre" class="control-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre del cliente" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Apellido" class="control-label">Apellido</label>
+                    <input asp-for="Apellido" class="form-control" placeholder="Ingrese el apellido del cliente" />
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Direccion" class="control-label">Dirección</label>
+                    <input asp-for="Direccion" class="form-control" placeholder="Ingrese la dirección del cliente" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Celular" class="control-label">Celular</label>
+                    <input asp-for="Celular" class="form-control" placeholder="Ingrese el número de celular" />
+                    <span asp-validation-for="Celular" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CorreoElectronico" class="control-label">Correo Electrónico</label>
+                    <input asp-for="CorreoElectronico" class="form-control" placeholder="Ingrese el correo electrónico" />
+                    <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+                </div>
+
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn ov-btn-slide-left btn-sm">
+                        <i class="fas fa-save"></i> Crear Cliente
+                    </button>
+                    <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm ml-3">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Detectar cambios en el select
+        document.getElementById("tipoDocumentoSelect").addEventListener("change", function () {
+            var selectedValue = this.value; // Valor seleccionado
+            var otroTipoDocumentoDiv = document.getElementById("otroTipoDocumentoDiv");
+
+            if (selectedValue === "Otro") {
+                // Mostrar el campo si selecciona "Otro"
+                otroTipoDocumentoDiv.style.display = "block";
+            } else {
+                // Ocultar el campo si selecciona cualquier otra opción
+                otroTipoDocumentoDiv.style.display = "none";
+            }
+        });
+    </script>
+}

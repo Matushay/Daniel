@@ -1,0 +1,69 @@
+@model IEnumerable<Proyect.Models.TipoHabitacione>
+
+@{
+    ViewData["Title"] = "Tipo de Habitaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="Tituloscentro">Tipo de Habitaciones</h1>
+
+<p class="text-end">
+    <a asp-action="Create" class="btn btn-modern">
+        <i class="bi bi-plus-square"></i> Crear
+    </a>
+</p>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<table class="table records_list table table-striped table-bordered table-hover" id="TipoHabitacionesTable">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
+            <th>@Html.DisplayNameFor(model => model.Capacidad)</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                <td>@Html.DisplayFor(modelItem => item.Capacidad)</td>
+                <td class="action-icons">
+                    <a asp-action="Edit" asp-route-id="@item.IdTipoHabitacion" class="btn btn-icon ov-btn-slide-yellow" data-toggle="tooltip" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a> |
+                    <a asp-action="Details" asp-route-id="@item.IdTipoHabitacion" class="btn btn-icon ov-btn-slide-blue" data-toggle="tooltip" title="Detalles">
+                        <i class="bi bi-info-lg"></i>
+                    </a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdTipoHabitacion" class="btn btn-icon ov-btn-slide-right" data-toggle="tooltip" title="Eliminar">
+                        <i class="bi bi-trash3"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#TipoHabitacionesTable').DataTable({
+                language: {
+                    "sLengthMenu": "Mostrar _MENU_ entradas",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "sSearch": "Buscar:",
+                    "emptyTable": "NO HAY NINGUN ELEMENTO EN LA TABLA"
+                }
+            });
+        });
+    </script>
+}

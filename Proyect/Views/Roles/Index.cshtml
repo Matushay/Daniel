@@ -1,0 +1,109 @@
+@model IEnumerable<Proyect.Models.Role>
+
+@{
+    ViewData["Title"] = "Roles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="Tituloscentro">Roles</h1>
+
+<p class="text-end">
+    <a asp-action="Create" class="btn btn-modern"><i class="bi bi-plus-square"></i> Crear</a>
+</p>
+
+<!-- Mostrar mensajes de error o éxito -->
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["Error"]
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<table class="table records_list table table-striped table-bordered table-hover" id="RolesTable">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.NombreRol)</th>
+            <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
+            <th>@Html.DisplayNameFor(model => model.Estado)</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.NombreRol)</td>
+                <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                <td>
+                    <!-- Aquí usamos un botón que cambia el estado -->
+                    <label class="switch">
+                        <input type="checkbox" class="status-toggle" data-id="@item.IdRol" @(item.Estado ? "checked" : "")>
+                        <span class="slider"></span>
+                    </label>
+                </td>
+                <td class="action-icons">
+                    <!-- Acciones: Editar, Detalles, Eliminar -->
+                    <a asp-action="Edit" asp-route-id="@item.IdRol" class="btn btn-icon ov-btn-slide-yellow" data-toggle="tooltip" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a> |
+                    <a asp-action="Details" asp-route-id="@item.IdRol" class="btn btn-icon ov-btn-slide-blue" data-toggle="tooltip" title="Detalles">
+                        <i class="bi bi-info-lg"></i>
+                    </a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdRol" class="btn btn-icon ov-btn-slide-right" data-bs-toggle="tooltip" data-bs-target="#deleteModal" data-id="@item.IdRol" data-name="@item.NombreRol" data-toggle="tooltip" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#RolesTable').DataTable({
+                scrollX: true,
+                language: {
+                    "sLengthMenu": "Mostrar _MENU_ entradas",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "sSearch": "Buscar:",
+                    "emptyTable": "NO HAY NINGUN ELEMENTO EN LA TABLA",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas"
+                }
+            });
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(".status-toggle").change(function() {
+                var idRol = $(this).data("id");
+                var estado = $(this).prop("checked"); // true si está marcado, false si está desmarcado
+
+                // Aquí puedes realizar la lógica para cambiar el estado en el servidor
+                // Por ejemplo, enviando una solicitud AJAX para actualizar el estado del Rol
+                $.ajax({
+                    url: '/Roles/ActualizarEstado', // La URL de la acción que cambia el estado
+                    method: 'POST',
+                    data: {
+                        idRol: idRol,
+                        estado: estado
+                    },
+                    success: function(response) {
+                        // Aquí puedes hacer algo cuando la actualización haya sido exitosa
+                    },
+                    error: function(error) {
+                        // Manejo de errores en caso de que la actualización falle
+                    }
+                });
+            });
+        });
+    </script>
+    }

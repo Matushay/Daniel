@@ -1,0 +1,126 @@
+@model Proyect.Models.Paquete
+
+@{
+    ViewData["Title"] = "Editar Paquete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Editar Paquete</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Formulario para Editar Paquete</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="IdPaquete" />
+
+                <!-- Nombre del Paquete -->
+                <div class="form-group">
+                    <label asp-for="Nombre" class="control-label">Nombre del Paquete</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre del paquete" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <!-- Descripción del Paquete -->
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="control-label">Descripción del Paquete</label>
+                    <input asp-for="Descripcion" class="form-control" placeholder="Descripción del paquete" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+
+                <!-- Selección de Servicios -->
+                <div class="form-group">
+                    <label class="control-label">Seleccione los Servicios</label>
+                    @foreach (var servicio in ViewData["Servicios"] as dynamic)
+                    {
+                        <div>
+                            <input type="checkbox" name="ServiciosIds" value="@servicio.IdServicio" class="servicioCheckbox"
+                                   data-precio="@servicio.Precio" id="servicio_@servicio.IdServicio"
+                            @(servicio.Seleccionado ? "checked" : "") />
+                            <label for="servicio_@servicio.IdServicio">@servicio.Nombre - $@(servicio.Precio != null ? ((decimal)servicio.Precio).ToString("N2") : "0")</label>
+                        </div>
+                    }
+                </div>
+
+                <!-- Selección de Habitaciones -->
+                <div class="form-group">
+                    <label class="control-label">Seleccione las Habitaciones</label>
+                    @foreach (var habitacion in ViewData["Habitaciones"] as dynamic)
+                    {
+                        <div>
+                            <input type="checkbox" name="HabitacionesIds" value="@habitacion.IdHabitacion" class="habitacionCheckbox"
+                                   data-precio="@habitacion.Precio" id="habitacion_@habitacion.IdHabitacion"
+                            @(habitacion.Seleccionado ? "checked" : "") />
+                            <label for="habitacion_@habitacion.IdHabitacion">@habitacion.Nombre - $@(habitacion.Precio != null ? ((decimal)habitacion.Precio).ToString("N2") : "0")</label>
+                        </div>
+                    }
+                </div>
+
+                <!-- Precio Total -->
+                <div class="form-group">
+                    <label asp-for="Precio" class="control-label">Precio Total</label>
+                    <input asp-for="Precio" class="form-control" id="total" readonly placeholder="Precio total del paquete" />
+                    <span asp-validation-for="Precio" class="text-danger"></span>
+                </div>
+
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn ov-btn-slide-left btn-sm">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                    <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm ml-3">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            // Función para formatear el precio con puntos cada 3 dígitos y 2 decimales
+            function formatPrice(value) {
+                return value.toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            }
+
+            function calcularTotal() {
+                let subtotal = 0;
+
+                // Sumar precios de servicios seleccionados
+                $('.servicioCheckbox:checked').each(function () {
+                    subtotal += parseFloat($(this).data('precio')) || 0;
+                });
+
+                // Sumar precios de habitaciones seleccionadas
+                $('.habitacionCheckbox:checked').each(function () {
+                    subtotal += parseFloat($(this).data('precio')) || 0;
+                });
+
+                // Formatear el total
+                var formattedTotal = formatPrice(subtotal);
+
+                // Actualizar el campo total con el valor formateado
+                $('#total').val(formattedTotal);
+
+                // Mensaje si el total es cero
+                if (subtotal === 0) {
+                    $('#total').val('0,00');
+                }
+            }
+
+            // Eventos para checkboxes
+            $('.servicioCheckbox, .habitacionCheckbox').change(calcularTotal);
+
+            // Calcular al cargar la página
+            calcularTotal();
+        });
+    </script>
+
+}

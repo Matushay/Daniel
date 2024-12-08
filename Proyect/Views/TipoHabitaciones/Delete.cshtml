@@ -1,0 +1,54 @@
+@model Proyect.Models.TipoHabitacione
+
+@{
+    ViewData["Title"] = "Eliminar Tipo de Habitación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="delete-container">
+    <h1 class="Tituloscentro">Eliminar Tipo de Habitación</h1>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    <div class="card shadow mb-4">
+        <div class="card-header text-white bg-danger">
+            <h6 class="m-0 font-weight-bold text-white">Confirmación de Eliminación</h6>
+        </div>
+        <div class="card-body">
+            <h5>¿Está seguro de que desea eliminar este tipo de habitación?</h5>
+            <p><strong>Nota:</strong> Esta acción no puede deshacerse.</p>
+
+            <dl class="row">
+                <dt class="col-sm-3">Nombre del Tipo de Habitación</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Nombre)
+                </dd>
+
+                <dt class="col-sm-3">Descripción</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+
+                <dt class="col-sm-3">Capacidad</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Capacidad)
+                </dd>
+            </dl>
+        </div>
+
+        <div class="card-footer text-center">
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="IdTipoHabitacion" />
+                <button type="submit" class="btn ov-btn-slide-left-red btn-sm">
+                    <i class="bi bi-trash-fill"></i> Eliminar
+                </button>
+                <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

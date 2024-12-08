@@ -1,0 +1,66 @@
+@model Proyect.Models.Mueble
+
+@{
+    ViewData["Title"] = "Crear Mueble";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Crear Nuevo Mueble</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Detalles del Mueble</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Nombre -->
+                <div class="form-group">
+                    <label asp-for="Nombre" class="control-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre del mueble" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <!-- Tipo de Mueble -->
+                <div class="form-group">
+                    <label asp-for="IdTipoMueble" class="control-label">Tipo de Mueble</label>
+                    <select asp-for="IdTipoMueble" class="form-control" asp-items="ViewBag.IdTipoMueble">
+                        <option value="">Seleccione el tipo de mueble</option>
+                    </select>
+                </div>
+
+                <!-- Cantidad -->
+                <div class="form-group">
+                    <label asp-for="Cantidad" class="control-label">Cantidad</label>
+                    <input asp-for="Cantidad" class="form-control" placeholder="Cantidad disponible" />
+                    <span asp-validation-for="Cantidad" class="text-danger"></span>
+                </div>
+
+                <!-- Descripción -->
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="control-label">Descripción</label>
+                    <input asp-for="Descripcion" class="form-control" placeholder="Descripción del mueble" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn ov-btn-slide-left btn-sm">
+                        <i class="fas fa-save"></i> Crear Mueble
+                    </button>
+                    <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm ml-3">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

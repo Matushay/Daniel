@@ -1,0 +1,32 @@
+@model Proyect.Models.Role
+
+@{
+    ViewData["Title"] = "Detalles del Rol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Detalles del Rol</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Información del Rol: @Model.NombreRol</h6>
+        </div>
+        <div class="card-body">
+            <h6 class="">Permisos asociados:</h6>
+            <ul class="list-group">
+                @foreach (var rolesPermiso in Model.RolesPermisos)
+                {
+                    <li class="list-group-item">@rolesPermiso.IdPermisoNavigation.NombrePermiso</li>
+                }
+            </ul>
+        </div>
+        <div class="card-footer text-center">
+            <a asp-action="Edit" asp-route-id="@Model?.IdRol" class="btn ov-btn-slide-left btn-sm">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver a la lista de Roles
+            </a>
+        </div>
+    </div>
+</div>

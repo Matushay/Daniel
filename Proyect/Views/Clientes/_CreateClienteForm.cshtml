@@ -1,0 +1,59 @@
+@model Proyect.Models.Cliente
+
+<h4 class="form-title text-center">Formulario de Cliente</h4>
+<form asp-action="Create" id="createClienteForm" class="form-container" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="TipoDocumento" class="control-label">Tipo de Documento</label>
+        <select asp-for="TipoDocumento" class="form-control select-style">
+            <option value="CC">Cédula de Ciudadanía</option>
+            <option value="Pasaporte">Pasaporte</option>
+            <option value="Otro">Otro</option>
+        </select>
+        <span asp-validation-for="TipoDocumento" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Documento" class="control-label">Documento</label>
+        <input asp-for="Documento" class="form-control input-style" placeholder="Documento" id="Documento" />
+        <span asp-validation-for="Documento" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="Nombre" class="control-label">Nombre</label>
+        <input asp-for="Nombre" class="form-control input-style" placeholder="Ingrese el nombre" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Apellido" class="control-label">Apellido</label>
+        <input asp-for="Apellido" class="form-control input-style" placeholder="Ingrese el apellido" />
+        <span asp-validation-for="Apellido" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Direccion" class="control-label">Dirección</label>
+        <input asp-for="Direccion" class="form-control input-style" placeholder="Ingrese la dirección" />
+        <span asp-validation-for="Direccion" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Celular" class="control-label">Celular</label>
+        <input asp-for="Celular" class="form-control input-style" placeholder="Ingrese su celular" />
+        <span asp-validation-for="Celular" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CorreoElectronico" class="control-label">Correo Electrónico</label>
+        <input asp-for="CorreoElectronico" class="form-control input-style" placeholder="Correo electrónico" id="CorreoElectronico" />
+        <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+        <span id="CorreoElectronicoError" class="text-danger"></span>  <!-- Aquí se mostrará el error si el correo está duplicado -->
+    </div>
+
+
+    <div class="form-group">
+        <input type="submit" value="Crear Cliente" class="btn btn-submit" />
+    </div>
+</form>

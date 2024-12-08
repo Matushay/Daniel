@@ -1,0 +1,625 @@
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px; /* Cambia este valor para hacer el toggle m�s peque�o */
+    height: 20px; /* Cambia este valor para ajustar la altura del toggle */
+}
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 20px; /* Mantiene el estilo redondeado */
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px; /* Ajusta la altura del c�rculo aqu� */
+        width: 16px; /* Ajusta el ancho del c�rculo aqu� */
+        left: 2px; /* Ajusta la posici�n del c�rculo */
+        bottom: 2px; /* Ajusta la posici�n del c�rculo */
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%; /* Mantiene el c�rculo redondeado */
+    }
+
+input:checked + .slider {
+    background-color: #0e933d; /* Color cuando est� activo */
+}
+
+    input:checked + .slider:before {
+        transform: translateX(20px); /* Ajusta este valor para mover el c�rculo */
+    }
+
+.Tituloscentro{
+    text-align: center;
+}
+/*** ESTILOS BOTÓN SLIDE RIGHT ***/
+.ov-btn-slide-right {
+    background: #fff; /* color de fondo */
+    color: black; /* color de fuente */
+    border: 1px solid black; /* tamaño y color de borde */
+    padding: 4px 8px; /* reducir el padding para hacerlo más pequeño */
+    border-radius: 3px; /* redondear bordes */
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    font-size: 14px; /* reducir tamaño de la fuente */
+}
+
+    .ov-btn-slide-right:hover {
+        color: white; /* color de fuente hover */
+    }
+
+    .ov-btn-slide-right::after {
+        content: "";
+        background: red; /* color de fondo hover */
+        position: absolute;
+        z-index: -1;
+        padding: 6px 8px; /* ajustar padding */
+        display: block;
+        top: 0;
+        bottom: 0;
+        left: 100%;
+        right: -100%;
+        -webkit-transition: all 0.35s;
+        transition: all 0.35s;
+    }
+
+    .ov-btn-slide-right:hover::after {
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        -webkit-transition: all 0.35s;
+        transition: all 0.35s;
+    }
+
+.ov-btn-slide-blue {
+    background: #fff; /* color de fondo */
+    color: black; /* color de fuente */
+    border: 1px solid black; /* tamaño y color de borde */
+    padding: 4px 8px; /* reducir el padding para hacerlo más pequeño */
+    border-radius: 3px; /* redondear bordes */
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    font-size: 14px; /* reducir tamaño de la fuente */
+}
+
+    .ov-btn-slide-blue:hover {
+        color: #fff;
+        background-color: #3498db; /* Azul */
+    }
+
+    .ov-btn-slide-blue::after {
+        content: "";
+        background: #3498db; /* Azul */
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 100%;
+        right: -100%;
+        bottom: 0;
+        transition: left 0.35s, right 0.35s;
+    }
+
+    .ov-btn-slide-blue:hover::after {
+        left: 0;
+        right: 0;
+    }
+.ov-btn-slide-yellow {
+    background: #fff; /* color de fondo */
+    color: black; /* color de fuente */
+    border: 1px solid black; /* tamaño y color de borde */
+    padding: 4px 8px; /* reducir el padding para hacerlo más pequeño */
+    border-radius: 3px; /* redondear bordes */
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    font-size: 14px; /* reducir tamaño de la fuente */
+}
+
+.ov-btn-slide-yellow:hover {
+    color: #fff;
+    background-color: #f39c12; /* Amarillo */
+}
+
+.ov-btn-slide-yellow::after {
+    content: "";
+    background: #f39c12; /* Amarillo */
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 100%;
+    right: -100%;
+    bottom: 0;
+    transition: left 0.35s, right 0.35s;
+}
+
+.ov-btn-slide-yellow:hover::after {
+    left: 0;
+    right: 0;
+}
+/* Estilos para el interruptor (checkbox) */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+}
+
+    .switch input {
+        display: none;
+    }
+
+    .switch .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #e74c3c; /* Rojo cuando está desactivado */
+        transition: 0.4s;
+        border-radius: 50px;
+    }
+
+        /* El círculo dentro del interruptor */
+        .switch .slider:before {
+            content: "";
+            position: absolute;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background-color: white;
+            transition: 0.4s;
+            left: 4px;
+            bottom: 4px;
+        }
+
+    /* Cuando el checkbox está activado */
+    .switch input:checked + .slider {
+        background-color: #2ecc71; /* Verde claro cuando está activado */
+    }
+
+        .switch input:checked + .slider:before {
+            transform: translateX(14px); /* Mover el círculo cuando se activa */
+        }
+
+    /* Hover sobre el interruptor para mayor visibilidad */
+    .switch:hover .slider {
+        background-color: #f39c12; /* Color intermedio cuando el mouse está sobre el interruptor */
+    }
+/* Efecto 3D en los botones */
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Efecto cuando el mouse pasa sobre los botones */
+.btn:hover {
+    transform: translateY(-4px) scale(1.1); /* Elevar el botón y agrandarlo ligeramente */
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2); /* Sombra para dar el efecto de profundidad */
+    z-index: 1; /* Asegura que el botón se superponga sobre otros elementos */
+}
+
+/* Efecto de sombra al pasar el mouse por encima */
+.btn:active {
+    transform: translateY(2px) scale(1); /* Efecto de presionar el botón */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Efecto en el botón Volver a la lista */
+.btn-secondary:hover {
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto en el botón Guardar Cambios */
+.btn-primary:hover {
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+}
+thead {
+    background-color: #ff416c;
+}
+/* Footer Styles */
+.modern-footer {
+    background-color: #2b275b; /* Elegante color oscuro */
+    color: #ffffff; /* Texto blanco para contraste */
+    padding: 1.5rem 0;
+    font-size: 0.9rem;
+    text-align: center;
+    border-top: 4px solid #ff416c; /* Línea de acento */
+}
+
+    .modern-footer .footer-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modern-footer .footer-text {
+        font-weight: 500;
+    }
+
+    .modern-footer .footer-links {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+        .modern-footer .footer-links a {
+            color: #ff416c; /* Color de acento */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+            .modern-footer .footer-links a:hover {
+                color: #ffffff; /* Destacar al pasar el cursor */
+            }
+
+    .modern-footer .divider {
+        color: #ffffff;
+        opacity: 0.6; /* Más sutil para separación */
+    }
+    /* Botón Moderno */
+.btn-modern {
+    background-color: #ff416c; /* Color de acento (rosa vibrante) */
+    color: #fff; /* Texto blanco */
+    font-weight: bold;
+    border: none;
+    border-radius: 8px; /* Esquinas redondeadas */
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem; /* Espaciado entre el ícono y el texto */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sutil sombra */
+    transition: all 0.3s ease;
+    text-decoration: none; /* Quitar subrayado */
+}
+
+.btn-modern:hover {
+    background-color: #d9365a; /* Un tono más oscuro al pasar el cursor */
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); /* Más prominente */
+    transform: translateY(-2px); /* Efecto flotante */
+}
+
+.btn-modern:active {
+    background-color: #c02e4e; /* Más oscuro al presionar */
+    transform: translateY(0); /* Sin efecto flotante */
+}
+
+.btn-modern i {
+    font-size: 1.2rem; /* Ajustar el tamaño del ícono */
+}
+/* Estilos para el nuevo botón con efecto de deslizamiento a la izquierda */
+.ov-btn-slide-left {
+    background: #ff416c; 
+    color: white; /* color de fuente blanco */
+    border: 1px solid #388E3C; /* color de borde verde oscuro */
+    padding: 6px 12px; /* padding más grande para hacerlo más visible */
+    border-radius: 5px; /* bordes más redondeados */
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    font-size: 16px; /* tamaño de fuente un poco más grande */
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease; /* suavizado de transición */
+}
+
+    /* Estilo para cuando el mouse pasa sobre el botón */
+    .ov-btn-slide-left:hover {
+        color: white; /* color de fuente en hover */
+    }
+
+    /* Efecto del pseudo-elemento ::after */
+    .ov-btn-slide-left::after {
+        content: "";
+        background: #c02a49; /* color de fondo más oscuro para el hover */
+        position: absolute;
+        z-index: -1;
+        padding: 8px 10px; /* padding para el efecto de deslizamiento */
+        display: block;
+        top: 0;
+        bottom: 0;
+        left: -100%;
+        right: 100%;
+        transition: all 0.35s ease; /* transiciones más suaves */
+    }
+
+    /* Efecto cuando el mouse está sobre el botón */
+    .ov-btn-slide-left:hover::after {
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        transition: all 0.35s ease; /* transiciones suaves */
+    }
+
+
+
+
+
+
+/* Estilos para el nuevo botón con efecto de deslizamiento a la izquierda */
+.ov-btn-slide-left-gray {
+    background: #808080; /* color de fondo gris */
+    color: white; /* color de fuente blanco */
+    border: 1px solid #636363; /* color de borde gris oscuro */
+    padding: 6px 12px; /* padding más grande para hacerlo más visible */
+    border-radius: 5px; /* bordes más redondeados */
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    font-size: 16px; /* tamaño de fuente un poco más grande */
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease; /* suavizado de transición */
+}
+
+    /* Estilo para cuando el mouse pasa sobre el botón */
+    .ov-btn-slide-left-gray:hover {
+        color: white; /* color de fuente en hover */
+    }
+
+    /* Efecto del pseudo-elemento ::after */
+    .ov-btn-slide-left-gray::after {
+        content: "";
+        background: #505050; /* color de fondo más oscuro para el hover */
+        position: absolute;
+        z-index: -1;
+        padding: 8px 10px; /* padding para el efecto de deslizamiento */
+        display: block;
+        top: 0;
+        bottom: 0;
+        left: -100%;
+        right: 100%;
+        transition: all 0.35s ease; /* transiciones más suaves */
+    }
+
+    /* Efecto cuando el mouse está sobre el botón */
+    .ov-btn-slide-left-gray:hover::after {
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        transition: all 0.35s ease; /* transiciones suaves */
+    }
+
+
+
+
+/* Estilos para el nuevo botón de eliminar con efecto de deslizamiento a la izquierda */
+.ov-btn-slide-left-red {
+    background: #FF4C4C; /* color de fondo rojo */
+    color: white; /* color de fuente blanco */
+    border: 1px solid #D13F3F; /* color de borde rojo oscuro */
+    padding: 6px 12px; /* padding más grande para hacerlo más visible */
+    border-radius: 5px; /* bordes más redondeados */
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    font-size: 16px; /* tamaño de fuente un poco más grande */
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease; /* suavizado de transición */
+}
+
+    /* Estilo para cuando el mouse pasa sobre el botón */
+    .ov-btn-slide-left-red:hover {
+        color: white; /* color de fuente en hover */
+    }
+
+    /* Efecto del pseudo-elemento ::after */
+    .ov-btn-slide-left-red::after {
+        content: "";
+        background: #C73D3D; /* color de fondo más oscuro para el hover */
+        position: absolute;
+        z-index: -1;
+        padding: 8px 10px; /* padding para el efecto de deslizamiento */
+        display: block;
+        top: 0;
+        bottom: 0;
+        left: -100%;
+        right: 100%;
+        transition: all 0.35s ease; /* transiciones más suaves */
+    }
+
+    /* Efecto cuando el mouse está sobre el botón */
+    .ov-btn-slide-left-red:hover::after {
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        transition: all 0.35s ease; /* transiciones suaves */
+    }
+
+
+
+
+
+
+/* Fondo general */
+.login-container {
+    background: linear-gradient(135deg, #2a265a, #1f3b4d);
+    color: #fff;
+}
+
+/* Tarjeta */
+.login-card {
+    max-width: 900px;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Imagen de fondo */
+.bg-image {
+    background: url('~/img/login-background.jpg') no-repeat center center;
+    background-size: cover;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+/* Botón de inicio de sesión */
+.btn-gradient {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: #ffffff;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 8px rgba(255, 65, 108, 0.3);
+}
+
+    .btn-gradient:hover {
+        background: linear-gradient(135deg, #ff4b2b, #ff416c);
+        box-shadow: 0px 6px 12px rgba(255, 65, 108, 0.5);
+        transform: scale(1.05);
+    }
+
+/* Inputs */
+input.form-control {
+    border: 1px solid #d1d1d1;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+    input.form-control:focus {
+        border-color: #ff416c;
+        box-shadow: 0 0 5px rgba(255, 65, 108, 0.5);
+        outline: none;
+    }
+
+/* Texto de enlaces */
+a.text-primary {
+    color: #ff416c;
+    transition: color 0.2s ease;
+}
+
+    a.text-primary:hover {
+        color: #ff4b2b;
+        text-decoration: underline;
+    }
+
+/* Título */
+h2 {
+    font-size: 1.8rem;
+    color: #ff416c;
+}
+/* Estilo general del formulario */
+.form-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Estilos para los campos de texto */
+.input-style, .select-style {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 12px 18px;
+    font-size: 16px;
+    width: 100%;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Cambios en el select */
+.select-style {
+    height: 45px; /* Asegura que el select tenga suficiente altura */
+}
+
+    /* Cambio de borde y sombra cuando el campo está enfocado */
+    .input-style:focus, .select-style:focus {
+        border-color: #ff416c;
+        box-shadow: 0 0 5px rgba(255, 65, 108, 0.5);
+        outline: none;
+    }
+
+/* Estilos para el botón de envío */
+.btn-submit {
+    background-color: #ff416c; /* color principal */
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 50px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+    /* Hover effect para el botón */
+    .btn-submit:hover {
+        background-color: #e34059; /* color más oscuro en hover */
+        transform: scale(1.05);
+    }
+
+/* Estilo para los labels */
+.control-label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Estilo para los mensajes de error */
+.text-danger {
+    font-size: 12px;
+    color: #dc3545;
+}
+
+
+
+    
+/* Estilo para los botones de acción dentro del formulario */
+.btn-info {
+    background-color: #17a2b8;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    margin-top: 10px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+    .btn-info:hover {
+        background-color: #138496;
+    }
+

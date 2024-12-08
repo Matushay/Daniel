@@ -1,0 +1,148 @@
+@model Proyect.Models.Habitacione
+
+@{
+    ViewData["Title"] = "Crear Habitación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Crear Nueva Habitación</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Detalles de la Habitación</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Nombre -->
+                <div class="form-group">
+                    <label asp-for="Nombre" class="control-label">Nombre de la Habitación</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre de la habitación" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <!-- Tipo de Habitación -->
+                <div class="form-group">
+                    <label asp-for="IdTipoHabitacion" class="control-label">Tipo de Habitación</label>
+                    <select asp-for="IdTipoHabitacion" class="form-control" asp-items="ViewBag.IdTipoHabitacion">
+                        <option value="">Seleccione el tipo de habitación</option>
+                    </select>
+                    <span asp-validation-for="IdTipoHabitacion" class="text-danger"></span>
+                </div>
+
+                <!-- Capacidad -->
+                <div class="form-group">
+                    <label asp-for="Cantidad" class="control-label">Cantidad de habitaciones</label>
+                    <input asp-for="Cantidad" class="form-control" placeholder="Cantidad de habitaciones" />
+                    <span asp-validation-for="Cantidad" class="text-danger"></span>
+                </div>
+
+                <!-- Descripción -->
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="control-label">Descripción</label>
+                    <textarea asp-for="Descripcion" class="form-control" placeholder="Descripción breve de la habitación"></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+
+                <!-- Precio -->
+                <div class="form-group">
+                    <label asp-for="Precio" class="control-label">Precio (COP)</label>
+                    <input asp-for="Precio" class="form-control" placeholder="Precio en COP" />
+                    <span asp-validation-for="Precio" class="text-danger"></span>
+                </div>
+
+                <!-- Muebles -->
+                <div class="form-group">
+                    <label for="select-mueble">Seleccionar Muebles</label>
+                    <div id="muebles-lista" class="mb-2">
+                        @foreach (var mueble in ViewBag.Muebles)
+                        {
+                            if (mueble.Cantidad > 0)
+                            {
+                                <div class="form-check"> 
+                                    <input type="checkbox" class="form-check-input" name="mueblesSeleccionados" value="@mueble.IdMueble" id="mueble-@mueble.IdMueble" />
+                                    <label class="form-check-label" for="mueble-@mueble.IdMueble">@mueble.Nombre (Cantidad disponible: @mueble.Cantidad)</label>
+                                    <input type="number" name="cantidadMuebles" class="form-control mt-2" min="0" max="@mueble.Cantidad" value="1" data-id="@mueble.IdMueble" data-nombre="@mueble.Nombre" /> 
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn ov-btn-slide-left btn-sm">
+                        <i class="fas fa-save"></i> Crear Tipo de Mueble
+                    </button>
+                    <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm ml-3">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById("btn-agregar-mueble").addEventListener("click", function () {
+            const mueblesSeleccionados = document.querySelectorAll("input[name='mueblesSeleccionados']:checked");
+            const mueblesTableBody = document.querySelector("#muebles-seleccionados tbody");
+
+            mueblesSeleccionados.forEach(muebleCheckbox => {
+                const muebleId = muebleCheckbox.value;
+                const cantidadInput = document.querySelector(`input[name='cantidadMuebles'][data-id='${muebleId}']`);
+                const cantidad = parseInt(cantidadInput.value, 10);
+                const nombreMueble = cantidadInput.getAttribute("data-nombre");
+
+                // Evitar duplicados en la tabla
+                if (!document.querySelector(`#muebles-seleccionados tbody tr[data-id='${muebleId}']`)) {
+                    const row = document.createElement("tr");
+                    row.setAttribute("data-id", muebleId);
+                    row.innerHTML = `
+                                <td>${nombreMueble}</td>
+                                <td>${cantidad}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="eliminarMuebleSeleccionado('${muebleId}')">Eliminar</button>
+                                </td>
+                            `;
+                    mueblesTableBody.appendChild(row);
+                }
+
+                // Deseleccionar el checkbox
+                muebleCheckbox.checked = false;
+            });
+        });
+
+        function eliminarMuebleSeleccionado(muebleId) {
+            const row = document.querySelector(`#muebles-seleccionados tbody tr[data-id='${muebleId}']`);
+            if (row) {
+                row.remove();
+            }
+        }
+
+        // Al enviar el formulario, incluir los datos de muebles en campos ocultos
+        document.querySelector("form").addEventListener("submit", function () {
+            const mueblesTableBody = document.querySelector("#muebles-seleccionados tbody");
+            const mueblesInputs = [];
+
+            mueblesTableBody.querySelectorAll("tr").forEach(row => {
+                const muebleId = row.getAttribute("data-id");
+                const cantidad = row.cells[1].textContent;
+
+                mueblesInputs.push(`
+                            <input type="hidden" name="mueblesSeleccionados" value="${muebleId}" />
+                            <input type="hidden" name="cantidadMuebles" value="${cantidad}" />
+                        `);
+            });
+
+            // Agregar los inputs ocultos al formulario
+            this.insertAdjacentHTML("beforeend", mueblesInputs.join(""));
+        });
+    </script>
+}

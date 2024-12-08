@@ -1,0 +1,74 @@
+﻿@model Proyect.Models.Abono
+
+@{
+    ViewData["Title"] = "Editar Abono";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="page-title">Editar Abono</h1>
+
+<h4 class="form-subtitle">Modifica los detalles del abono</h4>
+<hr />
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Edit" class="form-container">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdAbono" />
+
+            <div class="form-group">
+                <label asp-for="IdReserva" class="form-label">Reserva</label>
+                <select asp-for="IdReserva" class="form-control" asp-items="ViewBag.IdReserva"></select>
+                <span asp-validation-for="IdReserva" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FechaAbono" class="form-label">Fecha del Abono</label>
+                <input asp-for="FechaAbono" class="form-control" />
+                <span asp-validation-for="FechaAbono" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Valordeuda" class="form-label">Valor Deuda</label>
+                <input asp-for="Valordeuda" class="form-control" />
+                <span asp-validation-for="Valordeuda" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Pendiente" class="control-label"></label>
+                <input asp-for="Pendiente" class="form-control" />
+                <span asp-validation-for="Pendiente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ValorAbono" class="control-label"></label>
+                <input asp-for="ValorAbono" class="form-control" />
+                <span asp-validation-for="ValorAbono" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Porcentaje" class="control-label"></label>
+
+                <input asp-for="Porcentaje" class="form-control" />
+                <span asp-validation-for="Porcentaje" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Comprobante" class="control-label"></label>
+                <input asp-for="Comprobante" class="form-control" />
+                <span asp-validation-for="Comprobante" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary btn-lg w-100" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-4 text-center">
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,54 @@
+@model Proyect.Models.Servicio
+
+@{
+    ViewData["Title"] = "Eliminar Servicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="delete-container">
+    <h1 class="Tituloscentro">Eliminar Servicio</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header text-white bg-danger">
+            <h6 class="m-0 font-weight-bold text-white">Confirmación de Eliminación</h6>
+        </div>
+        <div class="card-body">
+            <h5>¿Está seguro de que desea eliminar este servicio?</h5>
+            <p><strong>Nota:</strong> Esta acción no puede deshacerse.</p>
+
+            <dl class="row">
+                <dt class="col-sm-3">Nombre del Servicio</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Nombre)
+                </dd>
+
+                <dt class="col-sm-3">Estado</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Estado)
+                </dd>
+
+                <dt class="col-sm-3">Descripción</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+
+                <dt class="col-sm-3">Precio</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Precio)
+                </dd>
+            </dl>
+        </div>
+
+        <div class="card-footer text-center">
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="IdServicio" />
+                <button type="submit" class="btn ov-btn-slide-left-red btn-sm">
+                    <i class="bi bi-trash-fill"></i> Eliminar
+                </button>
+                <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

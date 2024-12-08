@@ -1,0 +1,50 @@
+@model Proyect.Models.Cliente
+
+@{
+    ViewData["Title"] = "Detalles del Cliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Detalles del Cliente</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Información del Cliente</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 font-weight-bold">Tipo de Documento</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.TipoDocumento)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Documento</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Documento)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Nombre</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Nombre)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Apellido</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Apellido)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Dirección</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Direccion)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Celular</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Celular)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Correo Electrónico</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.CorreoElectronico)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Estado</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Estado)</dd>
+            </dl>
+        </div>
+        <div class="card-footer text-center">
+            <a asp-action="Edit" asp-route-id="@Model?.IdCliente" class="btn ov-btn-slide-left btn-sm">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver a la lista
+            </a>
+        </div>
+    </div>
+</div>

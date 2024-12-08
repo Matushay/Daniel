@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Proyect</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body >
+@*     <h1 class="mt-4"></h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="index.html"></a></li>
+        <li class=""></li>
+    </ol>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="index.html"></a></li>
+        <li class=""></li>
+    </ol>
+    <main role="main" class="pb-3"> *@
+        @RenderBody()
+@*     </main> *@
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

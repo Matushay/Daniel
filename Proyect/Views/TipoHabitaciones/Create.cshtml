@@ -1,0 +1,64 @@
+@model Proyect.Models.TipoHabitacione
+
+@{
+    ViewData["Title"] = "Crear Tipo de Habitación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Crear Nuevo Tipo de Habitación</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Detalles del Tipo de Habitación</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Nombre -->
+                <div class="form-group">
+                    <label asp-for="Nombre" class="control-label">Nombre del Tipo de Habitación</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre del tipo de habitación" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <!-- Descripción -->
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="control-label">Descripción</label>
+                    <input asp-for="Descripcion" class="form-control" placeholder="Descripción del tipo de habitación" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+
+                <!-- Capacidad -->
+                <div class="form-group">
+                    <label asp-for="Capacidad" class="control-label">Capacidad Máxima</label>
+                    <input asp-for="Capacidad" class="form-control" placeholder="Capacidad máxima" />
+                    <span asp-validation-for="Capacidad" class="text-danger"></span>
+                </div>
+
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn ov-btn-slide-left btn-sm">
+                        <i class="fas fa-save"></i> Crear Tipo de Habitación
+                    </button>
+                    <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm ml-3">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+
+                
+                
+            </form>
+        </div>
+
+        
+    </div>
+
+ </div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

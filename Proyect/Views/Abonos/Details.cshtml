@@ -1,0 +1,57 @@
+﻿@model Proyect.Models.Abono
+
+@{
+    ViewData["Title"] = "Detalles del Abono";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Detalles del Abono</h1>
+
+    <!-- Datos del Abono -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Detalles del Abono</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 font-weight-bold">Fecha de Abono</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.FechaAbono)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Valor de Deuda</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Valordeuda)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Pendiente</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Pendiente)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Valor Abono</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ValorAbono)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Porcentaje</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Porcentaje)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Comprobante</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Comprobante != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(Model.Comprobante)" alt="Comprobante" style="max-width: 300px; max-height: 300px;" />
+                    }
+                    else
+                    {
+                        <span>No disponible</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3 font-weight-bold">Reserva Asociada</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.IdReservaNavigation.IdReserva)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="text-center">
+        <a asp-action="Index" asp-route-idReserva="@Model.IdReserva" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left"></i> Volver a la lista
+        </a>
+    </div>
+</div>

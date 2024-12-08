@@ -1,0 +1,104 @@
+@model Proyect.Models.Cliente
+
+@{
+    ViewData["Title"] = "Eliminar Cliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="delete-container">
+    <h1 class="Tituloscentro">Eliminar Cliente</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header text-white bg-danger">
+            <h6 class="m-0 font-weight-bold text-white">Información del Cliente</h6>
+        </div>
+        <div class="card-body">
+            <h5>¿Estás seguro de que deseas eliminar este cliente?</h5>
+            <p><strong>Nota:</strong> Esta acción no puede deshacerse.</p>
+
+            <dl class="row">
+                <!-- Tipo de Documento -->
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.TipoDocumento)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.TipoDocumento)
+                </dd>
+
+                <!-- Documento -->
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Documento)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Documento)
+                </dd>
+
+                <!-- Nombre -->
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Nombre)
+                </dd>
+
+                <!-- Apellido -->
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Apellido)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Apellido)
+                </dd>
+
+                <!-- Dirección -->
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Direccion)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Direccion)
+                </dd>
+
+                <!-- Celular -->
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Celular)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Celular)
+                </dd>
+
+                <!-- Correo Electrónico -->
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.CorreoElectronico)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.CorreoElectronico)
+                </dd>
+
+                <!-- Estado -->
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Estado)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Estado)
+                </dd>
+            </dl>
+        </div>
+
+        <div class="card-footer text-center">
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="IdCliente" />
+                <button type="submit" class="btn ov-btn-slide-left-red btn-sm">
+                    <i class="bi bi-trash-fill"></i> Eliminar
+                </button>
+                <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

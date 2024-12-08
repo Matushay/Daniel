@@ -1,0 +1,104 @@
+@model Proyect.Models.Usuario
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid text-align: left">
+    <h1 class="Tituloscentro">Editar Usuario</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Modifica los detalles del usuario</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" class="form-container">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="IdUsuario" />
+
+                <div class="form-group">
+                    <label asp-for="TipoDocumento" class="form-label">Tipo de Documento</label>
+                    <input asp-for="TipoDocumento" class="form-control" />
+                    <span asp-validation-for="TipoDocumento" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Documento" class="form-label">Documento</label>
+                    <input asp-for="Documento" class="form-control"  readonly/>
+                    <span asp-validation-for="Documento" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Nombre" class="form-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Apellido" class="form-label">Apellido</label>
+                    <input asp-for="Apellido" class="form-control" />
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Celular" class="form-label">Celular</label>
+                    <input asp-for="Celular" class="form-control" />
+                    <span asp-validation-for="Celular" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Direccion" class="form-label">Dirección</label>
+                    <input asp-for="Direccion" class="form-control" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CorreoElectronico" class="form-label">Correo Electrónico</label>
+                    <input asp-for="CorreoElectronico" class="form-control" readonly/>
+                    @if (!Model.EsEdicion)
+                    {
+                        <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+                    }
+                </div>
+
+                <!-- Estado del Servicio (Checkbox) -->
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Estado" />
+                        @Html.DisplayNameFor(model => model.Estado)
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FechaCreacion" class="control-label">Fecha de Creación</label>
+                    <input asp-for="FechaCreacion" class="form-control" readonly />
+                    <span asp-validation-for="FechaCreacion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IdRol" class="form-label">Rol</label>
+                    <select asp-for="IdRol" class="form-control" asp-items="ViewBag.IdRol"></select>
+                    <span asp-validation-for="IdRol" class="text-danger"></span>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn ov-btn-slide-left btn-sm">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                    <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm ml-3">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

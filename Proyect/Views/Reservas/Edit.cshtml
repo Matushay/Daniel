@@ -1,0 +1,202 @@
+@model Proyect.Models.Reserva
+
+@{
+    ViewData["Title"] = "Editar Reserva";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="Tituloscentro">Editar Reserva</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="IdReserva" />
+
+            <div class="form-group">
+                <label asp-for="FechaReserva" class="control-label">Fecha de Reserva</label>
+                <input asp-for="FechaReserva" class="form-control" type="date" />
+                <span asp-validation-for="FechaReserva" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FechaInicio" class="control-label">Fecha de Inicio</label>
+                <input asp-for="FechaInicio" class="form-control" type="date" />
+                <span asp-validation-for="FechaInicio" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FechaFin" class="control-label">Fecha de Fin</label>
+                <input asp-for="FechaFin" class="form-control" type="date" />
+                <span asp-validation-for="FechaFin" class="text-danger"></span>
+            </div>
+
+            <!-- Paquete -->
+            <div class="form-group">
+                <label asp-for="IdPaquete" class="control-label">Paquete</label>
+                <select asp-for="IdPaquete" class="form-control" asp-items="ViewBag.Paquetes" onchange="actualizarPrecioPaquete()">
+                    <option value="">Seleccione Paquete</option>
+                </select>
+            </div>
+
+            <!-- Precio Paquete -->
+            <div class="form-group">
+                <label for="PrecioPaquete">Precio del Paquete</label>
+                <input type="text" class="form-control" id="PrecioPaquete" name="PrecioPaquete" value="@ViewBag.PrecioPaquete.ToString("0")" readonly />
+            </div>
+
+            <!-- Metodo de Pago -->
+            <div class="form-group">
+                <label asp-for="IdMetodoPago" class="control-label">Metodo de Pago</label>
+                <select asp-for="IdMetodoPago" class="form-control" asp-items="ViewBag.MetodoPago">
+                    <option value="">Seleccione Metodo de Pago</option>
+                </select>
+            </div>
+
+            <!-- Estado de la Reserva -->
+            <div class="form-group">
+                <label asp-for="IdEstadoReserva" class="control-label">Estado de Reserva</label>
+                <select asp-for="IdEstadoReserva" class="form-control" asp-items="ViewBag.EstadoReserva">
+                    <option value="">Seleccione Estado</option>
+                </select>
+                <span asp-validation-for="IdEstadoReserva" class="text-danger"></span>
+            </div>
+
+            <!-- Servicios -->
+            <div class="form-group">
+                <label for="Servicios">Servicios</label>
+                <div>
+                    @if (ViewBag.Servicios != null)
+                    {
+                        foreach (var servicio in ViewBag.Servicios)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       id="servicio_@servicio.IdServicio"
+                                       name="serviciosSeleccionados"
+                                       value="@servicio.IdServicio"
+                                       data-precio="@servicio.Precio"
+                                @(ViewBag.ServiciosSeleccionados.Contains(servicio.IdServicio) ? "checked" : "") />
+                                <label class="form-check-label" for="servicio_@servicio.IdServicio">
+                                    @servicio.NombreConPrecio
+                                </label>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No hay servicios disponibles.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Descuento -->
+            <div class="form-group">
+                <label for="Descuento">Descuento (%)</label>
+                <input type="number" class="form-control" id="Descuento" name="Descuento" value="@Model.Descuento.ToString("N0")" step="1" />
+            </div>
+
+            <div class="form-group">
+                <label for="Subtotal">Subtotal</label>
+                <input type="text" class="form-control" id="Subtotal" name="Subtotal" value="@Model.Subtotal" readonly />
+            </div>
+
+            <div class="form-group">
+                <label for="Iva">IVA</label>
+                <input type="text" class="form-control" id="Iva" name="Iva" value="@Model.Iva" readonly />
+            </div>
+
+            <div class="form-group">
+                <label for="Total">Total</label>
+                <input type="text" class="form-control" id="Total" name="Total" value="@Model.Total" readonly />
+            </div>
+
+            <div class="card-footer text-center">
+                <button type="submit" class="btn ov-btn-slide-left btn-sm">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+                <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm ml-3">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    // Función para recalcular el total en base al subtotal, IVA y descuento
+    function actualizarTotal() {
+        var subtotal = 0;
+        var iva = 0;
+        var descuentoPorcentaje = parseFloat(document.getElementById('Descuento').value) || 0; // Obtener descuento en porcentaje
+
+        // Obtener el precio del paquete
+        var precioPaquete = parseFloat(document.getElementById('PrecioPaquete').value.replace(/[^0-9.-]+/g, "")) || 0; // Limpiar cualquier símbolo de moneda
+
+        // Calcular subtotal con los servicios seleccionados
+        var serviciosSeleccionados = document.querySelectorAll('input[name="serviciosSeleccionados"]:checked');
+        serviciosSeleccionados.forEach(function (servicio) {
+            var precioServicio = parseFloat(servicio.getAttribute('data-precio')) || 0;
+            subtotal += precioServicio;
+        });
+
+        // Sumar el precio del paquete al subtotal
+        subtotal += precioPaquete;
+
+        // Aplicar descuento al subtotal
+        var descuento = (subtotal * descuentoPorcentaje) / 100;
+        var subtotalConDescuento = subtotal - descuento;
+
+        // Calcular el IVA (19%) sobre el subtotal con descuento
+        iva = subtotalConDescuento * 0.19;
+
+        // Calcular el total (subtotal con descuento + IVA)
+        var total = subtotalConDescuento + iva;
+
+        // Actualizar los valores en los campos
+        document.getElementById('Subtotal').value = subtotalConDescuento.toFixed(2);
+        document.getElementById('Iva').value = iva.toFixed(2);
+        document.getElementById('Total').value = total.toFixed(2);
+    }
+
+    // Función para actualizar el precio del paquete cuando cambia la selección
+    function actualizarPrecioPaquete() {
+        var idPaquete = document.querySelector('select[name="IdPaquete"]').value;
+
+        // Verificar si se ha seleccionado un paquete
+        if (idPaquete) {
+            // Realizar una solicitud AJAX para obtener el precio del paquete seleccionado
+            fetch('/Reservas/ObtenerPrecioPaquete/' + idPaquete)
+                .then(response => response.json())
+                .then(data => {
+                    // Actualizar el valor del campo de precio del paquete
+                    document.getElementById('PrecioPaquete').value = data.precio;
+                    actualizarTotal(); // Actualizar el total después de cambiar el paquete
+                })
+                .catch(error => {
+                    console.error('Error al obtener el precio del paquete:', error);
+                });
+        } else {
+            // Si no se seleccionó paquete, poner el valor a 0
+            document.getElementById('PrecioPaquete').value = '0';
+            actualizarTotal(); // Actualizar el total después de cambiar el paquete
+        }
+    }
+
+    // Escuchar los cambios en los servicios seleccionados
+    var checkboxes = document.querySelectorAll('input[name="serviciosSeleccionados"]');
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', actualizarTotal);
+    });
+
+    // Escuchar el cambio en el campo de descuento
+    document.getElementById('Descuento').addEventListener('input', actualizarTotal);
+
+    // Escuchar el cambio en el paquete
+    document.getElementById('IdPaquete').addEventListener('change', actualizarPrecioPaquete);
+
+    // Inicializar el total cuando se carga la página
+    window.onload = function () {
+        actualizarTotal(); // Inicializa el total con los valores existentes
+        actualizarPrecioPaquete(); // Inicializa el precio del paquete al cargar
+    };
+</script>

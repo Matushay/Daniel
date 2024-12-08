@@ -1,0 +1,72 @@
+@model Proyect.Models.Reserva
+
+@{
+    ViewData["Title"] = "Eliminar Reserva";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="Tituloscentro">Eliminar Reserva</h1>
+
+<div class="delete-container">
+    <div class="card">
+        <div class="card-header text-white bg-danger">
+            <h4>Confirmación de Eliminación</h4>
+        </div>
+        <div class="card-body">
+            <h5>¿Está seguro de que desea eliminar esta reserva?</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Fecha de Reserva</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.FechaReserva)
+                </dd>
+                <dt class="col-sm-3">Fecha de Inicio</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.FechaInicio)
+                </dd>
+                <dt class="col-sm-3">Fecha de Fin</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.FechaFin)
+                </dd>
+                <dt class="col-sm-3">Subtotal</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Subtotal)
+                </dd>
+                <dt class="col-sm-3">IVA</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Iva)
+                </dd>
+                <dt class="col-sm-3">Total</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Total)
+                </dd>
+                <dt class="col-sm-3">Descuento</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Descuento)
+                </dd>
+                <dt class="col-sm-3">Apellido Cliente</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.IdClienteNavigation.Apellido)
+                </dd>
+                <dt class="col-sm-3">Estado de Reserva</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.IdEstadoReservaNavigation.Estados)
+                </dd>
+                <dt class="col-sm-3">Método de Pago</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.IdMetodoPagoNavigation.Nombre)
+                </dd>
+                <dt class="col-sm-3">Paquete</dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.IdPaqueteNavigation.Nombre)
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer text-end">
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="IdReserva" />
+                <button type="submit" class="btn ov-btn-slide-left-red  btn-sm">Eliminar</button>
+                <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm">Volver a la lista</a>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,134 @@
+@model Proyect.Models.Habitacione
+
+@{
+    ViewData["Title"] = "Editar Habitacion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Editar Habitacion</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Modifica los detalles de la habitación</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" class="form-container">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="IdHabitacion" />
+
+                <div class="form-group">
+                    <label asp-for="Nombre" class="form-label">Nombre de la Habitación</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ingresa el nombre de la habitación" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IdTipoHabitacion" class="form-label">Tipo de Habitación</label>
+                    <select asp-for="IdTipoHabitacion" class="form-control" asp-items="ViewBag.IdTipoHabitacion"></select>
+                    <span asp-validation-for="IdTipoHabitacion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Cantidad" class="form-label">Cantidad</label>
+                    <input asp-for="Cantidad" class="form-control" placeholder="Ingresa la cantidad" />
+                    <span asp-validation-for="Cantidad" class="text-danger"></span>
+                </div>
+
+                <div class="form-group form-check">
+                    <input class="form-check-input" asp-for="Estado" id="Estado" />
+                    <label class="form-check-label" for="Estado">Estado</label>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="form-label">Descripción</label>
+                    <input asp-for="Descripcion" class="form-control" placeholder="Ingresa una descripción para la habitación" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Precio" class="form-label">Precio</label>
+                    <input asp-for="Precio" class="form-control" placeholder="Ingresa el precio" />
+                    <span asp-validation-for="Precio" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Muebles:</label>
+                    <div id="mueblesContainer">
+                        @foreach (var mueble in ViewBag.Muebles)
+                        {
+                            <div>
+                                <input type="checkbox" class="mueble-checkbox" data-id="@mueble.Id" name="mueblesSeleccionados" value="@mueble.Id" @(mueble.Seleccionado ? "checked" : "") />
+                                <label>@mueble.Nombre (Disponibles: @mueble.CantidadDisponible)</label>
+                                <input type="number" class="cantidad-input" data-id="@mueble.Id" name="cantidadMuebles" value="@mueble.CantidadEnHabitacion" min="0" max="@mueble.CantidadDisponible"/>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn ov-btn-slide-left btn-sm">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                    <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm ml-3">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const checkboxes = document.querySelectorAll(".mueble-checkbox");
+            const cantidadInputs = document.querySelectorAll(".cantidad-input");
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", function () {
+                    const muebleId = this.getAttribute("data-id");
+                    const cantidadInput = document.querySelector(`input.cantidad-input[data-id="${muebleId}"]`);
+                    const cantidadDisponible = document.getElementById(`cantidadDisponible_${muebleId}`);
+
+                    if (this.checked) {
+                        cantidadInput.removeAttribute("disabled");
+                        cantidadInput.value = cantidadInput.value || 1; // Por defecto a 1 si está vacío
+                        cantidadDisponible.innerText = parseInt(cantidadDisponible.innerText) - cantidadInput.value;
+                    } else {
+                        cantidadDisponible.innerText = parseInt(cantidadDisponible.innerText) + parseInt(cantidadInput.value);
+                        cantidadInput.setAttribute("disabled", true);
+                        cantidadInput.value = 0;
+                    }
+                });
+            });
+
+            cantidadInputs.forEach(input => {
+                input.addEventListener("input", function () {
+                    const muebleId = this.getAttribute("data-id");
+                    const cantidadDisponible = document.getElementById(`cantidadDisponible_${muebleId}`);
+                    const maxCantidad = parseInt(input.getAttribute("max"));
+
+                    // Validación de rango
+                    if (input.value > maxCantidad) {
+                        input.value = maxCantidad;
+                    } else if (input.value < 0) {
+                        input.value = 0;
+                    }
+
+                    // Actualización dinámica de la cantidad disponible
+                    const cantidadAsignada = parseInt(input.value) || 0;
+                    const cantidadActualDisponible = parseInt(cantidadDisponible.innerText);
+
+                    if (cantidadAsignada <= maxCantidad) {
+                        cantidadDisponible.innerText = maxCantidad - cantidadAsignada;
+                    }
+                });
+            });
+        });
+    </script>
+}

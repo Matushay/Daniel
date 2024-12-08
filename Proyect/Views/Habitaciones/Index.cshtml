@@ -1,0 +1,103 @@
+@model IEnumerable<Proyect.Models.Habitacione>
+
+@{
+    ViewData["Title"] = "Habitaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="Tituloscentro">Habitaciones</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<p class="text-end">
+    <a asp-action="Create" class="btn btn-modern">
+        <i class="bi bi-plus-square"></i> Crear
+    </a>
+</p>
+
+<table class="table records_list table-striped table-bordered table-hover" id="HabitacionesTable">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
+            <th>@Html.DisplayNameFor(model => model.Precio)</th>
+            <th>@Html.DisplayNameFor(model => model.Cantidad)</th>
+            <th>@Html.DisplayNameFor(model => model.IdTipoHabitacionNavigation.Nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.Estado)</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                <td>@Html.DisplayFor(modelItem => item.Precio)</td>
+                <td>@Html.DisplayFor(modelItem => item.Cantidad)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdTipoHabitacionNavigation.Nombre)</td>
+                <td>
+                    <label class="switch">
+                        <input type="checkbox" class="status-toggle" data-id="@item.IdHabitacion" @(item.Estado ? "checked" : "")>
+                        <span class="slider"></span>
+                    </label>
+                </td>
+                <td class="action-icons">
+                    <a asp-action="Edit" asp-route-id="@item.IdHabitacion" class="btn btn-icon ov-btn-slide-yellow" data-toggle="tooltip" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a> |
+                    <a asp-action="Details" asp-route-id="@item.IdHabitacion" class="btn btn-icon ov-btn-slide-blue" data-toggle="tooltip" title="Detalles">
+                        <i class="bi bi-info-lg"></i>
+                    </a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdHabitacion" class="btn btn-icon ov-btn-slide-right" data-toggle="tooltip" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#HabitacionesTable').DataTable({
+                language: {
+                    "sLengthMenu": "Mostrar _MENU_ entradas",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "sSearch": "Buscar:",
+                    "emptyTable": "NO HAY NINGUN ELEMENTO EN LA TABLA"
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.status-toggle').change(function () {
+                const estado = $(this).is(':checked') ? true : false;
+                const idHabitacion = $(this).data('id');
+
+                $.ajax({
+                    url: '/Habitaciones/ActualizarEstado',
+                    type: 'POST',
+                    data: {
+                        id: idHabitacion,
+                        estado: estado
+                    },
+                    success: function (response) {
+                        console.log('Estado actualizado con éxito:', response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar el estado:', error);
+                    }
+                });
+            });
+        });
+    </script>
+}

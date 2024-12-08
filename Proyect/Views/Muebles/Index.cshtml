@@ -1,0 +1,102 @@
+@model IEnumerable<Proyect.Models.Mueble>
+
+@{
+    ViewData["Title"] = "Muebles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="Tituloscentro">Muebles</h1>
+
+<p class="text-end">
+    <a asp-action="Create" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear</a>
+</p>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<table class="table records_list table table-striped table-bordered table-hover" id="MueblesTable">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
+            <th>@Html.DisplayNameFor(model => model.FechaRegistro)</th>
+            <th>@Html.DisplayNameFor(model => model.Cantidad)</th>
+            <th>@Html.DisplayNameFor(model => model.IdTipoMuebleNavigation.Nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.Estado)</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                <td>@Html.DisplayFor(modelItem => item.FechaRegistro)</td>
+                <td>@Html.DisplayFor(modelItem => item.Cantidad)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdTipoMuebleNavigation.Nombre)</td>
+                <td>
+                    <!-- Reemplazamos el checkbox por un switch estilizado -->
+                    <label class="switch">
+                        <input type="checkbox" class="status-toggle" data-id="@item.IdMueble" @(item.Estado ? "checked" : "")>
+                        <span class="slider"></span>
+                    </label>
+                </td>
+                <td class="action-icons">
+                    <a asp-action="Edit" asp-route-id="@item.IdMueble" class="btn btn-icon ov-btn-slide-yellow" data-toggle="tooltip" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a> |
+                    <a asp-action="Details" asp-route-id="@item.IdMueble" class="btn btn-icon ov-btn-slide-blue" data-toggle="tooltip" title="Detalles">
+                        <i class="bi bi-info-lg"></i>
+                    </a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdMueble" class="btn btn-icon ov-btn-slide-right" data-bs-toggle="tooltip" data-bs-target="#deleteModal" data-id="@item.IdMueble" data-name="@item.Nombre" data-toggle="tooltip" title="Eliminar">
+                        <i class="bi bi-trash3"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#MueblesTable').DataTable({
+                language: {
+                    "sLengthMenu": "Mostrar _MENU_ entradas",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "sSearch": "Buscar:",
+                    "emptyTable": "NO HAY NINGUN ELEMENTO EN LA TABLA"
+                }
+            });
+        });
+
+        // Lógica para cambiar el estado de un mueble utilizando el switch
+        $(document).on('change', '.status-toggle', function () {
+            const estado = $(this).is(':checked');
+            const idMueble = $(this).data('id');
+
+            $.ajax({
+                url: '/Muebles/ActualizarEstado', // Asegúrate de que esta URL sea correcta
+                type: 'POST',
+                data: {
+                    id: idMueble,
+                    estado: estado
+                },
+                success: function (response) {
+                    console.log('Estado actualizado con éxito');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error al actualizar el estado', error);
+                }
+            });
+        });
+
+    </script>
+}
