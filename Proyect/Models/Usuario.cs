@@ -12,6 +12,7 @@ public partial class Usuario
     [Display(Name = "Tipo Documento")]
     public string TipoDocumento { get; set; }
 
+    [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
     public string Documento { get; set; }
 
     public string Nombre { get; set; }

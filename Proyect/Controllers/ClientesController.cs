@@ -58,6 +58,26 @@ namespace Proyect.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdCliente,TipoDocumento,Documento,Nombre,Apellido,Direccion,Celular,CorreoElectronico,Estado")] Cliente cliente)
         {
+            // Verificar si el correo electrónico ya existe
+            var clienteExistente = await _context.Clientes
+                .FirstOrDefaultAsync(u => u.CorreoElectronico == cliente.CorreoElectronico);
+
+            if (clienteExistente != null)
+            {
+                ModelState.AddModelError("CorreoElectronico", "Este correo electrónico ya está registrado.");
+                return View(cliente); // Regresar a la vista con el error
+            }
+
+            // Verificar si el documento ya existe
+            var documentoExistente = await _context.Clientes
+                .FirstOrDefaultAsync(u => u.Documento == cliente.Documento);
+
+            if (documentoExistente != null)
+            {
+                ModelState.AddModelError("Documento", "Este número de documento ya está registrado.");
+                return View(cliente); // Regresar a la vista con el error
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(cliente);
@@ -65,6 +85,7 @@ namespace Proyect.Controllers
                 TempData["SuccessMessage"] = "El cliente se creó correctamente";
                 return RedirectToAction(nameof(Index));
             }
+
             return View(cliente);
         }
 
@@ -126,6 +147,26 @@ namespace Proyect.Controllers
             if (id != cliente.IdCliente)
             {
                 return NotFound();
+            }
+
+            // Verificar si el correo electrónico ya existe
+            var clienteExistente = await _context.Clientes
+                .FirstOrDefaultAsync(u => u.CorreoElectronico == cliente.CorreoElectronico);
+
+            if (clienteExistente != null)
+            {
+                ModelState.AddModelError("CorreoElectronico", "Este correo electrónico ya está registrado.");
+                return View(cliente); // Regresar a la vista con el error
+            }
+
+            // Verificar si el documento ya existe
+            var documentoExistente = await _context.Clientes
+                .FirstOrDefaultAsync(u => u.Documento == cliente.Documento);
+
+            if (documentoExistente != null)
+            {
+                ModelState.AddModelError("Documento", "Este número de documento ya está registrado.");
+                return View(cliente); // Regresar a la vista con el error
             }
 
             if (ModelState.IsValid)

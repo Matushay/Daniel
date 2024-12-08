@@ -83,7 +83,7 @@ namespace Proyect.Controllers
                     }
                     await _context.SaveChangesAsync();
                 }
-
+                TempData["SuccessMessage"] = "El rol se creo correctamente";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -186,6 +186,7 @@ namespace Proyect.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "El rol se edito correctamente";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -253,7 +254,7 @@ namespace Proyect.Controllers
                 _context.Roles.Remove(role);
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = "Rol eliminado correctamente.";
+                TempData["SuccessMessage"] = "Rol eliminado correctamente.";
             }
             catch (DbUpdateConcurrencyException)
             {

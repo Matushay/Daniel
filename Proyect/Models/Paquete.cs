@@ -13,7 +13,7 @@ public partial class Paquete
     [Required(ErrorMessage = "La descripción es requerida.")]
     public string Descripcion { get; set; }
 
-    [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
+    [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
     public decimal Precio { get; set; }
 
     public bool Estado { get; set; } = true;

@@ -154,50 +154,50 @@ namespace Proyect.Controllers
                 return NotFound();
             }
 
-            var paquete = await _context.Paquetes
-                .Include(p => p.PaquetesServicios)
-                .Include(p => p.PaquetesHabitaciones)
-                .FirstOrDefaultAsync(p => p.IdPaquete == id);
-
+            var paquete = await _context.Paquetes.FindAsync(id);
             if (paquete == null)
             {
                 return NotFound();
             }
 
-            // Cargar servicios y habitaciones disponibles
-            var servicios = _context.Servicios
-                .AsEnumerable()
+            // Cargar los servicios disponibles marcando los seleccionados
+            var serviciosSeleccionados = _context.PaquetesServicios
+                .Where(ps => ps.IdPaquete == id)
+                .Select(ps => ps.IdServicio)
+                .ToList();
+
+            ViewData["Servicios"] = _context.Servicios
+                .Where(s => s.Estado == true)
                 .Select(s => new
                 {
-                    IdServicio = s.IdServicio,
-                    Nombre = s.Nombre,
-                    Precio = s.Precio,
-                    Seleccionado = paquete.PaquetesServicios.Any(ps => ps.IdServicio == s.IdServicio)
-                })
+                    s.IdServicio,
+                    s.Nombre,
+                    s.Precio,
+                    Seleccionado = serviciosSeleccionados.Contains(s.IdServicio)
+                }).ToList();
+
+            // Cargar las habitaciones disponibles marcando las seleccionadas
+            var habitacionesSeleccionadas = _context.PaquetesHabitaciones
+                .Where(ph => ph.IdPaquete == id)
+                .Select(ph => ph.IdHabitacion)
                 .ToList();
 
-            var habitaciones = _context.Habitaciones
-                .AsEnumerable()
+            ViewData["Habitaciones"] = _context.Habitaciones
+                .Where(h => h.Estado == true)
                 .Select(h => new
                 {
-                    IdHabitacion = h.IdHabitacion,
-                    Nombre = h.Nombre,
-                    Precio = h.Precio,
-                    Seleccionado = paquete.PaquetesHabitaciones.Any(ph => ph.IdHabitacion == h.IdHabitacion)
-                })
-                .ToList();
-
-            // Pasar los datos a la vista mediante ViewData
-            ViewData["Servicios"] = servicios;
-            ViewData["Habitaciones"] = habitaciones;
-            ViewData["PrecioTotal"] = paquete.Precio; // Precio inicial del paquete
+                    h.IdHabitacion,
+                    h.Nombre,
+                    h.Precio,
+                    Seleccionado = habitacionesSeleccionadas.Contains(h.IdHabitacion)
+                }).ToList();
 
             return View(paquete);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdPaquete,Nombre,Descripcion,Precio,Estado")] Paquete paquete, int[] HabitacionesSeleccionadas, int[] ServiciosSeleccionados, decimal PrecioTotal)
+        public async Task<IActionResult> Edit(int id, [Bind("IdPaquete,Nombre,Descripcion,Precio,Estado")] Paquete paquete, int[] HabitacionesIds, int[] ServiciosIds)
         {
             if (id != paquete.IdPaquete)
             {
@@ -206,81 +206,89 @@ namespace Proyect.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                // Validar que se haya seleccionado al menos una habitación y un servicio
+                if ((HabitacionesIds == null || HabitacionesIds.Length == 0) && (ServiciosIds == null || ServiciosIds.Length == 0))
                 {
-                    // Actualizar el paquete
-                    paquete.Precio = PrecioTotal;
-                    _context.Update(paquete);
-                    await _context.SaveChangesAsync();
-
-                    // Manejar las relaciones de habitaciones
-                    var habitacionesExistentes = _context.PaquetesHabitaciones.Where(ph => ph.IdPaquete == id).ToList();
-                    _context.PaquetesHabitaciones.RemoveRange(habitacionesExistentes);
-                    foreach (var habitacionId in HabitacionesSeleccionadas)
+                    ModelState.AddModelError("", "Debe seleccionar al menos una habitación y un servicio.");
+                }
+                else if (HabitacionesIds == null || HabitacionesIds.Length == 0)
+                {
+                    ModelState.AddModelError("", "Debe seleccionar al menos una habitación.");
+                }
+                else if (ServiciosIds == null || ServiciosIds.Length == 0)
+                {
+                    ModelState.AddModelError("", "Debe seleccionar al menos un servicio.");
+                }
+                else
+                {
+                    try
                     {
-                        var habitacion = await _context.Habitaciones.FindAsync(habitacionId);
-                        if (habitacion != null)
+                        // Actualizar el paquete
+                        _context.Update(paquete);
+                        await _context.SaveChangesAsync();
+
+                        // Actualizar habitaciones asociadas
+                        var habitacionesActuales = _context.PaquetesHabitaciones.Where(ph => ph.IdPaquete == id).ToList();
+                        _context.PaquetesHabitaciones.RemoveRange(habitacionesActuales);
+                        foreach (var habitacionId in HabitacionesIds)
                         {
-                            if (habitacion.Cantidad > 0)
+                            var habitacion = await _context.Habitaciones.FindAsync(habitacionId);
+                            if (habitacion != null)
                             {
-                                habitacion.Cantidad--;
-                                _context.PaquetesHabitaciones.Add(new PaquetesHabitacione
+                                var paqueteHabitacion = new PaquetesHabitacione
                                 {
-                                    IdPaquete = id,
-                                    IdHabitacion = habitacionId
-                                });
-                            }
-                            else
-                            {
-                                ModelState.AddModelError("", $"La habitación '{habitacion.Nombre}' no tiene capacidad disponible.");
-                                return View(paquete);
+                                    IdPaquete = paquete.IdPaquete,
+                                    IdHabitacion = habitacionId,
+                                    Precio = habitacion.Precio
+                                };
+                                _context.PaquetesHabitaciones.Add(paqueteHabitacion);
                             }
                         }
-                    }
 
-                    // Manejar las relaciones de servicios
-                    var serviciosExistentes = _context.PaquetesServicios.Where(ps => ps.IdPaquete == id).ToList();
-                    _context.PaquetesServicios.RemoveRange(serviciosExistentes);
-                    foreach (var servicioId in ServiciosSeleccionados)
-                    {
-                        _context.PaquetesServicios.Add(new PaquetesServicio
+                        // Actualizar servicios asociados
+                        var serviciosActuales = _context.PaquetesServicios.Where(ps => ps.IdPaquete == id).ToList();
+                        _context.PaquetesServicios.RemoveRange(serviciosActuales);
+                        foreach (var servicioId in ServiciosIds)
                         {
-                            IdPaquete = id,
-                            IdServicio = servicioId
-                        });
-                    }
+                            var servicio = await _context.Servicios.FindAsync(servicioId);
+                            if (servicio != null)
+                            {
+                                var paqueteServicio = new PaquetesServicio
+                                {
+                                    IdPaquete = paquete.IdPaquete,
+                                    IdServicio = servicioId,
+                                    Precio = servicio.Precio
+                                };
+                                _context.PaquetesServicios.Add(paqueteServicio);
+                            }
+                        }
 
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PaqueteExists(paquete.IdPaquete))
-                    {
-                        return NotFound();
+                        await _context.SaveChangesAsync();
+                        TempData["SuccessMessage"] = "El Paquete se editó correctamente.";
+                        return RedirectToAction(nameof(Index));
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!PaqueteExists(paquete.IdPaquete))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                 }
-                TempData["SuccessMessage"] = "El paquete se editó correctamente";
-                return RedirectToAction(nameof(Index));
             }
 
             // Recargar datos en caso de error
-            var servicios = _context.Servicios
-                .AsEnumerable()
-                .Select(s => new { IdServicio = s.IdServicio, Nombre = s.Nombre, Precio = s.Precio, Seleccionado = ServiciosSeleccionados.Contains(s.IdServicio) })
-                .ToList();
+            ViewData["Servicios"] = _context.Servicios
+                .Where(s => s.Estado == true)
+                .Select(s => new { s.IdServicio, s.Nombre, s.Precio }).ToList();
 
-            var habitaciones = _context.Habitaciones
-                .AsEnumerable()
-                .Select(h => new { IdHabitacion = h.IdHabitacion, Nombre = h.Nombre, Precio = h.Precio, Seleccionado = HabitacionesSeleccionadas.Contains(h.IdHabitacion) })
-                .ToList();
-
-            ViewData["Servicios"] = servicios;
-            ViewData["Habitaciones"] = habitaciones;
-            ViewData["PrecioTotal"] = paquete.Precio;
+            ViewData["Habitaciones"] = _context.Habitaciones
+                .Where(h => h.Estado == true)
+                .Select(h => new { h.IdHabitacion, h.Nombre, h.Precio }).ToList();
 
             return View(paquete);
         }

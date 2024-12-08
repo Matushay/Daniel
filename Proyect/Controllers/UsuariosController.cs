@@ -87,6 +87,26 @@ namespace Proyect.Controllers
                 return BadRequest("El objeto usuario es nulo.");
             }
 
+            // Verificar si el correo electrónico ya existe
+            var usuarioExistente = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.CorreoElectronico == usuario.CorreoElectronico);
+
+            if (usuarioExistente != null)
+            {
+                ModelState.AddModelError("CorreoElectronico", "Este correo electrónico ya está registrado.");
+                return View(usuario); // Regresar a la vista con el error
+            }
+
+            // Verificar si el documento ya existe
+            var documentoExistente = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Documento == usuario.Documento);
+
+            if (documentoExistente != null)
+            {
+                ModelState.AddModelError("Documento", "Este número de documento ya está registrado.");
+                return View(usuario); // Regresar a la vista con el error
+            }
+
             // Validación: Verificar si el rol está activo
             var rol = _context.Roles.FirstOrDefault(r => r.IdRol == usuario.IdRol);
             if (rol != null && !rol.Estado)
@@ -257,6 +277,26 @@ namespace Proyect.Controllers
             if (id != usuario.IdUsuario)
             {
                 return NotFound();
+            }
+
+            // Verificar si el correo electrónico ya existe
+            var usuariocorreoExistente = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.CorreoElectronico == usuario.CorreoElectronico);
+
+            if (usuariocorreoExistente != null)
+            {
+                ModelState.AddModelError("CorreoElectronico", "Este correo electrónico ya está registrado.");
+                return View(usuario); // Regresar a la vista con el error
+            }
+
+            // Verificar si el documento ya existe
+            var documentoExistente = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Documento == usuario.Documento);
+
+            if (documentoExistente != null)
+            {
+                ModelState.AddModelError("Documento", "Este número de documento ya está registrado.");
+                return View(usuario); // Regresar a la vista con el error
             }
 
             // Validación: Verificar si el rol está activo
