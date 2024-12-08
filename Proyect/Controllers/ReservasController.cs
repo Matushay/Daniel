@@ -15,6 +15,7 @@ using System.Globalization;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederReservas")]
     public class ReservasController : Controller
     {
         private readonly ProyectContext _context;
@@ -194,21 +195,22 @@ namespace Proyect.Controllers
 
 
 
-
         public async Task<IActionResult> Create()
         {
             CargarDatosVista(); // Cargar clientes, métodos de pago y estados de reserva
 
-            // Cargar los paquetes disponibles con Id, Nombre y Precio
+            // Cargar los paquetes disponibles con Id, Nombre y Precio solo si están activos
             var paquetes = await _context.Paquetes
+                .Where(p => p.Estado) // Filtrar paquetes activos
                 .Select(p => new { p.IdPaquete, p.Nombre, p.Precio })
                 .ToListAsync();
 
             ViewBag.IdPaquete = new SelectList(paquetes, "IdPaquete", "Nombre");
             ViewBag.Paquetes = paquetes; // Pasar paquetes para uso en JavaScript
 
-            // Cargar los servicios disponibles con Id, Nombre y Precio
+            // Cargar los servicios disponibles con Id, Nombre y Precio solo si están activos
             var servicios = await _context.Servicios
+                .Where(s => s.Estado) // Filtrar servicios activos
                 .Select(s => new { s.IdServicio, s.Nombre, s.Precio })
                 .ToListAsync();
 
@@ -406,12 +408,13 @@ namespace Proyect.Controllers
             decimal total = subtotal + iva - reserva.Descuento; // Restar descuento del total
 
             // Pasar datos al ViewBag
-            ViewBag.Paquetes = new SelectList(_context.Paquetes, "IdPaquete", "Nombre", reserva.IdPaquete);
+            ViewBag.Paquetes = new SelectList(_context.Paquetes.Where(p => p.Estado), "IdPaquete", "Nombre", reserva.IdPaquete);
             ViewBag.MetodoPago = new SelectList(_context.MetodoPagos, "IdMetodoPago", "Nombre", reserva.IdMetodoPago);
             ViewBag.EstadoReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Estados", reserva.IdEstadoReserva);
 
             // Servicios con precios
             ViewBag.Servicios = _context.Servicios
+                .Where(s => s.Estado)
                .Select(s => new
                {
                    IdServicio = s.IdServicio,
@@ -529,8 +532,6 @@ namespace Proyect.Controllers
             return View(reserva);
         }
 
-
-
         private void ActualizarDetallePaquete(Reserva reservaDb, int? idPaqueteSeleccionado)
         {
             // Si se seleccionó un paquete diferente o se deseleccionó un paquete (idPaqueteSeleccionado == null)
@@ -586,7 +587,6 @@ namespace Proyect.Controllers
             }
         }
 
-
         private void ActualizarDetalleServicios(Reserva reservaDb, List<int> serviciosSeleccionados)
         {
             // Eliminar los servicios existentes que no están en la nueva selección
@@ -611,7 +611,6 @@ namespace Proyect.Controllers
             }
         }
 
-
         private void CargarDatosVistaEdit()
         {
             ViewBag.Paquetes = new SelectList(_context.Paquetes, "IdPaquete", "Nombre");
@@ -626,6 +625,7 @@ namespace Proyect.Controllers
             ViewBag.EstadosReserva = new SelectList(_context.EstadoReservas, "IdEstadoReserva", "Descripcion");
         }
         [HttpGet]
+
         public IActionResult ObtenerPrecioPaquete(int id)
         {
             // Obtener el paquete por el ID
@@ -676,6 +676,57 @@ namespace Proyect.Controllers
             return Ok(serviciosMasSolicitados); // Devuelve un JSON con los servicios y las cantidades
         }
 
+        [Route("api/dashboard/ReservasMasVendidas")]
+        [HttpGet]
+        public IActionResult GetReservasMasVendidas()
+        {
+            var reservasMasVendidas = _context.Reservas
+                .GroupBy(r => r.IdPaqueteNavigation.Nombre) // Agrupar por nombre del paquete
+                .Select(g => new
+                {
+                    Paquete = g.Key,        // Nombre del paquete
+                    Cantidad = g.Count()    // Cantidad de reservas por paquete
+                })
+                .OrderByDescending(r => r.Cantidad) // Ordenar por las más vendidas
+                .Take(5) // Limitar a los 5 paquetes más vendidos
+                .ToList();
+
+            return Ok(reservasMasVendidas);
+        }
+
+        [Route("api/dashboard/ReservasPorDia")]
+        [HttpGet]
+        public IActionResult GetReservasPorDia()
+        {
+            try
+            {
+                // Fecha inicial (últimos 10 días)
+                var fechaInicio = DateTime.Now.AddDays(-10);
+
+                // Cargar los datos desde la base de datos (sin usar ToString)
+                var reservas = _context.Reservas
+                    .Where(r => r.FechaReserva >= fechaInicio) // Filtrar en SQL
+                    .ToList(); // Traer datos a memoria
+
+                // Agrupar y procesar en memoria
+                var reservasPorDia = reservas
+                    .GroupBy(r => r.FechaReserva.Date)
+                    .Select(g => new
+                    {
+                        Fecha = g.Key.ToString("yyyy-MM-dd"), // Formatear la fecha en memoria
+                        Cantidad = g.Count()
+                    })
+                    .OrderBy(r => r.Fecha)
+                    .ToList();
+
+                return Ok(reservasPorDia);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
 
         // GET: Reservas/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -716,6 +767,11 @@ namespace Proyect.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
         }
     }
 }

@@ -51,6 +51,24 @@ namespace Proyect
             builder.Services.AddScoped<IValidator<Role>, RolValidator>();
             builder.Services.AddScoped<IValidator<Permiso>, PermisoValidator>();
 
+            // Configurar políticas de autorización
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AccederDashboard", policy => policy.RequireClaim("Permission", "Acceder Dashboard"));
+                options.AddPolicy("AccederUsuarios", policy => policy.RequireClaim("Permission", "Acceder Usuarios"));
+                options.AddPolicy("AccederClientes", policy => policy.RequireClaim("Permission", "Acceder Clientes"));
+                options.AddPolicy("AccederRoles", policy => policy.RequireClaim("Permission", "Acceder Roles"));
+                options.AddPolicy("AccederMuebles", policy => policy.RequireClaim("Permission", "Acceder Muebles"));
+                options.AddPolicy("AccederTipoMuebles", policy => policy.RequireClaim("Permission", "Acceder Tipo de Muebles"));
+                options.AddPolicy("AccederHabitaciones", policy => policy.RequireClaim("Permission", "Acceder Habitaciones"));
+                options.AddPolicy("AccederTipoHabitaciones", policy => policy.RequireClaim("Permission", "Acceder Tipo de Habitaciones"));
+                options.AddPolicy("AccederServicios", policy => policy.RequireClaim("Permission", "Acceder Servicios"));
+                options.AddPolicy("AccederPaquetes", policy => policy.RequireClaim("Permission", "Acceder Paquetes"));
+                options.AddPolicy("AccederReservas", policy => policy.RequireClaim("Permission", "Acceder Reservas"));
+                options.AddPolicy("AccederAbonos", policy => policy.RequireClaim("Permission", "Acceder Abonos"));
+            });
+        
+
             // Agregar servicios necesarios para la aplicaci�n, como los controladores con vistas
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
@@ -67,32 +85,6 @@ namespace Proyect
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();  // Configuraci�n para entornos de producci�n
             }
-
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var context = scope.ServiceProvider.GetRequiredService<ProyectContext>();
-
-            //    // Verifica si el usuario ya existe
-            //    if (!context.Usuarios.Any(u => u.CorreoElectronico == "unknownmurder569@gmail.com"))
-            //    {
-            //        var adminUser = new Usuario
-            //        {
-            //            TipoDocumento = "CC",
-            //            Documento = "123456789",
-            //            Nombre = "Administrador",
-            //            Apellido = "Principal",
-            //            Celular = "1234567890",
-            //            Direccion = "Direccion Admin",
-            //            CorreoElectronico = "unknownmurder569@gmail.com",
-            //            Estado = true,
-            //            Contraseña = "Admin123.", // Asegúrate de que esto se encripte si usas autenticación real.
-            //            FechaCreacion = DateTime.Now,
-            //            IdRol = 1
-            //        };
-            //        context.Usuarios.Add(adminUser);
-            //        context.SaveChanges();
-            //    }
-            //}
 
             app.UseStaticFiles();
             app.UseRouting();

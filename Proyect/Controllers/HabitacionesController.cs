@@ -11,7 +11,8 @@ using Proyect.ViewModel;
 
 namespace Proyect.Controllers
 {
-    [Authorize] 
+    [Authorize]
+    [Authorize(Policy = "AccederHabitaciones")]
     public class HabitacionesController : Controller
     {
         private readonly ProyectContext _context;
@@ -420,10 +421,13 @@ namespace Proyect.Controllers
             return Json(new { success = false, message = "Habitación no encontrada." });
         }
 
-
         private bool HabitacioneExists(int id)
         {
             return _context.Habitaciones.Any(e => e.IdHabitacion == id);
+        }
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
         }
     }
 }

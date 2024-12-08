@@ -11,6 +11,8 @@ using Proyect.Models;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederServicios")]
+
     public class ServiciosController : Controller
     {
         private readonly ProyectContext _context;
@@ -175,6 +177,11 @@ namespace Proyect.Controllers
         private bool ServicioExists(int id)
         {
             return _context.Servicios.Any(e => e.IdServicio == id);
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
         }
     }
 }

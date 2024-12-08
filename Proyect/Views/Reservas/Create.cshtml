@@ -20,7 +20,14 @@
                 <div class="form-group">
                     <label for="DocumentoCliente" class="control-label">Documento del Cliente</label>
                     <input type="text" id="DocumentoCliente" class="form-control" placeholder="Ingrese el documento del cliente" />
-                    <button type="button" class="btn btn-info mt-2" id="buscarCliente">Buscar Cliente</button>
+
+                    <!-- Botones buscar y crear -->
+                    <div class="d-flex gap-3 mt-2">
+                        <button type="button" class="btn btn-secondary btn-sm ml-3" id="buscarCliente">Buscar Cliente</button>
+                        <button type="button" class="btn btn-primary btn-sm ml-3" data-toggle="modal" data-target="#createClienteModal">
+                            Crear Cliente
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Información del Cliente -->
@@ -34,11 +41,7 @@
                     <input type="hidden" id="IdCliente" name="IdCliente" />
                 </div>
 
-                <!-- Botón para crear Cliente -->
-                <button type="button" class="btn btn-info mt-2" data-toggle="modal" data-target="#createClienteModal">
-                    Crear Cliente
-                </button>
-
+              
                 <!-- Fecha de Inicio y Fin -->
                 <div class="form-group">
                     <label asp-for="FechaInicio" class="control-label">Fecha de Inicio</label>
@@ -50,44 +53,50 @@
                     <input asp-for="FechaFin" class="form-control" type="date" id="fechaFin" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
                     <span asp-validation-for="FechaFin" class="text-danger"></span>
                 </div>
-
-                <!-- Paquete y Precio -->
+                <!-- Dropdown de Paquete -->
                 <div class="form-group">
                     <label asp-for="IdPaquete" class="control-label">Paquete</label>
-                    <select asp-for="IdPaquete" class="form-control" id="IdPaquete" asp-items="ViewBag.IdPaquete">
+                    <select asp-for="IdPaquete" class="form-control" id="IdPaquete">
                         <option value="">-- Seleccionar Paquete --</option>
+                        @foreach (var paquete in ViewBag.Paquetes)
+                        {
+                            <option value="@paquete.IdPaquete" data-precio="@paquete.Precio">
+                                @paquete.Nombre - $@paquete.Precio
+                            </option>
+                        }
                     </select>
                     <span asp-validation-for="IdPaquete" class="text-danger"></span>
                 </div>
-                <!-- Precio Paquete -->
+
+                <!-- Precio del Paquete -->
                 <div class="form-group">
-                    <label for="PrecioPaquete">Precio Paquete</label>
+                    <label for="PrecioPaquete">Precio del Paquete</label>
                     <input type="text" id="PrecioPaquete" class="form-control" readonly />
                 </div>
 
-                <!-- Mostrar los servicios disponibles con checkboxes -->
+                <!-- Servicios disponibles -->
                 <div class="form-group">
-                    <label>Servicios</label>
+                    <label>Servicios Adicionales</label>
                     <div id="servicios">
                         @if (ViewBag.Servicios != null && ViewBag.Servicios.Count > 0)
                         {
                             @foreach (var servicio in ViewBag.Servicios)
-
                             {
                                 <div>
-                                    <input type="checkbox" name="ServiciosSeleccionados" value="@servicio.IdServicio" />
-                                    <label>@servicio.Nombre - @servicio.Precio</label>
+                                    <input type="checkbox" name="ServiciosSeleccionados"
+                                           value="@servicio.IdServicio"
+                                           data-precio="@servicio.Precio" />
+                                    <label>@servicio.Nombre - $@servicio.Precio</label>
                                 </div>
                             }
                         }
-
                         else
-
                         {
                             <p>No hay servicios disponibles.</p>
                         }
                     </div>
                 </div>
+                
                 <!-- Métodos de Pago y Estado de Reserva -->
                 <div class="form-group">
                     <label asp-for="IdMetodoPago" class="control-label">Método de Pago</label>

@@ -35,25 +35,46 @@
                 <!-- Permisos asociados al Rol (Checkboxes) -->
                 <div class="form-group">
                     <label class="form-label">Permisos:</label>
-                    @if (ViewData["Permisos"] is List<Proyect.Models.Permiso> permisos && permisos.Any())
-                    {
-                        foreach (var permiso in permisos)
-                        {
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       class="form-check-input"
-                                       name="selectedPermisos"
-                                       value="@permiso.IdPermiso"
-                                @(ViewData["SelectedPermisos"] is List<int> selectedPermisos
-                                    && selectedPermisos.Contains(permiso.IdPermiso) ? "checked" : "") />
-                                <label class="form-check-label">@permiso.NombrePermiso</label>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <p>No hay permisos disponibles.</p>
-                    }
+                    <input type="text" id="searchPermisos" class="form-control mb-2" placeholder="Buscar permisos...">
+
+                    <button type="button" class="btn btn-secondary btn-sm ml-3 mb-2" onclick="selectAllPermisos(true)">Seleccionar Todos</button>
+                    <button type="button" class="btn btn-secondary btn-sm ml-3 mb-2" onclick="selectAllPermisos(false)">Deseleccionar Todos</button>
+                    <br />
+                    <div class="table-responsive" style="max-width: 500px;">
+                        <table class="table table-bordered table-sm" id="permisosTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 60%;">Permiso</th>
+                                    <th style="width: 40%;">Seleccionar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewData["Permisos"] is List<Proyect.Models.Permiso> permisos && permisos.Any())
+                                {
+                                    foreach (var permiso in permisos)
+                                    {
+                                        <tr>
+                                            <td>@permiso.NombrePermiso</td>
+                                            <td class="text-center">
+                                                <input type="checkbox"
+                                                       class="form-check-input"
+                                                       name="selectedPermisos"
+                                                       value="@permiso.IdPermiso"
+                                                @(ViewData["SelectedPermisos"] is List<int> selectedPermisos
+                                                    && selectedPermisos.Contains(permiso.IdPermiso) ? "checked" : "") />
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="2">No hay permisos disponibles.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="card-footer text-center">
                     <button type="submit" class="btn ov-btn-slide-left btn-sm">
@@ -66,12 +87,28 @@
             </form>
         </div>
     </div>
-
-  
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        document.getElementById('searchPermisos').addEventListener('keyup', function () {
+            var searchTerm = this.value.toLowerCase();
+            var permisos = document.querySelectorAll('#permisosTable tbody tr');
+            permisos.forEach(function (permiso) {
+                var permisoText = permiso.querySelector('td').textContent.toLowerCase();
+                permiso.style.display = permisoText.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        function selectAllPermisos(select) {
+            var checkboxes = document.querySelectorAll('#permisosTable tbody input[type="checkbox"]');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = select;
+            });
+        }
+    </script>
 }

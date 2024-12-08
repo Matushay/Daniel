@@ -6,6 +6,7 @@ using System.Diagnostics;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederDashboard")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -29,6 +30,10 @@ namespace Proyect.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
         }
     }
 }

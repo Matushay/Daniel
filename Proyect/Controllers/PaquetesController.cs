@@ -11,6 +11,8 @@ using Proyect.Models;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederPaquetes")]
+
     public class PaquetesController : Controller
     {
         private readonly ProyectContext _context;
@@ -367,6 +369,11 @@ namespace Proyect.Controllers
         private bool PaqueteExists(int id)
         {
             return _context.Paquetes.Any(e => e.IdPaquete == id);
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
         }
     }
 }

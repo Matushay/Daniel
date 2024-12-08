@@ -11,6 +11,8 @@ using Proyect.Models;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederAbonos")]
+
     public class AbonosController : Controller
     {
         private readonly ProyectContext _context;
@@ -218,16 +220,9 @@ namespace Proyect.Controllers
 
             return RedirectToAction("Index", new { idReserva = abono.IdReserva });
         }
-
-
-
-
-
-
-
-
-
-
-        
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }

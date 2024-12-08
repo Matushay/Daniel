@@ -9,7 +9,7 @@ public partial class MetodoPago
 
     public string Nombre { get; set; }
 
-    public bool Estado { get; set; }
+    public bool Estado { get; set; } = true;
 
     public virtual ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
 }

@@ -7,11 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Proyect.Models;
 using Proyect.Servicios;
 using Proyect.ViewModel;
-using Proyect.Validaciones.ValidacionesLuis; 
+using Proyect.Validaciones.ValidacionesLuis;
 
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederUsuarios")]
     public class UsuariosController : Controller
     {
         private readonly ProyectContext _context;
@@ -20,14 +21,18 @@ namespace Proyect.Controllers
         public UsuariosController(ProyectContext context)
         {
             _context = context;
-             var apiKey = "Clave de api"; // Obtén tu API Key de SendGrid
+            var apiKey = "Aqui va el appi"; // API Key de SendGrid
             _emailcreateService = new SendGridEmailService(apiKey);
         }
 
-    // GET: Usuarios
-    public async Task<IActionResult> Index()
+        // GET: Usuarios
+        public async Task<IActionResult> Index()
         {
-            var proyectContext = _context.Usuarios.Include(u => u.IdRolNavigation);
+            // Filtrar los usuarios para excluir al superadministrador
+            var proyectContext = _context.Usuarios
+                .Include(u => u.IdRolNavigation)
+                .Where(u => !u.IdRolNavigation.NombreRol.Equals("SuperAdmin"));
+
             return View(await proyectContext.ToListAsync());
         }
 
@@ -210,7 +215,7 @@ namespace Proyect.Controllers
 </body>
 </html>";
 
-                    
+
 
                     // Enviar el correo
                     await _emailcreateService.SendEmailAsync(usuario.CorreoElectronico, subject, plainTextContent, htmlContent);
@@ -245,7 +250,6 @@ namespace Proyect.Controllers
             return View(usuario);
         }
 
-        // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,TipoDocumento,Documento,Nombre,Apellido,Celular,Direccion,CorreoElectronico,FechaCreacion,IdRol")] Usuario usuario)
@@ -279,10 +283,14 @@ namespace Proyect.Controllers
                 try
                 {
                     var usuarioExistente = await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.IdUsuario == id);
+                    var rolSuperAdmin = await _context.Roles.FirstOrDefaultAsync(r => r.NombreRol == "SuperAdmin");
 
-                    if (usuarioExistente == null)
+                    if (usuarioExistente != null && usuarioExistente.IdRol == rolSuperAdmin?.IdRol)
                     {
-                        return NotFound();
+                        // No permitir editar el superadministrador
+                        ModelState.AddModelError("", "No se puede editar el usuario superadministrador.");
+                        ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
+                        return View(usuario);
                     }
 
                     // Mantener la contraseña existente si no se proporciona una nueva
@@ -317,6 +325,7 @@ namespace Proyect.Controllers
             ViewBag.IdRol = new SelectList(_context.Roles, "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
+
 
         [HttpPost]
         public IActionResult ActualizarEstado(int id, bool estado)
@@ -367,18 +376,19 @@ namespace Proyect.Controllers
         }
 
         // GET: Usuarios/Delete/5
-        public async Task<IActionResult> Delete(int? id) 
-        { 
-            if (id == null) 
-            { 
-                return NotFound(); 
-            } var usuario = await _context.Usuarios 
-                .Include(u => u.IdRolNavigation) 
-                .FirstOrDefaultAsync(m => m.IdUsuario == id); 
-            if (usuario == null) 
-            { 
-                return NotFound(); 
-            } 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var usuario = await _context.Usuarios
+                .Include(u => u.IdRolNavigation)
+                .FirstOrDefaultAsync(m => m.IdUsuario == id);
+            if (usuario == null)
+            {
+                return NotFound();
+            }
 
             var superAdminRole = await _context.Roles
                 .FirstOrDefaultAsync(r => r.NombreRol == "SuperAdmin");
@@ -399,8 +409,8 @@ namespace Proyect.Controllers
                 .GroupBy(u => u.IdRolNavigation.NombreRol)
                 .Select(grupo => new
                 {
-                   Rol = grupo.Key,
-                   Cantidad = grupo.Count()
+                    Rol = grupo.Key,
+                    Cantidad = grupo.Count()
                 })
                 .ToList();
 
@@ -416,20 +426,20 @@ namespace Proyect.Controllers
             var usuario = await _context.Usuarios
                 .Include(u => u.IdRolNavigation)
                 .FirstOrDefaultAsync(u => u.IdUsuario == id);
-            if (usuario == null) 
-            { 
-                return NotFound(); 
+            if (usuario == null)
+            {
+                return NotFound();
             }
             var superAdminRole = await _context.Roles.
-                FirstOrDefaultAsync(r => r.NombreRol == "SuperAdmin"); 
+                FirstOrDefaultAsync(r => r.NombreRol == "SuperAdmin");
 
             if (superAdminRole != null && usuario.IdRol == superAdminRole.IdRol)
             {
                 TempData["ErrorMessage"] = "No se puede eliminar el usuario superadministrador.";
 
-                return View(usuario); 
-            } 
-            _context.Usuarios.Remove(usuario); 
+                return View(usuario);
+            }
+            _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "El usuario eliminado correctamente.";
@@ -439,6 +449,11 @@ namespace Proyect.Controllers
         private bool UsuarioExists(int id)
         {
             return _context.Usuarios.Any(e => e.IdUsuario == id);
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
         }
     }
 }

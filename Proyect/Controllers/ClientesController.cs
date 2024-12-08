@@ -11,6 +11,7 @@ using Proyect.Models;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederClientes")]
     public class ClientesController : Controller
     {
         private readonly ProyectContext _context;
@@ -202,6 +203,9 @@ namespace Proyect.Controllers
         {
             return _context.Clientes.Any(e => e.IdCliente == id);
         }
-
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }

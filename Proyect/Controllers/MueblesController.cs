@@ -11,6 +11,8 @@ using Proyect.Models;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederMuebles")]
+
     public class MueblesController : Controller
     {
         private readonly ProyectContext _context;
@@ -182,6 +184,10 @@ namespace Proyect.Controllers
         private bool MuebleExists(int id)
         {
             return _context.Muebles.Any(e => e.IdMueble == id);
+        }
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
         }
     }
 }

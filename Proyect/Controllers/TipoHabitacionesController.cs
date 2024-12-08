@@ -11,6 +11,8 @@ using Proyect.Models;
 namespace Proyect.Controllers
 {
     [Authorize]
+    [Authorize(Policy = "AccederTipoHabitaciones")]
+
     public class TipoHabitacionesController : Controller
     {
         private readonly ProyectContext _context;
@@ -163,6 +165,11 @@ namespace Proyect.Controllers
         private bool TipoHabitacioneExists(int id)
         {
             return _context.TipoHabitaciones.Any(e => e.IdTipoHabitacion == id);
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
         }
     }
 }

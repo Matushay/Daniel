@@ -178,5 +178,9 @@ namespace Proyect.Controllers
         {
             return _context.Permisos.Any(e => e.IdPermiso == id);
         }
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
     }
 }
