@@ -16,9 +16,10 @@
 
     <div class="form-group">
         <label asp-for="Documento" class="control-label">Documento</label>
-        <input asp-for="Documento" class="form-control input-style" placeholder="Ingrese el número de documento" />
+        <input asp-for="Documento" class="form-control input-style" placeholder="Documento" id="Documento" />
         <span asp-validation-for="Documento" class="text-danger"></span>
     </div>
+
 
     <div class="form-group">
         <label asp-for="Nombre" class="control-label">Nombre</label>
@@ -46,9 +47,11 @@
 
     <div class="form-group">
         <label asp-for="CorreoElectronico" class="control-label">Correo Electrónico</label>
-        <input asp-for="CorreoElectronico" class="form-control input-style" placeholder="Correo electrónico" />
+        <input asp-for="CorreoElectronico" class="form-control input-style" placeholder="Correo electrónico" id="CorreoElectronico" />
         <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+        <span id="CorreoElectronicoError" class="text-danger"></span>  <!-- Aquí se mostrará el error si el correo está duplicado -->
     </div>
+
 
     <div class="form-group">
         <input type="submit" value="Crear Cliente" class="btn btn-submit" />

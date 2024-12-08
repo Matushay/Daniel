@@ -88,8 +88,7 @@ namespace Proyect.Controllers
 
             return View(cliente);
         }
-
-        // POST: Clientes/Create from modal (partial)
+        // POST: Clientes/Create desde el modal (parcial)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateFromModal([Bind("IdCliente,TipoDocumento,Documento,Nombre,Apellido,Direccion,Celular,CorreoElectronico,Estado")] Cliente cliente)
@@ -98,8 +97,26 @@ namespace Proyect.Controllers
             {
                 try
                 {
-                    // Registrar los datos del cliente para depuración
-                    Console.WriteLine($"Datos del cliente: {cliente.Nombre}, {cliente.Documento}, {cliente.CorreoElectronico}");
+                    // Verificar si el documento ya existe
+                    var clienteExistente = await _context.Clientes
+                        .FirstOrDefaultAsync(c => c.Documento == cliente.Documento);
+
+                    if (clienteExistente != null)
+                    {
+                        // Si el cliente con el mismo documento ya existe, devolver un mensaje de error
+                        ModelState.AddModelError("Documento", "Ya existe un cliente con ese documento.");
+                        return Json(new { success = false, message = "Ya existe un cliente con ese documento.", field = "Documento" });
+                    }
+
+                    // Verificar si el correo ya está registrado
+                    var correoExistente = await _context.Clientes
+                        .FirstOrDefaultAsync(c => c.CorreoElectronico == cliente.CorreoElectronico);
+
+                    if (correoExistente != null)
+                    {
+                        ModelState.AddModelError("CorreoElectronico", "Ya existe un cliente con ese correo.");
+                        return Json(new { success = false, message = "Ya existe un cliente con ese correo.", field = "CorreoElectronico" });
+                    }
 
                     // Agregar el cliente al contexto de la base de datos
                     _context.Add(cliente);
@@ -110,15 +127,20 @@ namespace Proyect.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Registrar la excepción interna
                     var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                     return Json(new { success = false, message = $"Error al crear el cliente: {innerMessage}" });
                 }
-
             }
+
             // Si el modelo no es válido, devolver un mensaje detallado
             return Json(new { success = false, message = "Datos inválidos, por favor revise los campos del formulario." });
         }
+
+
+
+
+
+
 
 
         // GET: Clientes/Edit/5

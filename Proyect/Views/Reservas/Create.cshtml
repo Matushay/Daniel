@@ -15,6 +15,15 @@
         <div class="card-body">
             <form asp-action="Create" id="createReservaForm">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (TempData["SuccessMessage"] != null)
+
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
 
                 <!-- Documento del Cliente -->
                 <div class="form-group">
@@ -60,8 +69,8 @@
                         <option value="">-- Seleccionar Paquete --</option>
                         @foreach (var paquete in ViewBag.Paquetes)
                         {
-                            <option value="@paquete.IdPaquete" data-precio="@paquete.Precio">
-                                @paquete.Nombre - $@paquete.Precio
+                            <option value="@paquete.IdPaquete">
+                                @paquete.Nombre
                             </option>
                         }
                     </select>
@@ -147,6 +156,7 @@
     </div>
 </div>
 
+
 <!-- Modal para Crear Cliente -->
 <div class="modal fade" id="createClienteModal" tabindex="-1" role="dialog" aria-labelledby="createClienteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -163,7 +173,6 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     @Html.Partial("_ValidationScriptsPartial");
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -196,7 +205,6 @@
             var selectedPaquete = paquetes.find(p => p.IdPaquete === paqueteId);
 
             if (selectedPaquete) {
-                // Mostrar el precio del paquete seleccionado en tiempo real
                 precioPaqueteField.value = selectedPaquete.Precio.toFixed(2);
                 subtotalField.value = selectedPaquete.Precio.toFixed(2);
             } else {
@@ -204,28 +212,23 @@
                 subtotalField.value = "";
             }
 
-            // Actualizar IVA y Total
             updateTotals();
         });
 
         // Actualizar el subtotal, IVA y total al aplicar un descuento
-        document.getElementById("Descuento").addEventListener("input", function () {
-            updateTotals();
-        });
+        document.getElementById("Descuento").addEventListener("input", updateTotals);
 
-        // Agregar la lógica para los servicios seleccionados
+        // Agregar lógica para los servicios seleccionados
         var servicioPrecios = {};
         servicios.forEach(function (servicio) {
             servicioPrecios[servicio.IdServicio] = servicio.Precio;
         });
 
-        // Función para actualizar el subtotal considerando los servicios
         function updateTotals() {
             var precioPaquete = parseFloat(document.getElementById("PrecioPaquete").value) || 0;
             var descuento = parseFloat(document.getElementById("Descuento").value) || 0;
             var totalServicios = 0;
 
-            // Sumar el precio de los servicios seleccionados
             var serviciosSeleccionados = document.querySelectorAll('input[name="ServiciosSeleccionados"]:checked');
             serviciosSeleccionados.forEach(function (checkbox) {
                 var idServicio = parseInt(checkbox.value);
@@ -234,12 +237,10 @@
                 }
             });
 
-            // Calcular el subtotal aplicando el descuento
             var subtotalConDescuento = (precioPaquete + totalServicios) * (1 - descuento / 100);
             var iva = subtotalConDescuento * 0.19;
             var total = subtotalConDescuento + iva;
 
-            // Actualizar campos de subtotal, IVA y total visibles y ocultos
             document.getElementById("subtotal").value = subtotalConDescuento.toFixed(2);
             document.getElementById("iva").value = iva.toFixed(2);
             document.getElementById("total").value = total.toFixed(2);
@@ -249,12 +250,11 @@
             document.getElementById("hiddenTotal").value = total.toFixed(2);
         }
 
-        // Escuchar el cambio en los checkboxes de los servicios
         document.querySelectorAll('input[name="ServiciosSeleccionados"]').forEach(function (checkbox) {
             checkbox.addEventListener('change', updateTotals);
         });
 
-        // AJAX para buscar el cliente por documento
+        // Buscar cliente por documento
         document.getElementById('buscarCliente').addEventListener('click', function () {
             var documento = document.getElementById('DocumentoCliente').value;
 
@@ -263,24 +263,24 @@
                 return;
             }
 
-            // Realizar la petición AJAX al controlador
+            // Limpiar cualquier mensaje de error anterior
+            $('#DocumentoClienteError').remove();
+
             fetch('/Reservas/BuscarClientePorDocumento?documento=' + documento)
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
-                        // Mostrar los datos del cliente en la vista
                         document.getElementById('clienteNombre').textContent = data.nombre;
                         document.getElementById('clienteApellido').textContent = data.apellido;
                         document.getElementById('clienteCelular').textContent = data.celular;
                         document.getElementById('clienteCorreo').textContent = data.correoElectronico;
-
-                        // Asignar el IdCliente al formulario
                         document.getElementById('IdCliente').value = data.idCliente;
-
-                        // Mostrar la información del cliente
                         document.getElementById('clienteInfo').style.display = 'block';
                     } else {
-                        alert("Cliente no encontrado.");
+                        // Si el cliente no se encuentra, mostrar mensaje de error debajo del campo documento
+                        $('<span id="DocumentoClienteError" class="text-danger">No se encontró un cliente con este documento.</span>')
+                            .insertAfter('#DocumentoCliente');
+                        $('#createClienteModal').modal('hide'); // Cerrar el modal
                     }
                 })
                 .catch(error => {
@@ -288,29 +288,46 @@
                 });
         });
 
-        // Evento para el envío del formulario en el modal (crear cliente)
         $(document).ready(function () {
+            // Mostrar el mensaje de éxito si existe TempData["SuccessMessage"]
+            var successMessage = '@TempData["SuccessMessage"]';
+            if (successMessage) {
+                // Mostrar el mensaje de éxito solo después de recargar
+                alert(successMessage);
+                $('#createClienteModal').modal('hide');
+            }
+
             $('#createClienteForm').submit(function (event) {
                 event.preventDefault();
-                var formData = $(this).serialize(); // Serializa el formulario
+                var formData = $(this).serialize();
+
+                // Limpiar cualquier mensaje de error anterior
+                $('#CorreoElectronicoError').remove();
+                $('#DocumentoError').remove(); // Limpiar cualquier mensaje de error del documento
 
                 $.ajax({
-                    url: '@Url.Action("CreateFromModal", "Clientes")', // Acción para crear el cliente desde el modal
+                    url: '@Url.Action("CreateFromModal", "Clientes")',
                     type: 'POST',
                     data: formData,
                     success: function (response) {
                         if (response.success) {
-                            alert('Cliente creado exitosamente.');
-                            $('#createClienteModal').modal('hide'); // Cerrar el modal
-
-                            // Mostrar el mensaje de éxito en la vista principal (Reserva)
-                            alert('Cliente creado con éxito. Ahora puedes asignarlo a la reserva.');
-
-                            // Aquí actualizas la vista de cliente en la página de creación de la reserva si es necesario
-                            // Por ejemplo, podrías actualizar los campos de cliente con la información del nuevo cliente
-
+                            // Si la creación es exitosa, cerramos el modal y recargamos la página
+                            $('#createClienteModal').modal('hide');
+                            window.location.reload(); // Recargar la página para mostrar el mensaje con TempData
                         } else {
-                            alert(response.message); // Mostrar el error si no fue exitoso
+                            // Si el error es por el correo electrónico duplicado, mostramos el mensaje de error debajo del campo
+                            if (response.field === "CorreoElectronico") {
+                                // Agregar un mensaje de error debajo del campo de correo
+                                $('<span id="CorreoElectronicoError" class="text-danger">' + response.message + '</span>')
+                                    .insertAfter('#CorreoElectronico');
+                            }
+                            // Si el error es por el documento duplicado, mostramos el mensaje de error debajo del campo
+                            else if (response.field === "Documento") {
+                                $('<span id="DocumentoError" class="text-danger">' + response.message + '</span>')
+                                    .insertAfter('#Documento');
+                            } else {
+                                alert(response.message);
+                            }
                         }
                     },
                     error: function () {
@@ -320,4 +337,7 @@
             });
         });
     </script>
+
+
+
 }
