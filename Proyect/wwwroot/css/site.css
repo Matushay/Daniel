@@ -237,17 +237,20 @@ input:checked + .slider {
     transform: translateY(-4px) scale(1.1);
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
 }
+/* Cabecera */
 thead {
-    background-color: #ff416c;
+    background-color: #a8c9b9; /* Verde pastel suave */
+    color: #2a2a2a; /* Texto oscuro para buen contraste */
 }
+
 /* Footer Styles */
 .modern-footer {
-    background-color: #2b275b; /* Elegante color oscuro */
-    color: #ffffff; /* Texto blanco para contraste */
+    background-color: #2b3a42; /* Azul oscuro suave, que complementa el fondo azul claro */
+    color: #ffffff; /* Texto blanco para buen contraste */
     padding: 1.5rem 0;
     font-size: 0.9rem;
     text-align: center;
-    border-top: 4px solid #ff416c; /* Línea de acento */
+    border-top: 4px solid #a8c9b9; /* Línea de acento en verde pastel */
 }
 
     .modern-footer .footer-content {
@@ -268,7 +271,7 @@ thead {
     }
 
         .modern-footer .footer-links a {
-            color: #ff416c; /* Color de acento */
+            color: #a8c9b9; /* Acento en verde suave */
             text-decoration: none;
             transition: color 0.3s ease;
         }
@@ -279,42 +282,37 @@ thead {
 
     .modern-footer .divider {
         color: #ffffff;
-        opacity: 0.6; /* Más sutil para separación */
+        opacity: 0.4; /* Sutil y suave para la separación */
     }
+
     /* Botón Moderno */
 .btn-modern {
-    background-color: #ff416c; /* Color de acento (rosa vibrante) */
-    color: #fff; /* Texto blanco */
-    font-weight: bold;
+    background-color: #4a6a70; /* Verde oliva oscuro, que combina bien con el azul y el verde del encabezado */
+    color: #ffffff; /* Texto blanco para buen contraste */
+    padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 8px; /* Esquinas redondeadas */
-    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
     font-size: 1rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem; /* Espaciado entre el ícono y el texto */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sutil sombra */
-    transition: all 0.3s ease;
-    text-decoration: none; /* Quitar subrayado */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.btn-modern:hover {
-    background-color: #d9365a; /* Un tono más oscuro al pasar el cursor */
-    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); /* Más prominente */
-    transform: translateY(-2px); /* Efecto flotante */
-}
+    .btn-modern:hover {
+        background-color: #3a4c53; /* Un verde más oscuro para el hover, para dar sensación de profundidad */
+        transform: translateY(-2px); /* Ligeramente eleva el botón al pasar el cursor */
+    }
 
-.btn-modern:active {
-    background-color: #c02e4e; /* Más oscuro al presionar */
-    transform: translateY(0); /* Sin efecto flotante */
-}
+    .btn-modern:focus {
+        outline: none;
+        box-shadow: 0 0 3px 2px rgba(74, 106, 112, 0.6); /* Resalta el borde al recibir el foco */
+    }
 
 .btn-modern i {
     font-size: 1.2rem; /* Ajustar el tamaño del ícono */
 }
 /* Estilos para el nuevo botón con efecto de deslizamiento a la izquierda */
 .ov-btn-slide-left {
-    background: #ff416c; 
+    background: #4A6A70; 
     color: white; /* color de fuente blanco */
     border: 1px solid #388E3C; /* color de borde verde oscuro */
     padding: 6px 12px; /* padding más grande para hacerlo más visible */
@@ -337,7 +335,7 @@ thead {
     /* Efecto del pseudo-elemento ::after */
     .ov-btn-slide-left::after {
         content: "";
-        background: #c02a49; /* color de fondo más oscuro para el hover */
+        background: #6B8E8A; /* color de fondo más oscuro para el hover */
         position: absolute;
         z-index: -1;
         padding: 8px 10px; /* padding para el efecto de deslizamiento */
@@ -461,11 +459,9 @@ thead {
 
 
 
-
-
 /* Fondo general */
 .login-container {
-    background: linear-gradient(135deg, #2a265a, #1f3b4d);
+    background: linear-gradient(135deg, #a8b7d8, #d1e3f3); /* Gradiente suave en tonos azules claros y grises */
     color: #fff;
 }
 
@@ -475,9 +471,167 @@ thead {
     width: 100%;
     border-radius: 12px;
     overflow: hidden;
+    background-color: #ffffff; /* Mantener fondo blanco para el contenido */
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1); /* Sombra más suave */
+}
+/* Estilo para el contenedor de la página de restablecimiento de contraseña */
+.reset-password-container {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    height: 100vh;
+}
+
+/* Estilo para la tarjeta de restablecimiento de contraseña */
+.reset-password-card {
+    max-width: 450px;
+    width: 100%;
+    border-radius: 12px;
     background-color: #fff;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
 }
+
+/* Título */
+.reset-password-title {
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* Etiquetas del formulario */
+.reset-password-label {
+    color: #6c757d;
+}
+
+/* Campos de entrada */
+.reset-password-input {
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+}
+
+/* Estilo del botón de restablecer */
+.reset-password-btn {
+    background-color: #28a745;
+    border: none;
+    color: #fff;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+/* Estilo del botón de volver */
+.reset-password-back-btn {
+    background-color: #6c757d;
+    border: none;
+    color: #fff;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+/* Ajuste de la imagen de fondo */
+.reset-password-container img {
+    max-width: 100%;
+    height: auto;
+}
+/* Contenedor de la página de recuperación de contraseña */
+.password-recovery-container {
+    background: linear-gradient(135deg, #6c757d, #495057); /* Fondo de gradiente suave */
+    height: 100vh;
+    padding: 0 20px;
+}
+
+/* Tarjeta de recuperación de contraseña */
+.password-recovery-card {
+    max-width: 450px;
+    width: 100%;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Título de la tarjeta */
+.password-recovery-title {
+    color: #007bff; /* Color azul para el título */
+    font-weight: bold;
+}
+
+/* Descripción debajo del título */
+.password-recovery-description {
+    font-size: 1rem;
+    color: #6c757d; /* Gris suave para la descripción */
+}
+
+/* Etiquetas de los campos de entrada */
+.password-recovery-label {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+/* Campos de entrada */
+.password-recovery-input {
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa; /* Fondo suave */
+    font-size: 1rem;
+}
+
+/* Estilo para el botón de enviar */
+.password-recovery-btn {
+    background-color: #28a745; /* Verde para el botón de enviar */
+    border: none;
+    color: #fff;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+    .password-recovery-btn:hover {
+        background-color: #218838; /* Verde más oscuro cuando se pasa el cursor */
+    }
+
+/* Estilo para el botón de volver */
+.password-recovery-back-btn {
+    background-color: #6c757d; /* Gris para el botón de volver */
+    border: none;
+    color: #fff;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+    .password-recovery-back-btn:hover {
+        background-color: #5a6268; /* Gris más oscuro al pasar el cursor */
+    }
+
+/* Estilo para el mensaje de éxito */
+.password-recovery-success-message {
+    background-color: #d4edda; /* Verde claro para el mensaje de éxito */
+    color: #155724; /* Texto en verde oscuro */
+    font-weight: bold;
+    padding: 12px;
+}
+
+/* Ajustes para la imagen (logo) */
+.password-recovery-container img {
+    max-width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+/* Responsividad (para móviles) */
+@media (max-width: 767px) {
+    .password-recovery-container {
+        padding: 0 10px;
+    }
+
+    .password-recovery-card {
+        padding: 20px;
+    }
+}
+
 
 /* Imagen de fondo */
 .bg-image {
@@ -622,4 +776,180 @@ h2 {
     .btn-info:hover {
         background-color: #138496;
     }
+
+/* Estilo del switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px; /* Ajustado al tamaño estándar */
+    height: 20px; /* Mantener el tamaño pequeño */
+}
+
+    /* El input está oculto */
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+/* Slider del switch */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* Fondo gris cuando está desactivado */
+    transition: .4s;
+    border-radius: 20px; /* Mantiene bordes redondeados */
+}
+
+    /* El círculo dentro del slider */
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%; /* Círculo redondeado */
+    }
+
+/* Cuando está activo el switch */
+input:checked + .slider {
+    background-color: #2ecc71; /* Verde claro cuando está activado */
+}
+
+    /* Mueve el círculo al activar el switch */
+    input:checked + .slider:before {
+        transform: translateX(20px); /* Ajustar desplazamiento del círculo */
+    }
+
+/* Cuando el mouse pasa sobre el slider */
+.switch:hover .slider {
+    background-color: #f39c12; /* Color intermedio cuando el mouse está sobre el interruptor */
+}
+/* Estilo general para el contenido del "Acceso Denegado" */
+.acceso-denegado {
+    background-color: #ffffff; /* Fondo blanco para destacar el mensaje */
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    width: 100%;
+    max-width: 600px; /* Ancho máximo para que no se estire demasiado en pantallas grandes */
+    margin: 20px auto; /* Margen automático para centrar horizontalmente */
+    text-align: center;
+}
+
+    /* Título principal */
+    .acceso-denegado h1 {
+        color: #e74c3c; /* Rojo vibrante */
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    /* Descripción */
+    .acceso-denegado p {
+        font-size: 1.1rem;
+        color: #555; /* Gris oscuro para el texto */
+        line-height: 1.6;
+    }
+
+    /* Línea separadora */
+    .acceso-denegado hr {
+        border: 0;
+        border-top: 2px solid #e74c3c;
+        margin: 20px 0;
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+/* Estilo del botón "Volver" */
+.btn-volver {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: #e74c3c;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease; /* Transición suave para todos los cambios */
+    margin-top: 20px;
+}
+
+    /* Mejoramos el hover del botón */
+    .btn-volver:hover {
+        color:white;
+        background-color: #c0392b; /* Cambio a un tono más oscuro de rojo */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Añadimos una sombra más visible */
+        transform: translateY(-3px); /* Eleva el botón ligeramente para dar sensación de interacción */
+        transition: all 0.3s ease; /* Hacemos la transición más suave */
+    }
+
+
+
+    .ov-btn-slide-righte {
+    background: #fff; /* color de fondo */
+    color: black; /* color de fuente */
+    border: 1px solid black; /* tamaño y color de borde */
+    padding: 4px 8px; /* reducir el padding para hacerlo más pequeño */
+    border-radius: 3px; /* redondear bordes */
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    font-size: 14px; /* reducir tamaño de la fuente */
+}
+
+    .ov-btn-slide-righte:hover {
+        color: black; /* color de fuente hover */
+    }
+
+        .ov-btn-slide-righte::after {
+            content: "";
+            background: #F5F5DC; /* color de fondo hover */
+            position: absolute;
+            z-index: -1;
+            padding: 6px 8px; /* ajustar padding */
+            display: block;
+            top: 0;
+            bottom: 0;
+            left: 100%;
+            right: -100%;
+            -webkit-transition: all 0.35s;
+            transition: all 0.35s;
+        }
+
+    .ov-btn-slide-righte:hover::after {
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        -webkit-transition: all 0.35s;
+        transition: all 0.35s;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
