@@ -25,9 +25,9 @@
         <tr>
             <th>@Html.DisplayNameFor(model => model.Nombre)</th>
             <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
-            <th>@Html.DisplayNameFor(model => model.Precio)</th>
+            <th>@Html.DisplayNameFor(model => model.IdTipoHabitacionNavigation)</th>
             <th>@Html.DisplayNameFor(model => model.Cantidad)</th>
-            <th>@Html.DisplayNameFor(model => model.IdTipoHabitacionNavigation.Nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.Precio)</th>
             <th>@Html.DisplayNameFor(model => model.Estado)</th>
             <th>Acciones</th>
         </tr>
@@ -38,9 +38,9 @@
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
                 <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
-                <td>@Html.DisplayFor(modelItem => item.Precio)</td>
-                <td>@Html.DisplayFor(modelItem => item.Cantidad)</td>
                 <td>@Html.DisplayFor(modelItem => item.IdTipoHabitacionNavigation.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.Cantidad)</td>
+                <td>@string.Format(new System.Globalization.CultureInfo("es-CO"), "{0:C0}", item.Precio)</td>
                 <td>
                     <label class="switch">
                         <input type="checkbox" class="status-toggle" data-id="@item.IdHabitacion" @(item.Estado ? "checked" : "")>

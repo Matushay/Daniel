@@ -28,11 +28,11 @@ namespace Proyect.Controllers
             var roles = await _context.Roles
                 .Include(r => r.RolesPermisos)
                 .ThenInclude(rp => rp.IdPermisoNavigation)
+                .Where(r => !r.NombreRol.Equals("SuperAdmin"))
                 .ToListAsync();
 
             return View(roles);
         }
-
 
         // GET: Roles/Details/5
         public async Task<IActionResult> Details(int? id)

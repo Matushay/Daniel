@@ -640,6 +640,7 @@ namespace Proyect.Controllers
             return Json(new { precio = paquete.Precio.ToString("0") });
         }
 
+        [AllowAnonymous]
         [HttpGet("api/dashboard/PaquetesMasReservados")]
         public IActionResult GetPaquetesMasReservados()
         {
@@ -658,6 +659,7 @@ namespace Proyect.Controllers
             return Ok(datos); // Devuelve un JSON con los paquetes y la cantidad de reservas
         }
 
+        [AllowAnonymous]
         [HttpGet("api/dashboard/serviciosMasSolicitados")]
         public IActionResult GetServiciosMasSolicitados()
         {
@@ -676,6 +678,7 @@ namespace Proyect.Controllers
             return Ok(serviciosMasSolicitados); // Devuelve un JSON con los servicios y las cantidades
         }
 
+        [AllowAnonymous]
         [Route("api/dashboard/ReservasMasVendidas")]
         [HttpGet]
         public IActionResult GetReservasMasVendidas()
@@ -694,6 +697,7 @@ namespace Proyect.Controllers
             return Ok(reservasMasVendidas);
         }
 
+        [AllowAnonymous]
         [Route("api/dashboard/ReservasPorDia")]
         [HttpGet]
         public IActionResult GetReservasPorDia()

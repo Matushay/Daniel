@@ -196,6 +196,14 @@
         var paquetes = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Paquetes));
         var servicios = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Servicios));
 
+               // Función para formatear números sin decimales y con puntos cada 3 dígitos
+        function formatCurrencyWithoutDecimals(value) {
+            return new Intl.NumberFormat('es-ES', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        }
+
         // Actualizar precio del paquete y subtotal
         document.getElementById("IdPaquete").addEventListener("change", function () {
             var paqueteId = parseInt(this.value);
@@ -205,8 +213,9 @@
             var selectedPaquete = paquetes.find(p => p.IdPaquete === paqueteId);
 
             if (selectedPaquete) {
-                precioPaqueteField.value = selectedPaquete.Precio.toFixed(2);
-                subtotalField.value = selectedPaquete.Precio.toFixed(2);
+                // Formatear y mostrar el precio del paquete
+                precioPaqueteField.value = formatCurrencyWithoutDecimals(selectedPaquete.Precio);
+                subtotalField.value = formatCurrencyWithoutDecimals(selectedPaquete.Precio);
             } else {
                 precioPaqueteField.value = "";
                 subtotalField.value = "";
@@ -214,6 +223,7 @@
 
             updateTotals();
         });
+
 
         // Actualizar el subtotal, IVA y total al aplicar un descuento
         document.getElementById("Descuento").addEventListener("input", updateTotals);
@@ -223,6 +233,13 @@
         servicios.forEach(function (servicio) {
             servicioPrecios[servicio.IdServicio] = servicio.Precio;
         });
+
+              function formatCurrencyWithoutDecimals(value) {
+            return new Intl.NumberFormat('es-ES', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        }
 
         function updateTotals() {
             var precioPaquete = parseFloat(document.getElementById("PrecioPaquete").value) || 0;
@@ -241,10 +258,12 @@
             var iva = subtotalConDescuento * 0.19;
             var total = subtotalConDescuento + iva;
 
-            document.getElementById("subtotal").value = subtotalConDescuento.toFixed(2);
-            document.getElementById("iva").value = iva.toFixed(2);
-            document.getElementById("total").value = total.toFixed(2);
+            // Actualizar los campos con el formato de moneda
+            document.getElementById("subtotal").value = formatCurrencyWithoutDecimals(subtotalConDescuento);
+            document.getElementById("iva").value = formatCurrencyWithoutDecimals(iva);
+            document.getElementById("total").value = formatCurrencyWithoutDecimals(total);
 
+            // Actualizar los campos ocultos con valores sin formato
             document.getElementById("hiddenSubtotal").value = subtotalConDescuento.toFixed(2);
             document.getElementById("hiddenIva").value = iva.toFixed(2);
             document.getElementById("hiddenTotal").value = total.toFixed(2);
@@ -253,6 +272,7 @@
         document.querySelectorAll('input[name="ServiciosSeleccionados"]').forEach(function (checkbox) {
             checkbox.addEventListener('change', updateTotals);
         });
+
 
         // Buscar cliente por documento
         document.getElementById('buscarCliente').addEventListener('click', function () {

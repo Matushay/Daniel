@@ -25,8 +25,8 @@
             <th>@Html.DisplayNameFor(model => model.Nombre)</th>
             <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
             <th>@Html.DisplayNameFor(model => model.FechaRegistro)</th>
+            <th>@Html.DisplayNameFor(model => model.IdTipoMuebleNavigation)</th>
             <th>@Html.DisplayNameFor(model => model.Cantidad)</th>
-            <th>@Html.DisplayNameFor(model => model.IdTipoMuebleNavigation.Nombre)</th>
             <th>@Html.DisplayNameFor(model => model.Estado)</th>
             <th>Acciones</th>
         </tr>
@@ -38,8 +38,8 @@
                 <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
                 <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
                 <td>@Html.DisplayFor(modelItem => item.FechaRegistro)</td>
-                <td>@Html.DisplayFor(modelItem => item.Cantidad)</td>
                 <td>@Html.DisplayFor(modelItem => item.IdTipoMuebleNavigation.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.Cantidad)</td>
                 <td>
                     <!-- Reemplazamos el checkbox por un switch estilizado -->
                     <label class="switch">

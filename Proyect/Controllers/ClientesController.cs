@@ -136,13 +136,6 @@ namespace Proyect.Controllers
             return Json(new { success = false, message = "Datos inválidos, por favor revise los campos del formulario." });
         }
 
-
-
-
-
-
-
-
         // GET: Clientes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

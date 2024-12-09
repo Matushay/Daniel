@@ -15,13 +15,13 @@ public partial class Abono
 
     [Range(0, double.MaxValue, ErrorMessage = "El valor de la deuda no puede ser negativo.")]
     [Column(TypeName = "decimal(18,2)")]
-    [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
+    [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
     public decimal Valordeuda { get; set; }
 
-    [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
+    [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
     public decimal Pendiente { get; set; }
 
-    [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
+    [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
     public decimal ValorAbono { get; set; }
 
     public decimal Porcentaje { get; set; }

@@ -39,7 +39,7 @@
                 <td>@Html.DisplayFor(modelItem => item.FechaInicio)</td>
                 <td>@Html.DisplayFor(modelItem => item.FechaFin)</td>
                 <td>@Html.DisplayFor(modelItem => item.IdClienteNavigation.Documento)</td>
-                <td>@Html.DisplayFor(modelItem => item.Total)</td>
+                <td>@string.Format(new System.Globalization.CultureInfo("es-CO"), "{0:C0}", item.Total)</td>
                 <td>@Html.DisplayFor(modelItem => item.IdEstadoReservaNavigation.Estados)</td>
                 <td class="action-icons">
                     @if (item.IdEstadoReservaNavigation != null && item.IdEstadoReservaNavigation.Estados == "Anulado")
