@@ -5,56 +5,49 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="page-title">Crear Nuevo Abono</h1>
+<div class="container-fluid">
+    <h1 class="Tituloscentro">Crear Nuevo Abono</h1>
 
-<div class="create-container">
-    <div class="card">
-        <div class="card-header text-white bg-primary">
-            <h4>Nuevo Abono</h4>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Formulario de Abono</h6>
         </div>
         <div class="card-body">
             <form asp-action="Create" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <!-- IdReserva (readonly) -->
                 <div class="form-group">
                     <label asp-for="IdReserva" class="control-label">Id Reserva</label>
                     <input asp-for="IdReserva" class="form-control" readonly />
                 </div>
 
-                <!-- Mostrar valor total de la deuda -->
                 <div class="form-group">
                     <label asp-for="Valordeuda" class="control-label">Valor Deuda</label>
                     <input asp-for="Valordeuda" class="form-control" readonly value="@Model.Valordeuda.ToString("0")" />
                 </div>
 
-                <!-- Campo Pendiente (calculado dinámicamente) -->
                 <div class="form-group">
                     <label for="PendienteActual" class="control-label">Pendiente</label>
                     <input type="text" class="form-control" id="PendienteActual" readonly value="@Model.Pendiente.ToString("0")" />
                 </div>
 
-                <!-- Campo para el Valor del Abono -->
                 <div class="form-group">
                     <label asp-for="ValorAbono" class="control-label">Valor Abono</label>
                     <input asp-for="ValorAbono" class="form-control" id="ValorAbono" oninput="calcularPendienteYPorcentaje()" />
                     <span asp-validation-for="ValorAbono" class="text-danger"></span>
                 </div>
 
-                <!-- Campo Porcentaje calculado dinámicamente -->
                 <div class="form-group">
                     <label for="PorcentajePago" class="control-label">Porcentaje del Pago</label>
                     <input type="text" class="form-control" id="PorcentajePago" readonly value="0 %" />
                 </div>
 
-                <!-- Campo para cargar una sola imagen -->
                 <div class="form-group">
                     <label asp-for="Comprobante" class="control-label">Comprobante</label>
                     <input class="form-control" type="file" id="Comprobante" name="comprobanteFile" accept="image/*" onchange="previewImage(event)" />
                     <span asp-validation-for="Comprobante" class="text-danger"></span>
                 </div>
 
-                <!-- Contenedor para la imagen del comprobante -->
                 <div class="form-group">
                     <label>Imagen del Comprobante</label>
                     <div id="imageContainer" style="width: 100%; height: 300px; border: 1px solid #ccc; padding: 10px; overflow: hidden;">
@@ -62,12 +55,11 @@
                     </div>
                 </div>
 
-                <!-- Botón de Crear -->
                 <div class="card-footer text-center">
-                    <button type="submit" class="btn btn-primary btn-sm">
-                        <i class="fas fa-save"></i> Crear Reserva
+                    <button type="submit" class="btn ov-btn-slide-left btn-sm">
+                        <i class="fas fa-save"></i> Crear Abono
                     </button>
-                    <a asp-action="Index" asp-route-idReserva="@Model.IdReserva" class="btn btn-secondary btn-sm ml-3">
+                    <a asp-action="Index" asp-route-idReserva="@Model.IdReserva" class="btn ov-btn-slide-left-gray btn-sm ml-3">
                         <i class="fas fa-arrow-left"></i> Volver a la lista
                     </a>
                 </div>

@@ -29,48 +29,8 @@
                     <span asp-validation-for="Descripcion" class="text-danger"></span>
                 </div>
 
-                <!-- Permisos asociados al Rol (Checkboxes) -->
-                <div class="form-group">
-                    <label class="form-label">Permisos:</label>
-                    <input type="text" id="searchPermisos" class="form-control mb-2" placeholder="Buscar permisos...">
-
-                    <button type="button" class="btn btn-secondary btn-sm ml-3 mb-2" onclick="selectAllPermisos(true)">Seleccionar Todos</button>
-                    <button type="button" class="btn btn-secondary btn-sm ml-3 mb-2" onclick="selectAllPermisos(false)">Deseleccionar Todos</button>
-
-                    <div class="table-responsive" style="max-width: 500px;">
-                        <table class="table table-bordered table-sm" id="permisosTable">
-                            <thead>
-                                <tr>
-                                    <th style="width: 60%;">Permiso</th>
-                                    <th style="width: 40%;">Seleccionar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (ViewData["Permisos"] is List<Proyect.Models.Permiso> permisos && permisos.Any())
-                                {
-                                    foreach (var permiso in permisos)
-                                    {
-                                        <tr>
-                                            <td>@permiso.NombrePermiso</td>
-                                            <td class="text-center">
-                                                <input type="checkbox"
-                                                       class="form-check-input"
-                                                       name="selectedPermisos"
-                                                       value="@permiso.IdPermiso" />
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="2">No hay permisos disponibles.</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <!-- Botón para abrir el Modal de Permisos -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#permisosModal">Ver Permisos</button>
 
                 <div class="card-footer text-center">
                     <button type="submit" class="btn ov-btn-slide-left btn-sm">
@@ -81,6 +41,62 @@
                     </a>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Permisos -->
+<div class="modal fade" id="permisosModal" tabindex="-1" role="dialog" aria-labelledby="permisosModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="permisosModalLabel">ver Permisos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="searchPermisos" class="form-control mb-2" placeholder="Buscar permisos...">
+                <button type="button" class="btn btn-secondary btn-sm ml-3 mb-2" onclick="selectAllPermisos(true)">Seleccionar Todos</button>
+                <button type="button" class="btn btn-secondary btn-sm ml-3 mb-2" onclick="selectAllPermisos(false)">Deseleccionar Todos</button>
+
+                <div class="table-responsive" style="max-width: 500px;">
+                    <table class="table table-bordered table-sm" id="permisosTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 60%;">Permiso</th>
+                                <th style="width: 40%;">Seleccionar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewData["Permisos"] is List<Proyect.Models.Permiso> permisos && permisos.Any())
+                            {
+                                foreach (var permiso in permisos)
+                                {
+                                    <tr>
+                                        <td>@permiso.NombrePermiso</td>
+                                        <td class="text-center">
+                                            <input type="checkbox"
+                                                   class="form-check-input"
+                                                   name="selectedPermisos"
+                                                   value="@permiso.IdPermiso" />
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="2">No hay permisos disponibles.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
         </div>
     </div>
 </div>

@@ -34,9 +34,11 @@
                         <span asp-validation-for="CorreoElectronico" class="text-danger small"></span>
                     </div>
                     <!-- Contraseña -->
-                    <div class="mb-3">
+                    <div class="mb-3 position-relative">
                         <label asp-for="Contraseña" class="form-label text-muted">Contraseña</label>
-                        <input asp-for="Contraseña" class="form-control rounded-pill" type="password" placeholder="********" />
+                        <input asp-for="Contraseña" class="form-control rounded-pill" id="password" type="password" placeholder="********" />
+                        <!-- Ícono de ojo (Bootstrap Icons) -->
+                        <i id="togglePassword" class="bi bi-eye-slash position-absolute" style="right: 15px; top: 38px; cursor: pointer; color: #888;"></i>
                         <span asp-validation-for="Contraseña" class="text-danger small"></span>
                     </div>
                     <!-- Botón -->
@@ -55,4 +57,30 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <!-- Cargar Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <script>
+        // Esperamos a que la página se cargue completamente
+        window.addEventListener('DOMContentLoaded', function () {
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordField = document.getElementById('password');
+
+            togglePassword.addEventListener('click', function (e) {
+                // Cambiamos el tipo de campo de contraseña
+                const type = passwordField.type === 'password' ? 'text' : 'password';
+                passwordField.type = type;
+
+                // Cambiamos el icono
+                if (passwordField.type === 'password') {
+                    this.classList.remove('bi-eye');
+                    this.classList.add('bi-eye-slash');
+                } else {
+                    this.classList.remove('bi-eye-slash');
+                    this.classList.add('bi-eye');
+                }
+            });
+        });
+    </script>
 }

@@ -11,7 +11,7 @@
     @if (ViewBag.Pendiente > 0)
     {
         <p class="text-end">
-        <a asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-custom"><i class="bi bi-plus-square"></i> Crear</a>
+        <a asp-action="Create" asp-route-idReserva="@ViewBag.IdReserva" class="btn btn-modern"><i class="bi bi-plus-square"></i> Crear</a>
         </p>
     }
     else
@@ -52,13 +52,13 @@
                     }
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.IdAbono" class="btn btn-icon" data-toggle="tooltip" title="Detalles"><i class="bi bi-info-lg"></i></a>
+                    <a asp-action="Details" asp-route-id="@item.IdAbono" class="btn ov-btn-slide-blue" data-toggle="tooltip" title="Detalles"><i class="bi bi-info-lg"></i></a>
                     @if (!item.Anulado)
                     {
                         <!-- Botón para anular la reserva -->
                         <form asp-action="Anular" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="@item.IdAbono" />
-                            <button type="submit" class="btn btn-icon" data-toggle="tooltip" title="Anular">
+                            <button type="submit" class="btn ov-btn-slide-right" data-toggle="tooltip" title="Anular">
                                 <i class="bi bi-x-circle"></i>
                             </button>
                         </form>
