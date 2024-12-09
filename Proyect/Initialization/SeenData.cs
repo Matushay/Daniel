@@ -25,11 +25,11 @@ namespace Proyect.Data
                     {
                         TipoDocumento = "CC", // O el tipo de documento adecuado
                         Documento = "00000000",
-                        Nombre = "Super",
+                        Nombre = "Administrador",
                         Apellido = "Admin",
                         Celular = "1234567890",
                         Direccion = "Admin Street 123",
-                        CorreoElectronico = "superadminmedellinsalvaje@gmail.com",
+                        CorreoElectronico = "medellinsalvaje@gmail.com",
                         Contraseña = "SuperAdmin123.*", // Asegúrate de encriptar la contraseña
                         Estado = true,
                         FechaCreacion = DateTime.Now,

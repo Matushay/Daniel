@@ -457,12 +457,10 @@ thead {
     }
 
 
-
-
 /* Fondo general */
 .login-container {
-    background: linear-gradient(135deg, #a8b7d8, #d1e3f3); /* Gradiente suave en tonos azules claros y grises */
-    color: #fff;
+    background: #606870; /* Gradiente suave en tonos azules claros y grises */
+    color: #636C73;
 }
 
 /* Tarjeta */
@@ -476,7 +474,7 @@ thead {
 }
 /* Estilo para el contenedor de la página de restablecimiento de contraseña */
 .reset-password-container {
-    background: linear-gradient(135deg, #6c757d, #495057);
+    background: #606870;
     height: 100vh;
 }
 
@@ -535,7 +533,7 @@ thead {
 }
 /* Contenedor de la página de recuperación de contraseña */
 .password-recovery-container {
-    background: linear-gradient(135deg, #6c757d, #495057); /* Fondo de gradiente suave */
+    background: #606870; /* Fondo de gradiente suave */
     height: 100vh;
     padding: 0 20px;
 }

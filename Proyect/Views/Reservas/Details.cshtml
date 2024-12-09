@@ -123,11 +123,11 @@
 
     <!-- Acciones -->
     <div class="text-center">
+         <a asp-action="DescargarPDF" asp-route-id="@Model.IdReserva" class="btn ov-btn-slide-left btn-sm">
+            <i class="fas fa-download"></i> Descargar PDF
+        </a>
         <a asp-action="Index" class="btn ov-btn-slide-left-gray btn-sm">
             <i class="fas fa-arrow-left"></i> Volver a la lista
-        </a>
-        <a asp-action="DescargarPDF" asp-route-id="@Model.IdReserva" class="btn ov-btn-slide-left btn-sm">
-            <i class="fas fa-download"></i> Descargar PDF
         </a>
     </div>
 </div>
